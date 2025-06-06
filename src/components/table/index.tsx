@@ -66,7 +66,7 @@ const TableComponent: React.FC<Props> = ({
                 </TableHead>
               ))}
               {actions && (
-                <TableHead className="px-4 py-2 text-center text-primary font-medium text-base">
+                <TableHead className="px-4 py-2 text-center text-[#0B0704] font-medium text-sm">
                   Actions
                 </TableHead>
               )}
@@ -100,7 +100,7 @@ const TableComponent: React.FC<Props> = ({
                     </TableCell>
                   ))}
                   {actions && (
-                    <TableCell className="px-4 py-2 flex gap-8 justify-center">
+                    <TableCell className="px-4 py-4 flex gap-8 justify-center">
                       {actions.map((action, index) => (
                         <button
                           key={index}
