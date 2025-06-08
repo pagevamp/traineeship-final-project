@@ -15,7 +15,16 @@ import Image from "next/image";
 export function UserNav() {
   return (
     <div className="flex items-center gap-4">
-      <Image src="/message.svg" alt="Image 2" width={36} height={36} />
+      <div className="relative">
+        <Image src="/message.svg" alt="Image 2" width={36} height={36} />
+        <Image
+          src="/message1.svg"
+          alt="message"
+          width={18}
+          height={18}
+          className="absolute inset-0 mx-auto my-auto"
+        />
+      </div>
       <Image src="/bell.svg" alt="Image 1" width={36} height={36} />
 
       <DropdownMenu>
@@ -27,34 +36,53 @@ export function UserNav() {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
+        <DropdownMenuContent
+          className="w-64 rounded-xl p-2 shadow-lg border border-[#FF743C] bg-white"
+          align="end"
+          forceMount
+        >
+          <DropdownMenuLabel className="font-normal px-2 pb-2 border-b border-transparent">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">John Doe</p>
-              <p className="text-xs leading-none text-muted-foreground">
+              <p className="text-sm font-semibold leading-tight bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text">
+                John Doe
+              </p>
+              <p className="text-xs leading-tight bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text">
                 john.doe@example.com
               </p>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
+
+          <DropdownMenuSeparator className="h-px my-2 bg-gradient-to-r from-[#FF8826] to-[#FF6502]" />
+
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
+            {[
+              { label: "Profile", shortcut: "⇧⌘P" },
+              { label: "Billing", shortcut: "⌘B" },
+              { label: "Settings", shortcut: "⌘S" },
+            ].map(({ label, shortcut }) => (
+              <DropdownMenuItem
+                key={label}
+                className="group px-3 py-2 rounded-md transition-colors hover:bg-[#FF743C]/10"
+              >
+                <span className="bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text font-medium">
+                  {label}
+                </span>
+                <DropdownMenuShortcut className="ml-auto bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text text-sm">
+                  {shortcut}
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+
+          <DropdownMenuSeparator className="h-px my-2 bg-gradient-to-r from-[#FF8826] to-[#FF6502]" />
+
+          <DropdownMenuItem className="group px-3 py-2 rounded-md transition-colors hover:bg-[#FF743C]/10">
+            <span className="bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text font-medium">
+              Log out
+            </span>
+            <DropdownMenuShortcut className="ml-auto bg-gradient-to-r from-[#FF8826] to-[#FF6502] text-transparent bg-clip-text text-sm">
+              ⇧⌘Q
+            </DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

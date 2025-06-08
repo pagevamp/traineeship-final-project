@@ -21,8 +21,8 @@ interface RateCardTableProps {
 
 export function RateCardTable({ data }: RateCardTableProps) {
   return (
-    <div className="w-[1110px] bg-[#ffffff] rounded-[25px] font-secondary overflow-hidden">
-      <Table className="w-[1050px] mb-[22px]">
+    <div className="w-full bg-[#ffffff] rounded-[25px] font-secondary overflow-hidden">
+      <Table className="w-full mb-[22px]">
         <TableHeader>
           <TableRow className="border-b border-t border-[#E6EFF5] w-[1050px]">
             <TableHead className="text-center text-[#0B0704] font-primary text-[16px] py-[14.59px] border-r w-[350px]">
