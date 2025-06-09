@@ -151,7 +151,7 @@ const RegisterComponent = () => {
 
       <div
         ref={stepperContainerRef}
-        className="overflow-x-auto scrollbar-hide w-full px-10 mb-6"
+        className="overflow-x-auto scrollbar-hide w-full mb-6"
         style={{ scrollBehavior: "smooth" }}
       >
         <div className="flex gap-4 min-w-max" ref={stepperContainerRef}>
