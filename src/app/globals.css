@@ -168,6 +168,13 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.text-gradient-vertical {
+  background: linear-gradient(to bottom, #cf5406, #ff811a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
 /* PRODUCT CARD CSS */
 
 @layer utilities {
