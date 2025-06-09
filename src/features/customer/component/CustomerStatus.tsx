@@ -34,7 +34,7 @@ const CustomerStatus = () => {
           color="#FF811A"
         />
       ),
-      onClick: (row: any) => router.push(`/customer/${row.id}`),
+      onClick: (row: any) => router.push(`/customer/1`),
     },
   ];
 

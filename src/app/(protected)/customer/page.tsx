@@ -1,5 +1,5 @@
-import CustomerComponent from "@/features/customer/component/CustomerComponent";
 import React from "react";
+import CustomerComponent from "@/features/customer/component/CustomerComponent";
 
 const Customer = () => {
   return (

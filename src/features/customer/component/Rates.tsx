@@ -27,8 +27,8 @@ const Rates = () => {
         ))}
       </div>
 
-      <div className="w-full max-w-full overflow-x-auto">
-        <div className="min-w-[320px] md:min-w-[1110px] bg-[#ffffff] rounded-[25px] font-primary mx-auto">
+      <div className="w-full overflow-x-auto">
+        <div className="bg-[#ffffff] rounded-[25px] font-primary mx-auto">
           <div className="h-[54px] pt-[14px] mb-[23px] text-[14px] font-primary text-[#0B0704] text-center px-4">
             {activeTab === "FTL"
               ? "Bonded FTL to GCC Freight only (excluding clearance)"
