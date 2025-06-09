@@ -56,7 +56,7 @@ const InfoBar = () => {
             <AccordionTrigger className="font-primary text-[14px] sm:text-[16px] text-[#232323] p-4">
               {item.title}
             </AccordionTrigger>
-            <AccordionContent className="text-[#232323] px-4 pt-2 pb-4 text-[14px] sm:text-[15px]">
+            <AccordionContent className="text-[#232323] px-4 pt-2 pb-4 text-[12px] sm:text-[11px]">
               {item.content}
             </AccordionContent>
           </AccordionItem>
