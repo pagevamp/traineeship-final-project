@@ -305,7 +305,10 @@ const RegisterStep2 = () => {
   return (
     <div className="text-[16px] w-full px-3 mt-[10px]">
       <div className="flex justify-end mb-[26px]">
-        <Button variant="outline" className="flex items-center gap-2 h-[40px]">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 h-[40px] text-primary border border-primary hover:bg-primary-light hover:text-primary"
+        >
           Add
           <Image src="/plus.svg" alt="plus" width={24} height={24} />
         </Button>
@@ -429,7 +432,10 @@ const RegisterStep3 = () => {
   return (
     <div className="text-[16px] w-full px-3 mt-[10px]">
       <div className="flex justify-end mb-[26px]">
-        <Button variant="outline" className="flex items-center gap-2 h-[40px]">
+        <Button
+          variant="outline"
+          className="flex items-center text-primary border border-primary hover:text-primary hover:bg-primary-light gap-2 h-[40px]"
+        >
           Add
           <Image src="/plus.svg" alt="plus" width={24} height={24} />
         </Button>
@@ -541,7 +547,7 @@ const RegisterStep4 = () => {
     <div className="text-[16px] w-full px-4 sm:px-6 md:px-8 mt-4">
       <Button
         variant="outline"
-        className="flex items-center mb-6 ml-auto h-[40px] max-w-max"
+        className="flex items-center mb-6 ml-auto h-[40px] text-primary border border-primary hover:bg-primary-light hover:text-primary max-w-max"
       >
         Add <Image src="/plus.svg" alt="plus" width={24} height={24} />
       </Button>
@@ -820,7 +826,10 @@ const RegisterStep6 = () => {
   return (
     <div className="text-[16px] max-w-screen-lg mx-auto px-4 mt-2">
       <div className="flex justify-end mb-6 gap-2">
-        <Button variant="outline" className="flex items-center h-[40px] gap-2">
+        <Button
+          variant="outline"
+          className="flex items-center h-[40px] gap-2 text-primary hover:text-primary border border-primary hover:bg-primary-light"
+        >
           Add <Image src="/plus.svg" alt="plus" width={24} height={24} />
         </Button>
         <div className="border border-[#D55B09] rounded-[7px] h-[40px] w-[40px] flex items-center justify-center">

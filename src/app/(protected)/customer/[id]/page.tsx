@@ -1,5 +1,5 @@
-import CustomerId from "@/features/customer/component/CustomerId";
 import React from "react";
+import CustomerId from "@/features/customer/component/CustomerId";
 
 const page = () => {
   return (
