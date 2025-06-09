@@ -13,7 +13,7 @@ interface StepProps {
 const Step = React.forwardRef<HTMLDivElement, StepProps>(
   ({ title, stepNumber, isCompleted, isActive }, ref) => {
     return (
-      <div ref={ref} className="flex items-center h-8">
+      <div ref={ref} className="flex items-center h-8 min-w-[140px]">
         <div className="relative flex items-center justify-center">
           <div
             className={cn(
@@ -32,7 +32,7 @@ const Step = React.forwardRef<HTMLDivElement, StepProps>(
             )}
           </div>
         </div>
-        <div className="ml-4">
+        <div className="ml-2">
           <p
             className={cn(
               "text-[16px]",
@@ -58,10 +58,22 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep }: StepperProps) {
   const stepRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const target = stepRefs.current[currentStep - 1];
+    if (target && containerRef.current) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [currentStep]);
 
   return (
-    <div className="w-full mx-auto">
-      <div className="flex flex-row justify-between items-center gap-4 mb-8">
+    <div className="w-full mx-auto overflow-x-auto" ref={containerRef}>
+      <div className="flex flex-row items-center gap-4 mb-8 w-max">
         {steps.map((step, index) => (
           <Step
             key={step.title}
