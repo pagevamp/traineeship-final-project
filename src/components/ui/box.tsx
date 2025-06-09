@@ -10,7 +10,7 @@ interface BoxProps {
 
 const Box = ({ imgSrc, title, number }: BoxProps) => {
   return (
-    <div className="w-[255px] h-[120px] bg-white rounded-[25px] flex items-center px-[26px] py-[25px]">
+    <div className="w-full h-[120px] bg-white rounded-[25px] flex items-center px-[26px] py-[25px]">
       <div className="flex items-center gap-4 w-full">
         <Image
           src={imgSrc}
