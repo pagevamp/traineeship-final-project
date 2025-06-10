@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { ChevronDown } from "lucide-react";
-
+import Pagination from "@/components/pagination";
 import TableComponent from "@/components/table";
 import { USER_COLUMN, UserData, statusColors } from "../constant";
 
@@ -87,6 +87,26 @@ const CustomerStatus = () => {
             />
           </motion.div>
         </AnimatePresence>
+      </div>
+      <div className="mt-8">
+        <Pagination
+          currentPage={state.pagination.page}
+          totalPages={
+            // count / state.pagination.recordsPerPage > 0
+            //   ? Math.ceil(count / state.pagination.recordsPerPage)
+            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
+            4
+          }
+          onPageChange={(page: number) => {
+            setState((prevState) => ({
+              ...prevState,
+              pagination: {
+                ...prevState.pagination,
+                page,
+              },
+            }));
+          }}
+        />
       </div>
     </div>
   );

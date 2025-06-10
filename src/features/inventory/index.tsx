@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import Image from "next/image";
 import DownloadIcon from "../../../public/images/download-icon.svg";
+import Pagination from "@/components/pagination";
 
 const Index = () => {
   const router = useRouter();
@@ -112,6 +113,26 @@ const Index = () => {
           data={InventoryData}
           isLoading={false}
           actions={actions}
+        />
+      </div>
+      <div className="mt-8">
+        <Pagination
+          currentPage={state.pagination.page}
+          totalPages={
+            // count / state.pagination.recordsPerPage > 0
+            //   ? Math.ceil(count / state.pagination.recordsPerPage)
+            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
+            4
+          }
+          onPageChange={(page: number) => {
+            setState((prevState) => ({
+              ...prevState,
+              pagination: {
+                ...prevState.pagination,
+                page,
+              },
+            }));
+          }}
         />
       </div>
     </div>

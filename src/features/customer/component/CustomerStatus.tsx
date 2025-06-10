@@ -6,6 +6,7 @@ import { Icon } from "@iconify/react";
 import { ChevronDown } from "lucide-react";
 import TableComponent from "@/components/table";
 import { customerStatus, USER_COLUMN } from "./constant";
+import Pagination from "@/components/pagination";
 
 type StatusType = "Approved" | "Pending" | "Rejected";
 
@@ -93,6 +94,26 @@ const CustomerStatus = () => {
             />
           </motion.div>
         </AnimatePresence>
+      </div>
+      <div className="mt-8">
+        <Pagination
+          currentPage={state.pagination.page}
+          totalPages={
+            // count / state.pagination.recordsPerPage > 0
+            //   ? Math.ceil(count / state.pagination.recordsPerPage)
+            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
+            4
+          }
+          onPageChange={(page: number) => {
+            setState((prevState) => ({
+              ...prevState,
+              pagination: {
+                ...prevState.pagination,
+                page,
+              },
+            }));
+          }}
+        />
       </div>
     </div>
   );

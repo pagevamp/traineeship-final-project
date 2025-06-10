@@ -45,7 +45,7 @@ const TableComponent: React.FC<Props> = ({
     if (type == "status") {
       return <div className="">Pending</div>;
     }
-    return get(row, key) ?? "N/A";
+    return get(row, key) || "N/A";
   };
   return (
     <div className="bg-[#ffffff] rounded-3xl px-4">
