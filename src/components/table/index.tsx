@@ -48,7 +48,7 @@ const TableComponent: React.FC<Props> = ({
     return get(row, key) ?? "N/A";
   };
   return (
-    <div className="bg-[#ffffff] rounded-3xl px-5">
+    <div className="bg-[#ffffff] rounded-3xl px-4">
       <div className="w-full overflow-x-auto ">
         <Table className="min-w-full rounded-lg">
           <TableHeader>
