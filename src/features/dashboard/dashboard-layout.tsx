@@ -16,13 +16,20 @@ import { UserNav } from "./UserNav";
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [userRole, setUserRole] = useState<string>("admin");
   const pathname = usePathname();
-  console.log(pathname, "pa");
+
   // Get current page title from pathname
   const getCurrentPageTitle = () => {
     const segments = pathname.split("/").filter(Boolean);
-    console.log(segments, "s");
-    if (segments.length <= 1) return segments;
-    return segments[segments.length - 1]
+    if (segments.length === 0) return "Home";
+    const lastSegment = segments[segments.length - 1];
+    if (/^\d+$/.test(lastSegment) && segments.length >= 2) {
+      // If last segment is numeric, use the previous one
+      return segments[segments.length - 2]
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+    return lastSegment
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
@@ -32,7 +39,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider defaultOpen={true}>
       <DashboardSidebar userRole={userRole} />
       <SidebarInset>
-        <header className="flex min-h-16 py-5 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="flex min-h-16 py-5 shrink-0 items-center gap-2 sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -46,7 +53,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <UserNav />
           </div>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-5 pt-0 bg-sidebar-background">
+        <main className="flex flex-1 flex-col gap-4 p-3 sm:p-4 bg-sidebar-background">
           {children}
         </main>
       </SidebarInset>

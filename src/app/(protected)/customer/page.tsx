@@ -1,7 +1,12 @@
 import React from "react";
+import CustomerComponent from "@/features/customer/component/CustomerComponent";
 
-const Index = () => {
-  return <div>Index</div>;
+const Customer = () => {
+  return (
+    <div>
+      <CustomerComponent />
+    </div>
+  );
 };
 
-export default Index;
+export default Customer;

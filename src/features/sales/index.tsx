@@ -4,9 +4,11 @@ import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import Image from "next/image";
 import DownloadIcon from "../../../public/images/download-icon.svg";
 import TableComponent from "@/components/table";
-import { SALES_COLUMN, SalesData } from "./constant";
+import { ORDER_COLUMN, SalesData } from "./constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
+import Pagination from "@/components/pagination";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const router = useRouter();
@@ -31,51 +33,72 @@ const Index = () => {
       ),
       onClick: (row: any) => router.push(`/sales/${row.id}`),
     },
-    // {
-    //   label: (
-    //     <Icon
-    //       icon="solar:trash-bin-minimalistic-2-bold"
-    //       width="22"
-    //       height="22"
-    //       color="#FF5C0B"
-    //     />
-    //   ),
-    //   onClick: (row: any) => {},
-    // },
   ];
 
   return (
     <div>
-      <div className="flex items-center gap-4">
-        <SearchComponent
-          state={state}
-          setState={setState}
-          placeholder="Search for user"
-          className="w-[80%]"
-        />
-        <div>
-          <div
-            className={`bg-white gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-2 cursor-pointer`}
-          >
-            <Image
-              src={DownloadIcon}
-              alt="Download Icon"
-              width={18}
-              height={21}
-            />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+      >
+        <div className="flex items-center gap-4">
+          <SearchComponent
+            state={state}
+            setState={setState}
+            placeholder="Search"
+            className="w-[80%]"
+          />
+          <div>
+            <div
+              className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-3 cursor-pointer`}
+            >
+              <Image
+                src={DownloadIcon}
+                alt="Download Icon"
+                width={18}
+                height={21}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="pt-4">
-        <TableComponent
-          currentPage={state.pagination.page}
-          columns={SALES_COLUMN}
-          data={SalesData}
-          isLoading={false}
-          actions={actions}
-        />
-      </div>
+      <motion.div
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 60, damping: 12 }}
+      >
+        <div className="pt-3 sm:pt-4">
+          <TableComponent
+            currentPage={state.pagination.page}
+            columns={ORDER_COLUMN}
+            data={SalesData}
+            isLoading={false}
+            actions={actions}
+          />
+        </div>
+        <div className="mt-8">
+          <Pagination
+            currentPage={state.pagination.page}
+            totalPages={
+              // count / state.pagination.recordsPerPage > 0
+              //   ? Math.ceil(count / state.pagination.recordsPerPage)
+              //   : Math.floor(count / state.pagination.recordsPerPage) + 1
+              4
+            }
+            onPageChange={(page: number) => {
+              setState((prevState) => ({
+                ...prevState,
+                pagination: {
+                  ...prevState.pagination,
+                  page,
+                },
+              }));
+            }}
+          />
+        </div>
+      </motion.div>
     </div>
   );
 };
