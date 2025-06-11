@@ -145,3 +145,74 @@ export const addDetails = [
     job_id: "ARCS23456",
   },
 ];
+
+export const pickupDetails = [
+  {
+    preferred_date: "25/05/2025",
+    street_1: "GRS Homies, 7th Cross Road",
+    street_2: "Marathalli Colony",
+    city: "Bangalore",
+    state: "Karnataka",
+    country: "India",
+    pin_code: "460037",
+  },
+];
+
+type document = {
+  title: string | React.ReactElement;
+};
+
+export const documentDetails = [
+  {
+    id: 1,
+    title: "Upload Commercial Invoice",
+  },
+  {
+    id: 2,
+    title: "Upload Packaging List",
+  },
+  {
+    id: 3,
+    title: "Upload Freight Class",
+  },
+  {
+    id: 4,
+    title: (
+      <p>
+        Certificate of Origin <span className="text-[10px]">(Optional)</span>
+      </p>
+    ),
+  },
+  {
+    id: 5,
+    title: "SABER/COC Certificate",
+  },
+];
+
+export const shipmentItemDetails = [
+  {
+    label: "Commodity Name:",
+    value: "Shaan Roy",
+  },
+  {
+    label: "",
+    value: "",
+  },
+  { label: "H.S Code:", value: "12345678" },
+  { label: "No. of Units / Pallets:", value: "123" },
+  { label: "Package Type:", value: "Cartoons" },
+  { label: "Gross Weight (kg):", value: "1000" },
+  { label: "Net Weight (kg):", value: "800" },
+  { label: "Volume (CBM):", value: "40cm x 30cm x 20cm" },
+  { label: "Declared Value:", value: "AED 500,000" },
+];
+
+export const po_commodity = [
+  {
+    id: 1,
+
+    po: "09876544321234",
+    commodity:
+      "20 units of EcoSmart ES-500X air purifiers, packed in 4 shrink-wrapped pallets (5 units each). Each pallet measures 120×100×110 cm with a total gross weight of 800 kg. Non-hazardous consumer electronics. Fragile handle with care. Requires climate-controlled transport. Pickup: Pune. Delivery: Noida.",
+  },
+];

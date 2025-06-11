@@ -8,8 +8,11 @@ import { PlusCircleIcon } from "lucide-react";
 import ShipmentTable from "./ShipmentTable";
 import ShipmentPickup from "./ShipmentPickup";
 import ShipmentDetail from "./ShipmentDetails";
+import ShipmentAdd from "./ShipmentAdd";
+import { useRouter } from "next/navigation";
 
 const ShipmentComponent = () => {
+  const router = useRouter();
   return (
     <div>
       <div className="mb-3 sm:mb-4">
@@ -30,7 +33,10 @@ const ShipmentComponent = () => {
             secondCircleContent={""}
           />
           <div className="">
-            <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF6502] to-[#FF953D] text-white rounded-[37px] text-primary text-sm font-300 whitespace-nowrap px-6 py-3 ">
+            <button
+              onClick={() => router.push(`/shipment/1`)}
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF6502] to-[#FF953D] text-white rounded-[37px] text-primary text-sm font-300 whitespace-nowrap px-6 py-3 "
+            >
               Add Shipment <PlusCircleIcon size={20} />
             </button>
           </div>
@@ -44,12 +50,6 @@ const ShipmentComponent = () => {
       >
         <ShipmentTable />
       </motion.div>
-      <br />
-      <br />
-      <ShipmentPickup />
-      <br />
-      <br />
-      <ShipmentDetail />
     </div>
   );
 };
