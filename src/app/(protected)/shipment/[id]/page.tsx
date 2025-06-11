@@ -1,4 +1,4 @@
-import ShipmentCreation from "@/features/shipment.tsx/components/ShipmentCreation";
+import ShipmentCreation from "@/features/shipment/components/ShipmentCreation";
 import React from "react";
 
 const page = () => {

@@ -1,4 +1,4 @@
-import ShipmentComponent from "@/features/shipment.tsx/components/ShipmentComponent";
+import ShipmentComponent from "@/features/shipment/components/ShipmentComponent";
 import React from "react";
 
 const Shipment = () => {
