@@ -12,7 +12,7 @@ export default function SalesCard() {
     2000
   );
   const { count: dailySales, elementRef: dailyRef } = useCounterAnimation(
-    0,
+    100,
     1000
   );
 

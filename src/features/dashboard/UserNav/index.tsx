@@ -54,14 +54,10 @@ export function UserNav() {
             </div>
           </DropdownMenuLabel>
 
-          <DropdownMenuSeparator className="h-px my-2 bg-gradient-to-r from-[#540F86] to-[#542F80]" />
+          <DropdownMenuSeparator className="h-px my-2 bg-muted-light" />
 
           <DropdownMenuGroup>
-            {[
-              { label: "Profile" },
-         
-              { label: "Settings" },
-            ].map(({ label }) => (
+            {[{ label: "Profile" }, { label: "Settings" }].map(({ label }) => (
               <DropdownMenuItem
                 key={label}
                 className="group px-3 py-2 rounded-md transition-colors hover:bg-[#FF743C]/10"
@@ -73,7 +69,7 @@ export function UserNav() {
             ))}
           </DropdownMenuGroup>
 
-          <DropdownMenuSeparator className="h-px my-2 bg-gradient-to-r from-[#540F86] to-[#542F80] " />
+          <DropdownMenuSeparator className="h-px my-2 bg-muted-light" />
 
           <Link href="/login">
             <DropdownMenuItem className="group px-3 py-2 rounded-md transition-colors hover:bg-[#FF743C]/10">

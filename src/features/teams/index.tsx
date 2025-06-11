@@ -4,7 +4,7 @@ import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import Image from "next/image";
 import DownloadIcon from "../../../public/images/download-icon.svg";
 import TableComponent from "@/components/table";
-import { ORDER_COLUMN, SalesData } from "./constant";
+import { TEAM_COLUMN, TeamData } from "./constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/pagination";
@@ -72,8 +72,8 @@ const Index = () => {
         <div className="pt-3 sm:pt-4">
           <TableComponent
             currentPage={state.pagination.page}
-            columns={ORDER_COLUMN}
-            data={SalesData}
+            columns={TEAM_COLUMN}
+            data={TeamData}
             isLoading={false}
             actions={actions}
           />
