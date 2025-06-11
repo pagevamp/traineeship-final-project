@@ -35,7 +35,7 @@ export const navigationItems = [
     roles: ["admin", "manager"],
   },
   {
-    title: "Staff",
+    title: "Staffs",
     href: "/staff",
     icon: (props: any) => (
       <Icon
@@ -61,7 +61,7 @@ export const navigationItems = [
     roles: ["admin", "manager"],
   },
   {
-    title: "Customer",
+    title: "Customers",
     href: "/customer",
     icon: (props: any) => (
       <Icon
@@ -74,7 +74,7 @@ export const navigationItems = [
     roles: ["admin", "manager"],
   },
   {
-    title: "User",
+    title: "Users",
     href: "/user",
     icon: (props: any) => (
       <Icon
@@ -87,7 +87,7 @@ export const navigationItems = [
     roles: ["admin", "manager"],
   },
   {
-    title: "Department",
+    title: "Departments",
     href: "/department",
     icon: (props: any) => (
       <Icon
