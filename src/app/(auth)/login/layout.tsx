@@ -1,20 +1,15 @@
 "use client";
-
 import ImageSlider from "@/features/login/components/Slider";
 import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen max-w-screen bg-[#ffffff] px-[49px] py-[55px]">
-      <div className="bg-white rounded-[20px] min-h-screen flex">
-        <div
-          className="hidden lg:block"
-          style={{ width: "610px", height: "calc(100vh - 110px)" }}
-        >
+    <div className="overflow-x-auto w-screen h-screen px-[20px] md:px-[30px] lg:px-[49px] py-1">
+      <div className="bg-white rounded-[20px] lg:max-h-full grid grid-cols-1 lg:grid-cols-5 max-w-[1400px] mx-auto">
+        <div className="hidden lg:block col-span-2 ">
           <ImageSlider />
         </div>
-
-        <div className="flex-1 flex items-center justify-center">
+        <div className="col-span-3 flex justify-center items-center p-4">
           {children}
         </div>
       </div>
