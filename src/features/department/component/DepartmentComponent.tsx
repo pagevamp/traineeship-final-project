@@ -58,10 +58,10 @@ const DepartmentComponent = () => {
               }
               secondCircleContent={""}
             />
-            <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[2px] rounded-[37px] w-fit h-fit">
+            <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[1px] rounded-[37px] w-fit h-fit">
               <button
                 onClick={handleCreateClick}
-                className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm font-medium"
+                className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white hover:bg-primary-light rounded-[37px] text-sm font-semibold"
               >
                 Create <PlusCircleIcon size={24} />
               </button>
