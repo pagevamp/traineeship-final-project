@@ -8,6 +8,7 @@ import { STAFF_COLUMN, StaffData } from "./constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/pagination";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const router = useRouter();
@@ -36,56 +37,68 @@ const Index = () => {
 
   return (
     <div>
-      <div className="flex items-center gap-4">
-        <SearchComponent
-          state={state}
-          setState={setState}
-          placeholder="Search"
-          className="w-[80%]"
-        />
-        <div>
-          <div
-            className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-3 cursor-pointer`}
-          >
-            <Image
-              src={DownloadIcon}
-              alt="Download Icon"
-              width={18}
-              height={21}
-            />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+      >
+        <div className="flex items-center gap-4">
+          <SearchComponent
+            state={state}
+            setState={setState}
+            placeholder="Search"
+            className="w-[80%]"
+          />
+          <div>
+            <div
+              className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-3 cursor-pointer`}
+            >
+              <Image
+                src={DownloadIcon}
+                alt="Download Icon"
+                width={18}
+                height={21}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="pt-3 sm:pt-4">
-        <TableComponent
-          currentPage={state.pagination.page}
-          columns={STAFF_COLUMN}
-          data={StaffData}
-          isLoading={false}
-          actions={actions}
-        />
-      </div>
-      <div className="mt-8">
-        <Pagination
-          currentPage={state.pagination.page}
-          totalPages={
-            // count / state.pagination.recordsPerPage > 0
-            //   ? Math.ceil(count / state.pagination.recordsPerPage)
-            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
-            4
-          }
-          onPageChange={(page: number) => {
-            setState((prevState) => ({
-              ...prevState,
-              pagination: {
-                ...prevState.pagination,
-                page,
-              },
-            }));
-          }}
-        />
-      </div>
+      <motion.div
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 60, damping: 12 }}
+      >
+        <div className="pt-3 sm:pt-4">
+          <TableComponent
+            currentPage={state.pagination.page}
+            columns={STAFF_COLUMN}
+            data={StaffData}
+            isLoading={false}
+            actions={actions}
+          />
+        </div>
+        <div className="mt-8">
+          <Pagination
+            currentPage={state.pagination.page}
+            totalPages={
+              // count / state.pagination.recordsPerPage > 0
+              //   ? Math.ceil(count / state.pagination.recordsPerPage)
+              //   : Math.floor(count / state.pagination.recordsPerPage) + 1
+              4
+            }
+            onPageChange={(page: number) => {
+              setState((prevState) => ({
+                ...prevState,
+                pagination: {
+                  ...prevState.pagination,
+                  page,
+                },
+              }));
+            }}
+          />
+        </div>
+      </motion.div>
     </div>
   );
 };
