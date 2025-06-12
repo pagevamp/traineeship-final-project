@@ -165,6 +165,45 @@ export const navigationItems = [
     roles: ["admin", "manager"],
   },
   {
+    title: "Vehicle",
+    href: "/vehicle",
+    icon: (props: any) => (
+      <Icon
+        icon="icon-park-solid:sales-report"
+        width="48"
+        height="48"
+        {...props}
+      />
+    ),
+    roles: ["admin", "manager"],
+  },
+  {
+    title: "Vendor",
+    href: "/vendor",
+    icon: (props: any) => (
+      <Icon
+        icon="icon-park-solid:sales-report"
+        width="48"
+        height="48"
+        {...props}
+      />
+    ),
+    roles: ["admin", "manager"],
+  },
+  {
+    title: "Driver",
+    href: "/driver",
+    icon: (props: any) => (
+      <Icon
+        icon="icon-park-solid:sales-report"
+        width="48"
+        height="48"
+        {...props}
+      />
+    ),
+    roles: ["admin", "manager"],
+  },
+  {
     title: "Settings",
     href: "/settings",
     icon: (props: any) => (
