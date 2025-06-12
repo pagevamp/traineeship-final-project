@@ -13,7 +13,7 @@ import DriverModal from "./DriverModal";
 
 const DriverComponent = () => {
   const { openModal } = useModalContext();
-  
+
   const handleCreateClick = () => {
     openModal({
       component: DriverModal,
@@ -23,7 +23,6 @@ const DriverComponent = () => {
 
   return (
     <div>
-      
       <div className="mb-3 sm:mb-4">
         <DriverInfoBox />
       </div>

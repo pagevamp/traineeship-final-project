@@ -8,6 +8,7 @@ import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import Image from "next/image";
 import DownloadIcon from "../../../public/images/download-icon.svg";
 import { motion } from "framer-motion";
+import Pagination from "@/components/pagination";
 
 const Index = () => {
   const router = useRouter();
@@ -83,6 +84,21 @@ const Index = () => {
             data={InventoryData}
             isLoading={false}
             actions={actions}
+          />
+        </div>
+        <div className="mt-4">
+          <Pagination
+            currentPage={state.pagination.page}
+            totalPages={4}
+            onPageChange={(page: number) => {
+              setState((prevState) => ({
+                ...prevState,
+                pagination: {
+                  ...prevState.pagination,
+                  page,
+                },
+              }));
+            }}
           />
         </div>
       </motion.div>

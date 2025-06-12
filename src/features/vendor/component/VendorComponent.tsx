@@ -13,7 +13,7 @@ import VendorModal from "./VendorModal";
 
 const VendorComponent = () => {
   const { openModal } = useModalContext();
- 
+
   const handleCreateClick = () => {
     openModal({
       component: VendorModal,
@@ -23,7 +23,6 @@ const VendorComponent = () => {
 
   return (
     <div>
-      
       <div className="mb-3 sm:mb-4">
         <VendorInfoBox />
       </div>

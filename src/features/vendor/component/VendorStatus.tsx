@@ -47,15 +47,10 @@ const VendorStatus = () => {
           actions={actions}
         />
       </div>
-      <div className="mt-8">
+      <div className="mt-4">
         <Pagination
           currentPage={state.pagination.page}
-          totalPages={
-            // count / state.pagination.recordsPerPage > 0
-            //   ? Math.ceil(count / state.pagination.recordsPerPage)
-            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
-            4
-          }
+          totalPages={4}
           onPageChange={(page: number) => {
             setState((prevState) => ({
               ...prevState,
