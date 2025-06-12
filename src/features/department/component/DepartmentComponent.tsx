@@ -87,7 +87,7 @@ const DepartmentComponent = () => {
         <DepartmentInfo />
       </motion.div>
 
-      <div className="mt-8">
+      <div className="mt-4">
         <Pagination
           currentPage={state.pagination.page}
           totalPages={

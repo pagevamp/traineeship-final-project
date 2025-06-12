@@ -3,7 +3,7 @@ import React from "react";
 
 const InformationComponent = () => {
   return (
-    <div className="p-4 bg-primary-light mt-6 rounded-2xl">
+    <div className="p-4 bg-[#fafafa] mt-6 rounded-2xl">
       <p className="font-secondary font-medium tracking-normal pb-6">
         Information
       </p>

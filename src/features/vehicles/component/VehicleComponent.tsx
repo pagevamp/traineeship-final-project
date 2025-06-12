@@ -13,7 +13,7 @@ import VehicleModal from "./VehicleModal";
 
 const VehicleComponent = () => {
   const { openModal } = useModalContext();
-  
+
   const handleCreateClick = () => {
     openModal({
       component: VehicleModal,
@@ -23,7 +23,6 @@ const VehicleComponent = () => {
 
   return (
     <div>
-      
       <div className="mb-3 sm:mb-4">
         <VehicleInfoBox />
       </div>
