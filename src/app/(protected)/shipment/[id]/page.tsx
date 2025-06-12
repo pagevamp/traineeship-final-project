@@ -1,5 +1,5 @@
-import ShipmentCreation from "@/features/shipment/components/ShipmentCreation";
 import React from "react";
+import ShipmentCreation from "@/features/shipment/components/ShipmentCreation";
 
 const page = () => {
   return (
