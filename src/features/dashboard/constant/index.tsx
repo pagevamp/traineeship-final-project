@@ -17,7 +17,12 @@ export const navigationItems = [
     title: "Dashboard",
     href: "/dashboard",
     icon: (props: any) => (
-      <Icon icon="garden:home-fill-16" width="12" height="12" {...props} />
+      <Icon
+        icon="lineicons:dashboard-square-1"
+        width="25"
+        height="24"
+        {...props}
+      />
     ),
     roles: ["admin", "manager", "user"],
   },
@@ -25,12 +30,7 @@ export const navigationItems = [
     title: "Sales",
     href: "/sales",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="carbon:sales-ops" width="32" height="32" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -38,12 +38,7 @@ export const navigationItems = [
     title: "Staffs",
     href: "/staff",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="mingcute:department-fill" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -51,12 +46,7 @@ export const navigationItems = [
     title: "Teams",
     href: "/teams",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="material-symbols:groups" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -64,12 +54,7 @@ export const navigationItems = [
     title: "Customers",
     href: "/customer",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="ix:customer-filled" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -77,12 +62,7 @@ export const navigationItems = [
     title: "Shipments",
     href: "/shipment",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="mdi:truck-check" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -90,12 +70,7 @@ export const navigationItems = [
     title: "Routes",
     href: "/routes",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="gis:route" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -103,12 +78,15 @@ export const navigationItems = [
     title: "Users",
     href: "/user",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="mdi:users" width="24" height="24" {...props} />
+    ),
+    roles: ["admin", "manager"],
+  },
+  {
+    title: "Consumer",
+    href: "/consumer",
+    icon: (props: any) => (
+      <Icon icon="ix:customer-filled" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -116,12 +94,7 @@ export const navigationItems = [
     title: "Departments",
     href: "/department",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="mingcute:department-fill" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -129,12 +102,7 @@ export const navigationItems = [
     title: "Inventory",
     href: "/inventory",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="ic:outline-inventory-2" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -143,9 +111,9 @@ export const navigationItems = [
     href: "/orders",
     icon: (props: any) => (
       <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
+        icon="fluent-mdl2:activate-orders"
+        width="24"
+        height="24"
         {...props}
       />
     ),
@@ -155,12 +123,7 @@ export const navigationItems = [
     title: "Products",
     href: "/products",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="mdi:cart" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
@@ -207,12 +170,7 @@ export const navigationItems = [
     title: "Settings",
     href: "/settings",
     icon: (props: any) => (
-      <Icon
-        icon="icon-park-solid:sales-report"
-        width="48"
-        height="48"
-        {...props}
-      />
+      <Icon icon="ic:baseline-settings" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },

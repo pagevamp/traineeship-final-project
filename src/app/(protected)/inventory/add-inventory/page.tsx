@@ -1,15 +1,15 @@
 import React from "react";
-import CustomerComponent from "@/features/consumer";
+import AddInventoryComponent from "@/features/inventory/add-inventory";
 
 export async function generateMetadata() {
   return {
-    title: "Customer | Arctern Express",
+    title: "Add Customer | Arctern Express",
   };
 }
 const Index = () => {
   return (
     <div>
-      <CustomerComponent />
+      <AddInventoryComponent />
     </div>
   );
 };

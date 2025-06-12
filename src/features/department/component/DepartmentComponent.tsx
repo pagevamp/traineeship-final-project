@@ -61,16 +61,16 @@ const DepartmentComponent = () => {
           <div className="w-full flex flex-row items-center gap-[10px] mb-4">
             <SearchBar
               placeholder="Search for Department"
-              className="w-[97%]  gap-[7px]"
+              className="w-[97%] gap-[7px]"
               firstCircleContent={
                 <Image src="/Menu.svg" alt="Menu" width={20} height={20} />
               }
               secondCircleContent={""}
             />
-            <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[2px] rounded-[37px] w-fit h-fit">
+            <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[1px] rounded-[37px] w-fit h-fit">
               <button
                 onClick={handleCreateClick}
-                className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm font-medium"
+                className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white hover:bg-primary-light rounded-[37px] text-sm font-semibold"
               >
                 Create <PlusCircleIcon size={24} />
               </button>
