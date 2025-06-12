@@ -253,3 +253,29 @@ body {
   min-width: 2ch; /* small number width */
   text-align: right;
 }
+
+/*----DASHBOARD SIDEBAR CSS------*/
+.scroll-bar {
+  overflow: auto;
+  transition: all 1s ease-out;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  -webkit-appearance: none;
+  display: block;
+  width: 4px;
+  height: 4px;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: lightgray;
+  box-shadow: 0 0 1px rgba(235, 235, 235, 0.1);
+  visibility: hidden;
+}
+.scroll-bar:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+.scroll-bar::-webkit-scrollbar-track {
+  margin: 10px 10px 10px 100px;
+}

@@ -97,7 +97,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
           </div>
         </SidebarHeader>
 
-        <SidebarContent className="overflow-x-hidden">
+        <SidebarContent className="overflow-x-hidden scroll-bar">
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="">
