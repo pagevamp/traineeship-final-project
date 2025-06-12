@@ -1,15 +1,6 @@
 import React from "react";
-import { Label } from "@/components/ui/label";
 import { ImageIcon, PlusCircle, Upload } from "lucide-react";
 import { Selectbox } from "@/components/ui/select-box";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -190,6 +181,13 @@ const InventoryInformation = (props: any) => {
                   // onChange={handleFileChange}
                 />
               </label>
+            </div>
+          </div>
+
+          <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center group mt-4">
+            <div className="flex flex-col items-center justify-center gap-2 group-hover:opacity-80">
+              <Upload className="h-10 w-10 text-gray-400" />
+              <p className="text-sm text-gray-500">Upload More Image</p>
             </div>
           </div>
         </div>

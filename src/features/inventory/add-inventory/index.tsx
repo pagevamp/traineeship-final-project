@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Resolver, useForm } from "react-hook-form";
 import { AddInventorySchema } from "../validation";
-import InventoryInformation from "./form/InventoryInformation";
+import { ProductVariations, InventoryInformation } from "./form";
 
 const Index = () => {
   const router = useRouter();
@@ -72,6 +72,7 @@ const Index = () => {
 
         <div className="bg-white p-4 rounded-3xl">
           <InventoryInformation {...inventoryProps} />
+          <ProductVariations />
         </div>
       </div>
     </motion.div>
