@@ -28,7 +28,7 @@ const slides = [
 const ImageSlider = () => {
   return (
     <motion.div
-      className="w-full max-w-[600px] min-w-[400px] h-[890px] min-h-[500px] lg:h-[99vh] rounded-[20px] overflow-hidden relative"
+      className="w-full max-w-[600px] min-w-[400px] h-[890px] min-h-[500px] lg:h-[90vh] 2xl:h-[80vh] rounded-[20px] overflow-hidden relative"
       initial={{ x: -70, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
