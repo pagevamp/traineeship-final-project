@@ -1,6 +1,5 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
@@ -11,7 +10,7 @@ const Register5 = () => {
       className="text-[16px] w-full px-4 sm:px-6 md:px-8 mt-4"
       initial={{ x: 50, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="flex flex-col mb-5 items-center justify-center">
         <Input

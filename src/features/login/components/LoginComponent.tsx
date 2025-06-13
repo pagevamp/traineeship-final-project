@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Heading from "@/components/ui/Heading";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,7 +25,7 @@ const LoginComponent = () => {
 
       <Heading title="Login" description="Enter your credentials to proceed." />
 
-      <div>
+      <div className="pb-4">
         <Input
           type="text"
           labelName="Company ID"
@@ -45,26 +44,26 @@ const LoginComponent = () => {
       </div>
 
       <span
-        className="text-[#9C9AA5] underline cursor-pointer self-end mr-[5px]"
+        className="text-[#9C9AA5] underline cursor-pointer tracking-wide font-secondary font-[300] text-sm pt-2 self-end mr-[5px]"
         style={{ marginBottom: "60px" }}
       >
         Forgot password?
       </span>
       <Link href="/dashboard">
         <button
-          className="w-[357px] h-[48px] rounded-md text-white font-primary text-lg"
+          className="w-[357px] h-[48px] rounded-md text-white font-primary text-base"
           style={{
             background: "linear-gradient(to bottom, #CF5406, #FF811A)",
             marginBottom: "45px",
           }}
         >
-          Continue
+          Sign in
         </button>
       </Link>
 
       <div className="flex items-center gap-2 mb-[20px]">
         <span className="text-[#9C9AA5] font-primary text-sm">
-          Don’t have an account
+          Don’t have an account ?
         </span>
         <Link href="/register">
           <span
@@ -84,7 +83,7 @@ const LoginComponent = () => {
         <span className="text-[#9C9AA5] font-secondary font-weight-200 text-xs ">
           By signing up to create an account I accept Company’s
         </span>
-        <span className="text-[#26203B] font-secondary text-[10px] font-weight-200 cursor-pointer">
+        <span className="text-[#26203B] font-secondary text-xs font-weight-200 cursor-pointer">
           Terms of use and Privacy Policy
         </span>
       </div>

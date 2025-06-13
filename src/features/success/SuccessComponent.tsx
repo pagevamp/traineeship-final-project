@@ -12,9 +12,9 @@ const SuccessComponent = () => {
   return (
     <div className="flex flex-col m-auto justify-center items-center px-4 sm:px-6 md:px-10 lg:px-20 xl:px-32 2xl:px-40 min-h-screen text-center">
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       >
         <Image
           src="/arctern-logo.svg"
@@ -27,9 +27,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.2, ease: "easeOut" }}
       >
         <Image
           src="/Verified.svg"
@@ -42,9 +42,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.3, ease: "easeOut" }}
       >
         <Heading
           title="Account Request Submitted Successfully"
@@ -53,9 +53,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.4, ease: "easeOut" }}
       >
         <span className="font-primary text-[#9C9AA5] text-[14px] font-weight-400 sm:text-lg block">
           Your Credit Account Number: <strong>ABC12316</strong>
@@ -63,9 +63,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.9, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.5, ease: "easeOut" }}
       >
         <span className="font-secondary text-[#9C9AA5] text-[14px] font-weight-400 sm:text-lg mt-2 block">
           Status: <span className="text-[#FF811A]">In-active</span>
@@ -73,9 +73,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.1, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.6, ease: "easeOut" }}
       >
         <p className="font-secondary text-[#9C9AA5] text-[14px] font-weight-400 sm:text-base mt-4 max-w-xl mx-auto leading-relaxed">
           Your account is under internal review. Our Operations and Finance
@@ -85,9 +85,9 @@ const SuccessComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.7, ease: "easeOut" }}
       >
         <button
           onClick={() => router.push("/dashboard")}

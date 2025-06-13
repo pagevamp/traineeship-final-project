@@ -10,7 +10,7 @@ const Register4 = () => {
       className="text-[16px] w-full px-3 mt-[10px]"
       initial={{ x: 50, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="flex justify-end mb-[26px]">
         <Button
