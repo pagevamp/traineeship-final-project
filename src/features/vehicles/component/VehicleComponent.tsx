@@ -13,7 +13,7 @@ import VehicleModal from "./VehicleModal";
 
 const VehicleComponent = () => {
   const { openModal } = useModalContext();
-  
+
   const handleCreateClick = () => {
     openModal({
       component: VehicleModal,
@@ -23,14 +23,13 @@ const VehicleComponent = () => {
 
   return (
     <div>
-      
       <div className="mb-3 sm:mb-4">
         <VehicleInfoBox />
       </div>
       <motion.div
-        initial={{ opacity: 0.1 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       >
         <div className="w-full flex flex-row items-center gap-[5px] mb-4">
           <SearchBar
@@ -51,7 +50,7 @@ const VehicleComponent = () => {
           <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[2px] rounded-[37px] w-fit h-fit">
             <button
               onClick={handleCreateClick}
-              className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm font-medium"
+              className="flex font-secondary font-[400] items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm"
             >
               Add <PlusCircleIcon size={24} />
             </button>
@@ -59,9 +58,10 @@ const VehicleComponent = () => {
         </div>
       </motion.div>
       <motion.div
-        initial={{ x: 150, opacity: 0 }}
+        initial={{ x: 0, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ type: "spring", stiffness: 60, damping: 12 }}
+        // transition={{ duration: 0.6, ease: "easeOut" }}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <div className="mt-4">

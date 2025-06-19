@@ -45,11 +45,11 @@ const Index = () => {
         {INVENTORY_COUNTS?.map((inventory, idx) => (
           <motion.div
             key={idx}
-            initial={{ y: -50, opacity: 0 }}
+            initial={{ y: 0, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{
-              duration: 0.5,
-              delay: 0.2 + idx * 0.1,
+              duration: 0.2,
+              delay: 0.1 + idx * 0.1,
               ease: "easeOut",
             }}
           >
@@ -86,7 +86,7 @@ const Index = () => {
       </div>
 
       <motion.div
-        initial={{ x: 100, opacity: 0 }}
+        initial={{ x: 0, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 60, damping: 12 }}
       >
@@ -127,7 +127,7 @@ const Index = () => {
               <Link href="/inventory/add-inventory">
                 <Button
                   label="Add Inventory"
-                  className="w-fit h-[38px] px-4 text-sm whitespace-nowrap"
+                  className="w-fit font-secondary font-[400] h-[38px] px-4 text-sm whitespace-nowrap"
                 />
               </Link>
             </div>
@@ -138,17 +138,13 @@ const Index = () => {
             data={InventoryData}
             isLoading={false}
             actions={actions}
+            className={"border-none"}
           />
         </div>
-        <div className="mt-8">
+        <div className="mt-4">
           <Pagination
             currentPage={state.pagination.page}
-            totalPages={
-              // count / state.pagination.recordsPerPage > 0
-              //   ? Math.ceil(count / state.pagination.recordsPerPage)
-              //   : Math.floor(count / state.pagination.recordsPerPage) + 1
-              4
-            }
+            totalPages={4}
             onPageChange={(page: number) => {
               setState((prevState) => ({
                 ...prevState,

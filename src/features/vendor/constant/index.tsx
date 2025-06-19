@@ -40,7 +40,6 @@ export const VendorUserData = [
     total_vehicle_number: "GA 2 PA 5678",
   },
 ];
-  
 
 export const vendorHeaderDetails = [
   {
@@ -73,4 +72,52 @@ export const vendorHeaderDetails = [
     label: "Total Vehicle Numbern:",
     value: "BA 5 KHA 1234",
   },
+];
+
+export const steps = [
+  { id: 1, title: "Information" },
+  { id: 2, title: "Capability Details" },
+  { id: 3, title: "Document Uploads" },
+  { id: 4, title: "Billing Info" },
+  { id: 5, title: "System Fields" },
+];
+
+type HeadingsType = {
+  id: number;
+  title: string | React.ReactElement;
+  description: string;
+};
+export const headings: HeadingsType[] = [
+  {
+    id: 1,
+    title: "Information",
+    description: "Enter the vendor information.",
+  },
+  {
+    id: 2,
+    title: "Fleet & Capability Details",
+    description: "Enter the vendor information.",
+  },
+
+  {
+    id: 3,
+    title: "Compliance & Document Uploads",
+    description: "Enter the vendor information.",
+  },
+  {
+    id: 4,
+    title: "Commercial & Billing Info",
+    description: "Enter the vendor information.",
+  },
+  {
+    id: 5,
+    title: "System Fields",
+    description: "Enter the vendor information.",
+  },
+];
+
+export const companyType = [
+  { label: "Company", value: "Company" },
+  { label: "Company 1", value: "Company 1" },
+  { label: "Company 2", value: "Company 2" },
 ];

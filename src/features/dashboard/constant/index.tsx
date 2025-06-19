@@ -76,14 +76,14 @@ export const navigationItems = [
   },
   {
     title: "Users",
-    href: "/user",
+    href: "/users",
     icon: (props: any) => (
       <Icon icon="mdi:users" width="24" height="24" {...props} />
     ),
     roles: ["admin", "manager"],
   },
   {
-    title: "Consumer",
+    title: "Importer",
     href: "/consumer",
     icon: (props: any) => (
       <Icon icon="ix:customer-filled" width="24" height="24" {...props} />

@@ -1,8 +1,5 @@
 import React from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 import {
   Select,
   SelectTrigger,
@@ -20,7 +17,7 @@ const Register2 = () => {
       className="text-[16px] w-full px-3 mt-[10px] flex justify-center"
       initial={{ x: 50, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="grid grid-cols-1 gap-y-[18px] mb-8 w-full max-w-[500px]">
         <div className="flex flex-col gap-2">

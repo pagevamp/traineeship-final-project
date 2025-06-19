@@ -1,6 +1,4 @@
 import React from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -10,7 +8,7 @@ const Register6 = () => {
       className="text-[16px] min-w-[320px] max-w-screen-2xl mx-auto px-4 flex flex-col gap-6 md:flex-col md:place-items-center md:gap-[21px] mt-2 mb-1"
       initial={{ x: 50, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="relative mb-2 w-[163px] h-[163px] mx-auto">
         <Image
@@ -53,7 +51,7 @@ const Register6 = () => {
             height={20}
           />
           <span className="text-sm font-medium text-[#1E1E1E]">
-            Vat certificate
+            Vat Certificate
           </span>
         </div>
 
@@ -66,7 +64,7 @@ const Register6 = () => {
             height={20}
           />
           <span className="text-sm font-medium text-[#1E1E1E]">
-            Passport copy
+            Passport Copy
           </span>
         </div>
 

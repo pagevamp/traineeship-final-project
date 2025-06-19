@@ -9,7 +9,7 @@ const Register7 = () => {
       className="text-[16px] w-full sm:max-w-screen-lg mx-auto px-4 mt-2"
       initial={{ x: 50, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="flex justify-end mb-6 gap-2">
         <Button

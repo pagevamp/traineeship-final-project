@@ -3,11 +3,8 @@
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import { headerDetails } from "./constant";
-import { motion } from "framer-motion";
-import { useState } from "react";
 
 const Header = () => {
-  const [flip, setFlip] = useState(true);
   return (
     <div className="flex flex-col gap-6 w-full mx-auto">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">

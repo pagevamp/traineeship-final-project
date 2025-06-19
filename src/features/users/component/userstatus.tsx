@@ -24,7 +24,7 @@ const CustomerStatus = () => {
     search: "",
   });
 
-  const actions = [
+  const userActions = [
     {
       label: (
         <Icon
@@ -34,7 +34,7 @@ const CustomerStatus = () => {
           color="#FF811A"
         />
       ),
-      onClick: (row: any) => router.push(`/sales/${row.id}`),
+      onClick: (row: any) => router.push(`/users/1`),
     },
   ];
 
@@ -69,15 +69,18 @@ const CustomerStatus = () => {
         </div>
       </div> */}
 
-      <div className="bg-[#ffffff] w-full rounded-[25px] overflow-auto">
+      <div
+      // className="bg-[#ffffff] w-full rounded-[25px] overflow-auto"
+      >
         <TableComponent
           currentPage={state.pagination.page}
           columns={USER_COLUMN}
           data={UserData}
           isLoading={false}
+          actions={userActions}
         />
       </div>
-      <div className="mt-8">
+      <div className="mt-4">
         <Pagination
           currentPage={state.pagination.page}
           totalPages={

@@ -38,7 +38,9 @@ const VendorStatus = () => {
 
   return (
     <div className="flex flex-col gap-[15px]">
-      <div className="bg-[#ffffff] w-full rounded-[25px] overflow-auto">
+      <div
+      //  className="bg-[#ffffff] w-full rounded-[25px] overflow-auto"
+      >
         <TableComponent
           currentPage={state.pagination.page}
           columns={VENDOR_USER_COLUMN}
@@ -47,15 +49,10 @@ const VendorStatus = () => {
           actions={actions}
         />
       </div>
-      <div className="mt-8">
+      <div className="mt-4">
         <Pagination
           currentPage={state.pagination.page}
-          totalPages={
-            // count / state.pagination.recordsPerPage > 0
-            //   ? Math.ceil(count / state.pagination.recordsPerPage)
-            //   : Math.floor(count / state.pagination.recordsPerPage) + 1
-            4
-          }
+          totalPages={4}
           onPageChange={(page: number) => {
             setState((prevState) => ({
               ...prevState,

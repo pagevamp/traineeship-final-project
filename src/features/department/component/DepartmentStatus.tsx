@@ -3,7 +3,12 @@
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { department, statusColors, USER_COLUMN } from "../constant";
+import {
+  department,
+  DepartmentTab,
+  statusColors,
+  USER_COLUMN,
+} from "../constant";
 import TableComponent from "@/components/table";
 import { Icon } from "@iconify/react";
 import {
@@ -12,14 +17,13 @@ import {
   DESIGNATION_COLUMN,
   designationInfo,
 } from "../constant";
+import { cn } from "@/lib/utils";
+import Pagination from "@/components/pagination";
 
-type StatusType = "Users" | "Designation";
-
-const DepartmentStatus = () => {
+const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<StatusType>("Users");
 
-  const tabs: StatusType[] = ["Users", "Designation"];
+  const tabs: DepartmentTab[] = ["Users", "Designation"];
 
   const [state, setState] = useState({
     pagination: {
@@ -39,6 +43,7 @@ const DepartmentStatus = () => {
           color="#FF811A"
         />
       ),
+      onClick: (row: any) => router.push(`/users/1`),
     },
   ];
 
@@ -71,7 +76,7 @@ const DepartmentStatus = () => {
         <div className="flex flex-col w-full md:w-auto">
           <motion.div
             className="flex gap-[81px] w-full md:w-fit border-b-[1px] border-[#E5D5EF] overflow-x-auto no-scrollbar"
-            initial={{ x: -20 }}
+            initial={{ x: 0 }}
             animate={{ x: 0 }}
           >
             {tabs.map((tab) => (
@@ -80,7 +85,9 @@ const DepartmentStatus = () => {
                 onClick={() => setActiveTab(tab)}
                 className="relative whitespace-nowrap text-[14px] md:text-[16px] font-medium text-[#540F86] pb-3 transition-all duration-300 overflow-visible"
               >
-                <span className="relative z-10">{tab}</span>
+                <span className="relative z-10 font-secondary font-[400]">
+                  {tab}
+                </span>
 
                 {activeTab === tab && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[100%] h-[3px] bg-[#540F86] rounded-t-[10px] transition-all duration-300 z-0" />
@@ -91,34 +98,64 @@ const DepartmentStatus = () => {
         </div>
       </div>
 
-      <div className="bg-[#ffffff] w-full rounded-[25px] overflow-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="min-w-[600px]"
-          >
-            {activeTab === "Users" ? (
+      <div
+        className={cn(
+          "w-full rounded-[25px] overflow-auto",
+          activeTab === "Designation" && "max-w-fit"
+        )}
+      >
+        <div key={activeTab} className="min-w-[600px]">
+          {activeTab === "Users" ? (
+            <div>
               <TableComponent
                 currentPage={state.pagination.page}
-                columns={DEPARTMENT_COLUMN}
+                columns={USER_COLUMN}
                 data={info}
                 isLoading={false}
                 actions={userActions}
               />
-            ) : (
+              <div className="mt-4">
+                <Pagination
+                  currentPage={state.pagination.page}
+                  totalPages={4}
+                  onPageChange={(page: number) => {
+                    setState((prevState) => ({
+                      ...prevState,
+                      pagination: {
+                        ...prevState.pagination,
+                        page,
+                      },
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
               <TableComponent
                 currentPage={state.pagination.page}
-                columns={DESIGNATION_COLUMN} 
-                data={designationInfo} 
+                columns={DESIGNATION_COLUMN}
+                data={designationInfo}
                 isLoading={false}
               />
-            )}
-          </motion.div>
-        </AnimatePresence>
+              <div className="mt-4">
+                <Pagination
+                  currentPage={state.pagination.page}
+                  totalPages={4}
+                  onPageChange={(page: number) => {
+                    setState((prevState) => ({
+                      ...prevState,
+                      pagination: {
+                        ...prevState.pagination,
+                        page,
+                      },
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

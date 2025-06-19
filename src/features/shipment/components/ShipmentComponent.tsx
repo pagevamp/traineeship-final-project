@@ -25,9 +25,9 @@ const ShipmentComponent = () => {
         <ShipmentInfoBox />
       </div>
       <motion.div
-        initial={{ opacity: 0.1 }}
+        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       >
         <div className="w-full flex flex-row items-center gap-[7px]">
           <SearchBar
@@ -41,7 +41,7 @@ const ShipmentComponent = () => {
           <div className="">
             <button
               onClick={() => router.push(`/shipment/1`)}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF6502] to-[#FF953D] text-white rounded-[37px] text-primary text-sm font-300 whitespace-nowrap px-6 py-3 "
+              className="flex items-center font-secondary font-[400] justify-center gap-2 bg-gradient-to-r from-[#FF6502] to-[#FF953D] text-white rounded-[37px] text-primary text-sm font-300 whitespace-nowrap px-6 py-3 "
             >
               Add Shipment <PlusCircleIcon size={20} />
             </button>
@@ -49,9 +49,10 @@ const ShipmentComponent = () => {
         </div>
       </motion.div>
       <motion.div
-        initial={{ x: 150, opacity: 0 }}
+        initial={{ x: 0, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ type: "spring", stiffness: 60, damping: 12 }}
+        // transition={{ duration: 0.8, ease: "easeOut" }}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <ShipmentTable />

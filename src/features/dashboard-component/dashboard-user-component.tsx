@@ -31,7 +31,7 @@ const Index = () => {
           color="#FF811A"
         />
       ),
-      onClick: (row: any) => router.push(`/sales/${row.id}`),
+      onClick: (row: any) => router.push(`/users/${row.id}`),
     },
   ];
 
@@ -72,7 +72,7 @@ const Index = () => {
           </div>
           <Button
             label="Add Users"
-            className="w-fit h-[38px] whitespace-nowrap px-4 text-sm"
+            className="w-fit h-[38px] whitespace-nowrap px-4 font-secondary font-[400] text-sm"
           />
         </div>
       </div>
@@ -84,6 +84,7 @@ const Index = () => {
           data={DashboardUserData}
           isLoading={false}
           actions={actions}
+          className={"border-none"}
         />
       </div>
     </AnimatedCard>

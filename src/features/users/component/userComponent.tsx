@@ -20,9 +20,9 @@ const UserComponent = () => {
       </div>
 
       <motion.div
-        initial={{ opacity: 0.1 }}
+        initial={{ opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       >
         <div className="w-full flex flex-row items-center gap-[5px] mb-4">
           <SearchBar
@@ -45,7 +45,7 @@ const UserComponent = () => {
                     "h-fit bg-white max-w-[98%] sm:max-w-[50%] rounded-[39px]",
                 });
               }}
-              className="flex items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm font-semibold"
+              className="flex font-secondary items-center justify-center gap-2 text-[#E06518] w-[122px] h-[45px] bg-white rounded-[37px] text-sm font-[400]"
             >
               Create <PlusCircleIcon size={24} />
             </button>
@@ -54,9 +54,10 @@ const UserComponent = () => {
       </motion.div>
 
       <motion.div
-        initial={{ x: 150, opacity: 0 }}
+        initial={{ x: 0, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ type: "spring", stiffness: 60, damping: 12 }}
+        // transition={{ duration: 0.8, ease: "easeOut" }}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <UserStatus />
