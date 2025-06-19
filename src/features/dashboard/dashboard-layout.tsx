@@ -1,22 +1,23 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { DashboardSidebar } from "./dashboard-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Breadcrumb, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { UserNav } from "./UserNav";
+import { useProfileInformation } from "./hooks/useProfileInformation";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [userRole, setUserRole] = useState<string>("admin");
   const pathname = usePathname();
-  const router = useRouter();
+
+  const { data: profileInformationData } = useProfileInformation();
+  const modules = useMemo(
+    () => profileInformationData?.data?.data?.modules,
+    [profileInformationData?.data?.data?.modules]
+  );
 
   // Get current page title from pathname
   const getCurrentPageTitle = () => {
@@ -36,16 +37,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       .join(" ");
   };
 
-  useEffect(() => {
-    if (pathname === "/") {
-      router.push("/dashboard");
-    }
-  }, [router, pathname]);
-
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full">
-        <DashboardSidebar userRole={userRole} />
+        <DashboardSidebar modules={modules} />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="flex min-h-16 py-5 shrink-0 items-center gap-2 sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <div className="flex items-center gap-2 px-4">
@@ -58,7 +53,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </Breadcrumb>
             </div>
             <div className="ml-auto flex items-center gap-2 px-4">
-              <UserNav />
+              <UserNav profileData={profileInformationData?.data?.data} />
             </div>
           </header>
           <main className="flex-1 overflow-auto gap-4 p-3 sm:p-4 bg-sidebar-background">

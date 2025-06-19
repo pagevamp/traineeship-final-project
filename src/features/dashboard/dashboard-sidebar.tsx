@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -28,23 +28,32 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Image from "next/image";
-import { LINKS, navigationItems } from "./constant";
+import { LINKS, MODULE_ICON, MODULE_LINK } from "./constant";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import DashboardModuleLoading from "./loading";
 
-interface DashboardSidebarProps {
-  userRole: string;
-}
+function generateOpenGroups(modulesArray: any[] = []) {
+  const groups: Record<string, boolean> = {};
 
-export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
-  const pathname = usePathname();
-  const { state } = useSidebar();
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "User Management": true,
+  modulesArray.forEach((mod) => {
+    if (mod.isGroup) {
+      groups[mod.name] = true;
+    }
   });
 
-  // Filter navigation items based on user role
-  const filteredNavigation = navigationItems.filter((item) =>
-    item.roles.includes(userRole)
-  );
+  return groups;
+}
+
+export function DashboardSidebar({ modules }: any) {
+  const pathname = usePathname();
+  const { state } = useSidebar();
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (Array.isArray(modules)) {
+      setOpenGroups(generateOpenGroups(modules));
+    }
+  }, [modules]);
 
   const toggleGroup = (title: string) => {
     setOpenGroups((prev) => ({
@@ -54,6 +63,57 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
   };
 
   const isCollapsed = state === "collapsed";
+
+  function generateNavItems(modulesArray: any[]) {
+    const navigationItems: any[] = [];
+
+    modulesArray?.forEach((mod) => {
+      if (mod.isGroup && Array.isArray(mod.children)) {
+        const subItems = mod.children
+          .map((child: any) => {
+            const link = MODULE_LINK[child.key];
+            if (!link) return null;
+
+            return {
+              title: child.name,
+              href: link.href,
+            };
+          })
+          .filter(Boolean);
+
+        const groupIcon = MODULE_ICON[mod.key];
+
+        if (subItems.length > 0 && groupIcon) {
+          navigationItems.push({
+            title: mod.name,
+            icon: (props: any) => (
+              <Icon icon={groupIcon} width="25" height="24" {...props} />
+            ),
+            subItems,
+          });
+        }
+      } else {
+        const link = MODULE_LINK[mod.key];
+        const icon = MODULE_ICON[mod.key];
+        if (!link || !icon) return;
+
+        navigationItems.push({
+          title: mod.name,
+          href: link.href,
+          icon: (props: any) => (
+            <Icon icon={icon} width="25" height="24" {...props} />
+          ),
+        });
+      }
+    });
+
+    return navigationItems;
+  }
+
+  const dynamicModules = useMemo(() => generateNavItems(modules), [modules]);
+  if (!modules) {
+    return <DashboardModuleLoading />;
+  }
 
   return (
     <Sidebar
@@ -101,16 +161,18 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="">
-                {filteredNavigation.map((item: any) => {
+                {dynamicModules?.map((item: any) => {
                   const isActive =
-                    pathname === item.href || pathname.includes(item.href);
+                    pathname === item.href ||
+                    pathname.includes(item.href) ||
+                    item?.subItems?.some(
+                      (sub: any) =>
+                        pathname === sub.href || pathname.includes(sub.href)
+                    );
 
                   // If item has subitems
                   if (item?.subItems) {
-                    const filteredSubItems = item?.subItems.filter(
-                      (subItem: any) => subItem.roles.includes(userRole)
-                    );
-
+                    const filteredSubItems = item?.subItems;
                     if (filteredSubItems.length === 0) return null;
 
                     const isGroupOpen = openGroups[item.title];
@@ -122,14 +184,24 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
                         onOpenChange={() => toggleGroup(item.title)}
                         className="group/collapsible"
                       >
-                        <SidebarMenuItem className="font-secondary">
+                        <SidebarMenuItem
+                          className={`relative py-1 font-[400] ${
+                            isActive
+                              ? "text-primary font-medium"
+                              : "text-[#B1B1B1]"
+                          }`}
+                        >
                           <CollapsibleTrigger asChild>
                             <SidebarMenuButton
                               tooltip={item.title}
-                              className="group/menu-button text-muted"
+                              className={`group/menu-button m-auto gap-2 ${
+                                isActive
+                                  ? "text-primary font-medium"
+                                  : "text-[#B1B1B1]"
+                              }`}
                             >
-                              <item.icon className="size-4" />
-                              <span>{item.title}</span>
+                              <item.icon className="!size-[22px]" />
+                              <span className="text-sm">{item.title}</span>
                               <ChevronRight
                                 className={cn(
                                   "ml-auto size-4 transition-transform duration-200 ease-in-out",
@@ -139,7 +211,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
                           <CollapsibleContent className="transition-all duration-200 ease-in-out data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                            <SidebarMenuSub>
+                            <SidebarMenuSub className="pl-6">
                               {filteredSubItems.map((subItem: any) => {
                                 const isSubActive = Boolean(
                                   subItem.href && pathname === subItem.href
@@ -185,9 +257,9 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
                       >
                         <Link
                           href={item.href || "#"}
-                          className="flex gap-4 items-center py-1 font-secondary tracking-wide"
+                          className="flex gap-2 items-center py-1 font-secondary tracking-wide"
                         >
-                          <item.icon className="!size-[24px]" />
+                          <item.icon className="!size-[22px]" />
                           <span className="text-sm">{item.title}</span>
                         </Link>
                       </SidebarMenuButton>
