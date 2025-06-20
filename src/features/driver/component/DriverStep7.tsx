@@ -23,9 +23,9 @@ const Driver7 = ({ control }: { control: any }) => {
         className="w-full py-2 px-4 placeholder:text-xs placeholder:text-[#9C9AA5]  bg-gray-100 h-12"
         id="driverId"
         name="driverId"
-        labelName="Vendor Id"
+        labelName="Driver Id"
         value={driverId}
-        placeholder="Enter your Vendor Id"
+        placeholder="Enter your Vehicle Id"
         type="text"
       />
 
@@ -61,13 +61,13 @@ const Driver7 = ({ control }: { control: any }) => {
       />
 
       <Input
-        id="dateCreated"
-        name="dateCreated"
+        id="auditLogs"
+        name="auditLogs"
         type="text"
         labelName="Audit Logs"
-        value={createdBy + "  " + format(dateCreated, "PPpp")}
+        value={createdBy + "  " + dateCreated}
         readOnly
-        className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px] bg-gray-100"
+        className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px]  bg-gray-100"
       />
     </motion.div>
   );

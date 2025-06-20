@@ -7,12 +7,6 @@ import { Selectbox } from "@/components/ui/select-box";
 import { DatePicker } from "@/components/ui/date-picker";
 
 const Driver8 = ({ control }: { control: any }) => {
-  const vendorId = `VEN-${Math.random()
-    .toString(36)
-    .substring(2, 10)
-    .toUpperCase()}`;
-  const createdBy = "User";
-  const dateCreated = new Date();
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   return (
@@ -27,7 +21,7 @@ const Driver8 = ({ control }: { control: any }) => {
         id="fullName"
         name="fullName"
         labelName="Full Name"
-        placeholder="Enter your Full Name"
+        placeholder="Enter the Full Name"
         type="text"
         required={true}
         
@@ -84,13 +78,13 @@ const Driver8 = ({ control }: { control: any }) => {
       />
 
       <Input
-        id="license"
-        name="license"
-        type="file"
+        className="w-full py-2 px-4 placeholder:text-xs placeholder:text-[#9C9AA5] h-12"
+        id="licenseNumber"
+        name="licenseNumber"
         labelName="Driver's License Number"
-        placeholder="Driver's License Number"
-        className="w-full h-full px-3 rounded border border-[#ccc] text-[14px] bg-white"
-        optional={false}
+        placeholder="Enter the Driver's License Number"
+        type="text"
+        required={true}
       />
 
       <div className="flex flex-col gap-2">
@@ -110,12 +104,9 @@ const Driver8 = ({ control }: { control: any }) => {
         render={({ field }) => (
           <Selectbox
             options={[
-              { label: "Female", value: "Female" },
-              { label: "Male", value: "Male" },
-              { label: "Others", value: "Others" },
-              { label: "Female", value: "Female" },
-              { label: "Male", value: "Male" },
-              { label: "Others", value: "Others" },
+              { label: "Heavy", value: "Heavy" },
+              { label: "Medium", value: "Medium" },
+              { label: "Light", value: "Light" },
             ]}
             value={field.value || ""}
             onChange={(selected) => field.onChange(selected.value)}
@@ -123,7 +114,7 @@ const Driver8 = ({ control }: { control: any }) => {
             emptyText="No data found."
             className="w-full bg-transparent h-12"
             label="License Type"
-            optional={false}
+            optional={true}
           />
         )}
       />
@@ -132,20 +123,20 @@ const Driver8 = ({ control }: { control: any }) => {
         id="password"
         name="password"
         type="password"
-        labelName="Password "
-        placeholder="Password "
+        labelName="Password"
+        placeholder="Enter Password"
         className="w-full h-full px-3 rounded border border-[#ccc] text-[14px] bg-white"
-        optional={false}
+        optional={true}
       />
 
       <Input
-        id="confirmPassword"
-        name="confirmPassword"
+        id="createPassword"
+        name="createPassword"
         type="password"
-        labelName="Confirm Password "
-        placeholder="Confirm Password "
+        labelName="Confirm Password"
+        placeholder="Enter Password"
         className="w-full h-full px-3 rounded border border-[#ccc] text-[14px] bg-white"
-        optional={false}
+        optional={true}
       />
     </motion.div>
   );

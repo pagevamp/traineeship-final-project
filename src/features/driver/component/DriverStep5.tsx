@@ -69,8 +69,8 @@ const Driver5 = ({ control }: { control: any }) => {
         type="text"
         labelName="Salary (Optional)"
         placeholder="Enter the Salary"
-        className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px]  bg-gray-100"
-        required={false}
+        className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px]"
+        optional={true}
       />
     </motion.div>
   );

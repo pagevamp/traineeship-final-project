@@ -41,6 +41,7 @@ const Register6 = () => {
             Trade License
           </span>
         </div>
+        
 
         <div className="w-[209px] h-[48px] border border-muted-light bg-white flex items-center justify-center gap-2 px-3 rounded-md shadow-sm mx-auto">
           <Image

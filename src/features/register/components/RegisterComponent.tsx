@@ -16,6 +16,7 @@ import Register5 from "./RegisterStep5";
 import Register6 from "./RegisterStep6";
 import Register7 from "./RegisterStep7";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 
 const RegisterComponent = () => {
   const router = useRouter();
@@ -255,9 +256,10 @@ const RegisterStep4 = () => {
 };
 
 const RegisterStep5 = () => {
+  const { control } = useForm();
   return (
     <>
-      <Register5 />
+      <Register5 control={control} />
     </>
   );
 };
