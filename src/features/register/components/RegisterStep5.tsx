@@ -3,8 +3,10 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
+import { Controller } from "react-hook-form";
+import { Selectbox } from "@/components/ui/select-box";
 
-const Register5 = () => {
+const Register5 = ({ control }: { control: any }) => {
   return (
     <motion.div
       className="text-[16px] w-full px-4 sm:px-6 md:px-8 mt-4"
@@ -20,7 +22,7 @@ const Register5 = () => {
           labelName="Reference from Bank"
           placeholder="Enter Reference from Bank"
           type="text"
-          required
+          required={true}
         />
       </div>
 
@@ -33,7 +35,7 @@ const Register5 = () => {
             labelName="Account Holder Name"
             placeholder="Enter Account Holder Name"
             type="text"
-            required
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -100,7 +102,7 @@ const Register5 = () => {
             required
           />
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <Input
             className="w-full py-2 px-4 placeholder:text-xs placeholder:text-[#9C9AA5] h-12"
             id="currency"
@@ -109,6 +111,28 @@ const Register5 = () => {
             placeholder="Enter Currency"
             type="text"
             required
+          />
+        </div> */}
+
+        <div>
+          <Controller
+            name="Currency"
+            control={control}
+            render={({ field }) => (
+              <Selectbox
+                options={[
+                  { label: "USD", value: "USD" },
+                  { label: "EUR", value: "EUR" },
+                ]}
+                value={field.value || ""}
+                onChange={(selected) => field.onChange(selected.value)}
+                placeholder="Currency"
+                emptyText="No data found."
+                className="w-full bg-transparent h-12"
+                label="Currency"
+                optional={true}
+              />
+            )}
           />
         </div>
         <div className="flex flex-col gap-2">

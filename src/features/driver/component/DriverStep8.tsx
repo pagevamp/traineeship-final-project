@@ -24,6 +24,7 @@ const Driver8 = ({ control }: { control: any }) => {
         placeholder="Enter the Full Name"
         type="text"
         required={true}
+        
       />
 
       <Controller

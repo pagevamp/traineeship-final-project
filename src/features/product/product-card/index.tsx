@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import LazyImage from "@/components/lazy-image";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -24,8 +25,11 @@ export default function ProductCard({ product, index }: LazyProductCardProps) {
     rootMargin: "50px",
   });
 
+  const router = useRouter();
+
   return (
     <div
+      onClick={(row: any) => router.push(`/products/${row.id}`)}
       ref={elementRef}
       className={`transition-all duration-700 ease-out ${
         hasIntersected

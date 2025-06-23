@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 type Column = {
   key: string;
-  label: string;
+  label: string | ReactNode;
   type?: string;
 };
 
@@ -34,6 +34,7 @@ type Props = {
   currentPage: number;
   actions?: Action[];
   className?: string;
+  showSN?: boolean;
 };
 
 const TableComponent: React.FC<Props> = ({
@@ -43,6 +44,7 @@ const TableComponent: React.FC<Props> = ({
   isLoading,
   currentPage,
   className,
+  showSN = true,
 }) => {
   const getData = (row: any, key: string, type?: string) => {
     if (type == "status") {
@@ -62,9 +64,11 @@ const TableComponent: React.FC<Props> = ({
           <TableHeader>
             <TableRow className="">
               {/* Fixed SN Column */}
-              <TableHead className="px-4 py-4 text-left w-12 text-[#0B0704] font-medium text-sm font-primary">
-                SN
-              </TableHead>
+              {showSN && (
+                <TableHead className="px-4 py-4 text-left w-12 text-[#0B0704] font-medium text-sm font-primary">
+                  SN
+                </TableHead>
+              )}
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
@@ -96,9 +100,11 @@ const TableComponent: React.FC<Props> = ({
               data.map((row, rowIndex) => (
                 <TableRow key={rowIndex} className="">
                   {/* Auto-Generated Serial Number */}
-                  <TableCell className="px-4 py-3 text-[#0B0704] font-secondary font-[300] text-[13px]">
-                    {(Number(currentPage) - 1) * 10 + rowIndex + 1}
-                  </TableCell>
+                  {showSN && (
+                    <TableCell className="px-4 py-3 text-[#0B0704] font-secondary font-[300] text-[13px]">
+                      {(Number(currentPage) - 1) * 10 + rowIndex + 1}
+                    </TableCell>
+                  )}
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}

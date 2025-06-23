@@ -37,7 +37,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className="text-[14px] font-primary text-[#26203B]"
           >
             {labelName}{" "}
-            {props.required && <span className="text-red-600">*</span>}
+            {props.required && <span className="text-red-600 ml-0">*</span>}
           </label>
         )}
         <div className="relative">

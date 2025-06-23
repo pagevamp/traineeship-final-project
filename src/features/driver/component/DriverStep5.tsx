@@ -29,6 +29,7 @@ const Driver5 = ({ control }: { control: any }) => {
         value={employeeId}
         placeholder="Enter your Employee Id"
         type="text"
+        required={true}
       />
 
       <div className="flex flex-col gap-2">
@@ -38,6 +39,7 @@ const Driver5 = ({ control }: { control: any }) => {
           placeholder="Hiring Date"
           label="Hiring Date"
           className="w-full text-xs"
+          optional={false}
         />
       </div>
 
@@ -65,7 +67,7 @@ const Driver5 = ({ control }: { control: any }) => {
         id="salary"
         name="salary"
         type="text"
-        labelName="Salary"
+        labelName="Salary (Optional)"
         placeholder="Enter the Salary"
         className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px]"
         optional={true}

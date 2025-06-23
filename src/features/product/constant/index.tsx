@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 export const sampleProducts = [
   {
     id: "1",
@@ -70,5 +71,37 @@ export const sampleProducts = [
     image:
       "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=320&h=400&fit=crop&crop=center",
     price: 159.99,
+  },
+];
+
+export const images = ["/image.svg", "/image-2.svg", "/image-3.svg"];
+
+interface HeaderDetail {
+  label: string | ReactNode;
+  value: string | ReactNode;
+}
+
+export const productDetails: HeaderDetail[] = [
+  {
+    label: (
+      <span className="font-secondary font-light text-muted-light">
+        Order Id:
+      </span>
+    ),
+    value: <span>1002</span>,
+  },
+  {
+    label: (
+      <span className="font-secondary font-light text-muted-light">Name: </span>
+    ),
+    value: <span>PARACETAMOL</span>,
+  },
+  {
+    label: (
+      <span className="font-secondary font-light text-muted-light">
+        Total Qty:{" "}
+      </span>
+    ),
+    value: <span className="text-[#FF6502]">1</span>,
   },
 ];
