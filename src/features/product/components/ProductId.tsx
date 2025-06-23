@@ -29,7 +29,7 @@ const ProductId = ({ control }: { control: any }) => {
                 onChange={(selected) => field.onChange(selected.value)}
                 placeholder="Select A Customer"
                 emptyText="No data found."
-                className="min-w-[300px] bg-white h-12 p-4"
+                className="min-w-[300px] bg-white h-12 p-4 border border-orange-400"
               />
             )}
           />
