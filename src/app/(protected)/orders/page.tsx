@@ -1,5 +1,5 @@
 import React from "react";
-import OrdersComponent from "@/features/orders";
+import OrdersComponent from "@/features/orders/components/OrderComponent";
 
 export async function generateMetadata() {
   return {

@@ -1,16 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import TableComponent from "@/components/table";
-import { InventoryData, ORDER_COLUMN } from "./constant";
+import { InventoryData, ORDER_COLUMN } from "../constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import Image from "next/image";
-import DownloadIcon from "../../../public/images/download-icon.svg";
 import { motion } from "framer-motion";
 import Pagination from "@/components/pagination";
 
-const Index = () => {
+const OrderComponent = () => {
   const router = useRouter();
   // managing states
   const [state, setState] = useState({
@@ -80,7 +79,7 @@ const Index = () => {
                   className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-3 cursor-pointer`}
                 >
                   <Image
-                    src={DownloadIcon}
+                    src="/Download.svg"
                     alt="Download Icon"
                     width={18}
                     height={21}
@@ -118,4 +117,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default OrderComponent;
