@@ -36,6 +36,7 @@ const CustomerStatus = () => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/customer/1`),
     },
   ];

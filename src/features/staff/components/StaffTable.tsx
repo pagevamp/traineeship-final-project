@@ -30,6 +30,7 @@ const StaffTable = ({ control }: { control: any }) => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/orders/${row.id}`),
     },
     {

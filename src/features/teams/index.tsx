@@ -31,6 +31,7 @@ const Index = () => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/sales/${row.id}`),
     },
   ];
