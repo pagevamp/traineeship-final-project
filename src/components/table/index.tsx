@@ -13,6 +13,12 @@ import { get } from "lodash";
 import { PageLoader } from "../loaders/page-loader";
 import { NoDataFound } from "@/components/Nodatafound/NoDataFound";
 import { cn } from "@/lib/utils";
+import { MoreVertical } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 type Column = {
   key: string;
@@ -25,6 +31,7 @@ type Action = {
   onClick?: (row: any) => void;
   disabled?: boolean;
   variant?: "default" | "destructive";
+  title?: string;
 };
 
 type Props = {
@@ -120,17 +127,33 @@ const TableComponent: React.FC<Props> = ({
                     </TableCell>
                   ))}
                   {actions && (
-                    <TableCell className="px-4 py-3 flex gap-3 justify-center">
-                      {actions.map((action, index) => (
-                        <button
-                          key={index}
-                          onClick={() => action.onClick && action.onClick(row)}
-                          disabled={action.disabled}
-                          className="text-sm bg-transparent cursor-pointer"
-                        >
-                          {action.label}
-                        </button>
-                      ))}
+                    <TableCell className="px-4 py-3 flex justify-center">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <MoreVertical className="text-muted-foreground cursor-pointer" />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <div className="w-40 p-2 bg-white outline-none border shadow-md rounded-md flex flex-col items-center">
+                            {actions.map((action, index) => (
+                              <div
+                                key={index}
+                                onClick={() => action.onClick?.(row)}
+                                className="flex w-full items-center gap-2 p-2 hover:bg-gray-100 rounded cursor-pointer"
+                              >
+                                <button
+                                  disabled={action.disabled}
+                                  className="w-fit text-left text-sm outline-none text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {action.label}
+                                </button>
+                                <p className="font-secondary font-[400] text-sm">
+                                  {action?.title}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                     </TableCell>
                   )}
                 </TableRow>

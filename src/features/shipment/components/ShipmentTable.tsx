@@ -28,6 +28,7 @@ const ShipmentTable = () => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/shipment/${row.id}`),
     },
     {

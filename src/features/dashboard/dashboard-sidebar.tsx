@@ -240,7 +240,7 @@ export function DashboardSidebar({ modules }: any) {
                               </SidebarMenuButton>
                             </CollapsibleTrigger>
                             <CollapsibleContent className="transition-all duration-200 ease-in-out data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                              <SidebarMenuSub className="pl-6">
+                              <SidebarMenuSub className="pl-3 ml-6 border-l">
                                 {filteredSubItems.map((subItem: any) => {
                                   const isSubActive = Boolean(
                                     subItem.href && pathname === subItem.href
