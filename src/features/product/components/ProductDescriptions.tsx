@@ -19,45 +19,47 @@ const ProductDescriptions = () => {
         of comfort, charm, and casual flair.
       </span>
 
-      <div className="flex space-x-0">
-        <button
-          onClick={() => setCount(count - 1)}
-          className="bg-muted-light text-white px-4 py-2 rounded-l-lg hover:bg-orange-600 transition"
-        >
-          -
-        </button>
-        <button
-          onClick={() => setCount(0)}
-          className="bg-black text-white px-4 py-2  hover:bg-gray-500 transition"
-        >
-          {count <= 0 ? 0 : count}
-        </button>
-        <button
-          onClick={() => setCount(count + 1)}
-          className="bg-muted-light text-white px-4 py-2 rounded-r-lg hover:bg-orange-600 transition"
-        >
-          +
-        </button>
-      </div>
+      <div className="flex flex-col">
+        <div className="flex space-x-0">
+          <button
+            onClick={() => setCount(count - 1)}
+            className="bg-muted-light text-white px-4 py-2 rounded-l-lg hover:bg-orange-600 transition"
+          >
+            -
+          </button>
+          <button
+            onClick={() => setCount(0)}
+            className="bg-black text-white px-4 py-2  hover:bg-gray-500 transition"
+          >
+            {count <= 0 ? 0 : count}
+          </button>
+          <button
+            onClick={() => setCount(count + 1)}
+            className="bg-muted-light text-white px-4 py-2 rounded-r-lg hover:bg-orange-600 transition"
+          >
+            +
+          </button>
+        </div>
 
-      <span className="font-normal items-center text-[16px] m-2">6 * 6</span>
-      <div className="flex flex-col justify-center border border-muted-light max-w-[200px] rounded-md p-4 text-[14px]">
-        <span>
-          Stock: <span className="text-[#FF811A] font-extralight">100</span>
-        </span>
-        <span>
-          Size: <span>6*6</span>
-        </span>
-        <span>
-          Price:{" "}
-          <span className="text-[#FF811A] font-extralight ">$500.00</span>
-        </span>
-      </div>
+        <span className="font-normal items-center text-[16px] m-2">6 * 6</span>
+        <div className="flex flex-col justify-center border border-muted-light max-w-[200px] rounded-md p-4 text-[14px]">
+          <span>
+            Stock: <span className="text-[#FF811A] font-extralight">100</span>
+          </span>
+          <span>
+            Size: <span>6*6</span>
+          </span>
+          <span>
+            Price:{" "}
+            <span className="text-[#FF811A] font-extralight ">$500.00</span>
+          </span>
+        </div>
 
-      <div className="flex justify-start">
-        <Button className=" bg-linear-to-b from-[#CF5406] to-[#FF811A] rounded-[20px] font-light text-white mt-2 w-[150px] hover:bg-[#CF5406] p-6">
-          Order
-        </Button>
+        <div className="flex justify-start">
+          <Button className=" bg-linear-to-b from-[#CF5406] to-[#FF811A] rounded-[20px] font-light text-white mt-2 w-[150px] hover:bg-[#CF5406] p-6">
+            Order
+          </Button>
+        </div>
       </div>
 
       <span className="font-primary text-[16px] font-bold">

@@ -72,7 +72,6 @@ const VehicleCreation = () => {
       setCurrStep((prev) => prev + 1);
     } else {
       router.push("/vehicle/1");
-      
     }
   }, [currStep, totalSteps, router]);
 

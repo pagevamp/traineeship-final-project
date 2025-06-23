@@ -13,8 +13,8 @@ const OrderCustomer = () => {
     search: "",
   });
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-start  font-primary mb-2">Customer details</span>
+    <div className="flex flex-col gap-2 my-2">
+      <span className="text-start  font-primary ">Customer details</span>
       <div className="bg-[#F9F3FF] p-3 rounded-[5px]">
         <div className="bg-[#FFFFFF] flex flex-col gap-2 p-4">
           <span className="font-secondary font-weight-200">
@@ -24,7 +24,7 @@ const OrderCustomer = () => {
             {basicDetails.map((detail, index) => (
               <div key={index} className="flex items-center gap-2">
                 <p>
-                  <span className="font-secondary text-[14px] text-muted-light font-light">
+                  <span className="font-secondary text-[14px] mr-[2px] text-muted-light font-light">
                     {detail.label}:{" "}
                   </span>
                   <span className="font-primary text-[14px] font-normal font-weight-200">

@@ -10,10 +10,10 @@ const OrderProducts = () => {
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
   return (
-    <div className="flex flex-col gap-2 sm:mx-4">
-      <span className="font-primary text-start mb-2">Product Details</span>
+    <div className="flex flex-col gap-2 sm:mx-4 ">
+      <span className="font-primary text-start ">Product Details</span>
       <div className="bg-[#F9F3FF] rounded-[5px] p-4">
-        <div className="h-[300px] relative rounded overflow-hidden shadow-md mb-2">
+        <div className=" h-[300px] relative rounded overflow-hidden shadow-md mb-2">
           <Image
             src={selectedImage}
             alt="Selected"
@@ -46,7 +46,7 @@ const OrderProducts = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2 my-7">
         <div>
           <div className="flex flex-col">
             <span className="font-primary text-[16px] font-normal">

@@ -13,9 +13,9 @@ const StaffHeader = () => {
             <ChevronLeft />
             <p className="font-primary font-bold">User Detail Page</p>{" "}
           </div>
-          <p className="font-extralight">
+          <div className="flex font-extralight m-2 ml-6">
             Last Active: a month ago( 05-06-2025 )
-          </p>
+          </div>
         </div>
 
         <div className="flex justify-start">
@@ -26,12 +26,12 @@ const StaffHeader = () => {
       </div>
 
       {/* header */}
-      <div className="grid grid-cols-2 gap-x-2">
+      <div className="grid lg:grid-cols-2 sm:grid-cols-1  gap-2">
         <div className="w-full bg-[#ffffff] rounded-[25px] px-4 py-4 sm:px-6 sm:py-6 md:px-[24px] md:py-[20px] flex flex-col font-primary">
           <div className="flex flex-col sm:grid-cols-2 gap-y-2 sm:gap-x-8 md:gap-x-12">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="bg-[#cbcbcb] h-[35px] p-2 rounded-[5px] flex items-center justify-center">
+                <div className="bg-[#e9e7e7] h-[35px] p-2 rounded-[5px] flex items-center justify-center">
                   <Image
                     src="/Profile.svg"
                     alt="profile"
@@ -43,7 +43,10 @@ const StaffHeader = () => {
                 <div className="flex flex-col justify-center">
                   <p>Prawin staff</p>
                   <p className="font-extralight text-muted-light text-sm">
-                    ID:
+                    ID:{" "}
+                    <span className="font-light text-black text-sm">
+                      STF269
+                    </span>
                   </p>
                 </div>
               </div>
@@ -66,8 +69,8 @@ const StaffHeader = () => {
         </div>
 
         <div className="w-full bg-[#ffffff] rounded-[25px] px-4 py-4 sm:px-6 sm:py-6 md:px-[24px] md:py-[20px] flex flex-col font-primary">
-          <div className="flex flex-row gap-1">
-            <div className="bg-[#cbcbcb] h-[35px] p-2 rounded-[5px] ">
+          <div className="flex flex-row gap-1 items-center">
+            <div className="bg-[#e9e7e7] h-[35px] p-2 rounded-[5px] ">
               <Image
                 src="/Location.svg"
                 alt="location"

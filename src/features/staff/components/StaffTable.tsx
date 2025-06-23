@@ -66,19 +66,35 @@ const StaffTable = ({ control }: { control: any }) => {
                 onChange={(selected) => field.onChange(selected.value)}
                 placeholder="Select A Customer"
                 emptyText="No data found."
-                className="min-w-[300px] bg-white h-12 p-4"
+                className="min-w-[300px] bg-white h-12 p-4 border border-orange-400"
               />
             )}
           />
 
-          {/* Icon 1 */}
-          <div className="w-12 h-12 border border-muted-light rounded flex items-center justify-center">
-            <Image src="/filter-icon.svg" alt="icon1" width={20} height={20} />
+          <div>
+            <div
+              className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full  cursor-pointer`}
+            >
+              <Icon
+                icon="ion:filter-outline"
+                width="22"
+                height="22"
+                className="text-primary"
+              />
+            </div>
           </div>
 
-          {/* Icon 2 */}
-          <div className="w-12 h-12 border border-muted-light rounded flex items-center justify-center">
-            <Image src="/downloadgrey.png" alt="icon2" width={20} height={20} />
+          <div>
+            <div
+              className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full p-3 cursor-pointer`}
+            >
+              <Image
+                src="/Download.svg"
+                alt="Download Icon"
+                width={18}
+                height={21}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -159,7 +159,7 @@ export const headerDetails: HeaderDetail[] = [
 export const basicDetails: HeaderDetail[] = [
   {
     label: "Customer type",
-    value: <span className="text-[#FF6502]">Clinic</span>,
+    value: <span className="text-[#FF6502]">Retailer</span>,
   },
   {
     label: "Name",

@@ -5,11 +5,6 @@ import { ChevronLeft } from "lucide-react";
 const OrderHeading = () => {
   return (
     <div className="flex flex-col justify-start mb-2">
-      <div className="flex items-center justify-start mb-2 text-[16px]">
-        <ChevronLeft />
-        <span className="font-primary font-bold">Order Details</span>
-      </div>
-
       <div className="w-full grid grid-cols-2 sm:grid-cols-2 gap-x-8 gap-y-4 justify-end">
         {headerDetails.map((detail, index) => (
           <div
@@ -21,7 +16,7 @@ const OrderHeading = () => {
             }
           >
             <p>
-              <span className="font-primary text-[16px] font-normal">
+              <span className="font-primary text-[16px] mr-[4px] font-normal">
                 {detail.label}:{" "}
               </span>
               <span className="font-primary text-[16px] font-light">

@@ -36,12 +36,12 @@ const ProductId = ({ control }: { control: any }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 bg-[#ffffff] rounded-[25px] min-h-screen py-10 px-6 gap-6">
+      <div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3  bg-[#ffffff] rounded-[25px] min-h-screen py-10 px-6 gap-6">
         <div className="col-span-1">
           <ProductImages />
         </div>
 
-        <div className="col-span-2">
+        <div className="lg:col-span-2 sm:col-span-1">
           <ProductDescriptions />
         </div>
       </div>
