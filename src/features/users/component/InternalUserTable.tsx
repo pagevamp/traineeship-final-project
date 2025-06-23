@@ -20,6 +20,7 @@ const InternalUserTable = (props: any) => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/users/${row.id}`),
     },
   ];

@@ -32,6 +32,7 @@ const VehicleStatus = () => {
           color="#FF811A"
         />
       ),
+      title: "View",
       onClick: (row: any) => router.push(`/vehicle/1`),
     },
   ];
