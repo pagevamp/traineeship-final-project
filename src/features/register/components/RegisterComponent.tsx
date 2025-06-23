@@ -60,9 +60,7 @@ const RegisterComponent = () => {
     name: "financialDirectorDetails",
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Submitted Data:", data);
-  };
+  const onSubmit = (data: FormValues) => {};
 
   const formProps = {
     register,

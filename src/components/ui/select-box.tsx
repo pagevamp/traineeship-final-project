@@ -81,12 +81,7 @@ export function Selectbox({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       {label && (
-        <label
-          className={cn(
-            "text-[14px] font-primary text-[#26203B]",
-            error && "text-destructive"
-          )}
-        >
+        <label className={cn("text-[14px] font-primary text-[#26203B]")}>
           {label}
           {!optional && <span className="text-red-600">*</span>}
         </label>
@@ -106,11 +101,13 @@ export function Selectbox({
         >
           <span className="truncate">
             {value ? (
-              <span>
+              <span className="text-sm font-[300]">
                 {options.find((option) => option.value === value)?.label}
               </span>
             ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
+              <span className="text-muted-foreground text-xs font-[300]">
+                {placeholder}
+              </span>
             )}
           </span>
 
@@ -123,7 +120,7 @@ export function Selectbox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 z-[301]" style={{ width: triggerWidth }}>
-        <Command className="max-h-[300px]">
+        <Command className="max-h-[300px] border">
           <CommandInput placeholder={placeholder} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>

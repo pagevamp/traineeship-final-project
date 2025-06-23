@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { moduleRoutes, PUBLIC_PATH } from "./constant";
+import { moduleRoutes, PUBLIC_PATH } from "./routes";
 
 const userModuleCache = new Map<string, string[]>();
 

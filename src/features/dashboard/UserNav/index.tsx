@@ -20,8 +20,8 @@ export function UserNav({ profileData }: any) {
   const router = useRouter();
   const queryClient = getQueryClient();
   const firstInitial = useMemo(
-    () => profileData?.fullName?.charAt(0).toUpperCase() || "A",
-    [profileData?.fullName]
+    () => profileData?.firstName?.charAt(0).toUpperCase() || "A",
+    [profileData?.firstName]
   );
   return (
     <div className="flex items-center gap-4">
@@ -60,7 +60,9 @@ export function UserNav({ profileData }: any) {
           <DropdownMenuLabel className="font-normal px-2 pb-2 border-b border-transparent">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-semibold leading-tight bg-gradient-to-r from-[#540F86] to-[#542F80] text-transparent bg-clip-text">
-                {profileData?.fullName || "N/A"}
+                {(profileData?.firstName || "N/A") +
+                  " " +
+                  (profileData?.lastName || "N/A")}
               </p>
               <p className="text-xs leading-tight bg-gradient-to-r from-[#540F86] to-[#542F80] text-transparent bg-clip-text">
                 {profileData?.email || "N/A"}

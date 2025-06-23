@@ -31,7 +31,8 @@ import Image from "next/image";
 import { LINKS } from "./constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import DashboardModuleLoading from "./loading";
-import { MODULE_ICON, MODULE_LINK } from "@/constant";
+import { MODULE_ICON } from "@/constant";
+import { MODULE_LINK } from "@/routes";
 
 function generateOpenGroups(modulesArray: any[] = []) {
   const groups: Record<string, boolean> = {};

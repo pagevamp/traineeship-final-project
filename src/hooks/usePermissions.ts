@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { MODULE_LINK } from "@/constant";
 import { useProfileInformation } from "@/features/dashboard/hooks/useProfileInformation";
 import { usePathname } from "next/navigation";
+import { MODULE_LINK } from "@/routes";
 
 export function usePermissions() {
   const pathname = usePathname();

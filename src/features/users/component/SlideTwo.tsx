@@ -28,7 +28,6 @@ const SlideTwo = () => {
       },
     }));
   };
-  console.log("first", matrix);
   return (
     <div className="h-full overflow-auto">
       <h2 className="font-primary text-lg sm:text-xl lg:text-2xl text-[#111D35] mb-5 sm:mb-6 text-start sm:text-left">
