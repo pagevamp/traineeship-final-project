@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createDepartment, getAllDepartments } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createDepartment, deleteDepartment, getAllDepartments } from "../api";
 import { Obj } from "@/types";
+
 
 const useCreateDepartment = (options: {
   onError?: (error: any, variables: any, context: any) => void;
@@ -12,7 +13,6 @@ const useCreateDepartment = (options: {
     onSuccess: options.onSuccess,
   });
 };
-
 
 const useGetAllDepartments = (params: any) => {
   return useQuery({
@@ -29,6 +29,20 @@ const useGetAllDepartments = (params: any) => {
   });
 };
 
+const useDeleteDepartment = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: async (id: string) => {
+      return deleteDepartment(id); 
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allDepartments"] });
+    },
+    onError: (error) => {
+      console.error("Error deleting department:", error);
+    },
+  });
+};
 
-export { useCreateDepartment, useGetAllDepartments };
+export { useCreateDepartment, useGetAllDepartments, useDeleteDepartment };

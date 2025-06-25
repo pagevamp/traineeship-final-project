@@ -47,3 +47,7 @@ export const createDesignation = (id: string, body: any) => {
 export const getDesignations = (id: string) => {
   return api.get(`/departments/${id}`);
 };
+
+export const deleteDepartment = (id: string) => {
+  return api.delete(`/departments/${id}`);
+};

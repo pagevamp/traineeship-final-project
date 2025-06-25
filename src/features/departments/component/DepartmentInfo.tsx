@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import TableComponent from "@/components/table";
 import { DEPARTMENT_COLUMN } from "../constant";
+import { useDeleteDepartment } from "../hooks";
+import { deleteDepartment } from "../api";
 
 type DepartmentInfoProps = {
   departments: any[];
@@ -24,7 +26,6 @@ const DepartmentInfo = ({ departments, isLoading }: DepartmentInfoProps) => {
         />
       ),
       title: "View",
-      
 
       onClick: (row: any) => router.push(`/departments/${row.id}`), // dynamic routing
     },
@@ -37,9 +38,12 @@ const DepartmentInfo = ({ departments, isLoading }: DepartmentInfoProps) => {
           color="#FF811A"
         />
       ),
+
       title: "Edit",
-      onClick: (row: any) => ({}),
- },
+
+      onClick: (row: any) => {},
+    },
+
     {
       label: (
         <Icon
@@ -49,9 +53,15 @@ const DepartmentInfo = ({ departments, isLoading }: DepartmentInfoProps) => {
           color="#FF811A"
         />
       ),
+
       title: "Delete",
-      onClick: (row: any) => ({}),
- },
+
+      onClick: (row: any) => {
+        if (confirm(`Are you sure you want to delete ${row.name}?`)) {
+          deleteDepartment(row.id);
+        }
+      },
+    },
   ];
 
   return (
