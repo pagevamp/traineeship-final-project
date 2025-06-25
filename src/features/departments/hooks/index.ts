@@ -1,6 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createDepartment, deleteDepartment, getAllDepartments } from "../api";
+import {
+  createDepartment,
+  createDesignation,
+  deleteDepartment,
+  deleteDesignation,
+  getAllDepartments,
+  getAllDesignations,
+  getAllUsers,
+} from "../api";
 import { Obj } from "@/types";
+import { departmentListParams } from "../types";
+import { getDepartmentDetailById } from "../api";
 
 const useCreateDepartment = (options: {
   onError?: (error: any, variables: any, context: any) => void;
@@ -10,6 +20,14 @@ const useCreateDepartment = (options: {
     mutationFn: createDepartment,
     onError: options.onError,
     onSuccess: options.onSuccess,
+  });
+};
+
+export const useGetDepartmentById = (id: string) => {
+  return useQuery({
+    queryKey: ["departmentDetail", id],
+    queryFn: () => getDepartmentDetailById(id),
+    enabled: !!id,
   });
 };
 
@@ -32,9 +50,7 @@ const useDeleteDepartment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return deleteDepartment(id);
-    },
+    mutationFn: async (id: string) => deleteDepartment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allDepartments"] });
     },
@@ -44,4 +60,65 @@ const useDeleteDepartment = () => {
   });
 };
 
-export { useCreateDepartment, useGetAllDepartments, useDeleteDepartment };
+interface CreateDesignationBody {
+  name: string;
+  department: { id: string };
+}
+
+const useCreateDesignation = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: (body: CreateDesignationBody) => createDesignation(body),
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+
+const useGetAllDesignations = ({
+  id,
+  ...params
+}: departmentListParams & { id: string }) => {
+  return useQuery({
+    queryKey: ["designations", id, params],
+    queryFn: () => getAllDesignations(id, params),
+    enabled: !!id,
+  });
+};
+
+type UseGetAllUsersProps = {
+  id: string;
+} & departmentListParams;
+
+const useGetAllUsers = ({ id, ...params }: UseGetAllUsersProps) => {
+  return useQuery({
+    queryKey: ["users", id, JSON.stringify(params)],
+    queryFn: () => getAllUsers(id, params),
+    enabled: !!id,
+  });
+};
+
+const useDeleteDesignation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => deleteDesignation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["designations"] });
+    },
+    onError: (error) => {
+      console.error("Error deleting designation:", error);
+    },
+  });
+};
+
+export {
+  useCreateDepartment,
+  useGetAllDepartments,
+  useDeleteDepartment,
+  useCreateDesignation,
+  useGetAllDesignations,
+  useDeleteDesignation,
+  useGetAllUsers,
+};

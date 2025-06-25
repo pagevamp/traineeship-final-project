@@ -28,7 +28,9 @@ const DepartmentInfo = ({ departments, isLoading }: DepartmentInfoProps) => {
       ),
       title: "View",
 
+
       onClick: (row: any) => router.push(`/departments/${row.id}`), // dynamic routing
+
     },
     {
       label: (

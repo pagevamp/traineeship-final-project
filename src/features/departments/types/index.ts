@@ -1,3 +1,4 @@
+import { department } from './../constant/index';
 import {
   Control,
   FieldErrors,
@@ -39,5 +40,26 @@ export interface DepartmentInformationProps {
   control: Control<CreateDepartmentPayload>;
   isDepartmentLoading?: boolean;
   defaultValues?: CreateDepartmentPayload;
+  isPending?: boolean;
+}
+
+export interface CreateDesignationPayload {
+  name: string;
+  departmentId : string;
+}
+
+export interface DesignationInformationProps {
+  register: UseFormRegister<CreateDesignationPayload>;
+  watch?: UseFormWatch<CreateDesignationPayload>;
+  setValue: UseFormSetValue<CreateDesignationPayload>;
+  trigger: UseFormTrigger<CreateDesignationPayload>;
+  errors: FieldErrors<CreateDesignationPayload>;
+  handleSubmit: (
+    onSubmit: SubmitHandler<CreateDesignationPayload>
+  ) => (e?: React.BaseSyntheticEvent) => Promise<void>;
+  onSubmit: SubmitHandler<CreateDesignationPayload>;
+  control: Control<CreateDesignationPayload>;
+  isDesignationLoading?: boolean;
+  defaultValues?: Partial<CreateDesignationPayload>;
   isPending?: boolean;
 }

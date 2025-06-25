@@ -1,7 +1,7 @@
 import React from "react";
 import DepartmentId from "@/features/departments/component/DepartmentId";
 
-const page = () => {
+const Index = () => {
   return (
     <div>
       <DepartmentId />
@@ -9,4 +9,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Index;

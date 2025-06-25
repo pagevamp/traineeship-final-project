@@ -1,37 +1,65 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import React, { useState } from "react";
 import {
-  department,
   DepartmentTab,
-  statusColors,
   USER_COLUMN,
+  DESIGNATION_COLUMN,
 } from "../constant";
 import TableComponent from "@/components/table";
 import { Icon } from "@iconify/react";
-import {
-  info,
-  DEPARTMENT_COLUMN,
-  DESIGNATION_COLUMN,
-  designationInfo,
-} from "../constant";
 import { cn } from "@/lib/utils";
 import Pagination from "@/components/pagination";
+import { useDeleteDesignation } from "../hooks";
+import { UserDetail } from "@/features/users/types";
 
-const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
+type PaginationType = {
+  page: number;
+  recordsPerPage: number;
+};
+
+type SortParams = {
+  sortParam: string;
+  sortOrder: "ASC" | "DESC";
+};
+
+type Props = {
+  departments: any[];
+  users: UserDetail[];
+  designations: any[];
+  usersTotalPages: number;
+  designationsTotalPages: number;
+  activeTab: DepartmentTab;
+  setActiveTab: (tab: DepartmentTab) => void;
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
+  pagination: PaginationType;
+  setPagination: (pagination: PaginationType) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  sortParams: SortParams;
+  setSortParams: (sortParams: SortParams) => void;
+};
+
+const DepartmentStatus: React.FC<Props> = ({
+  designations,
+  users,
+  usersTotalPages,
+  designationsTotalPages,
+  activeTab,
+  setActiveTab,
+  isLoading,
+  pagination,
+  setPagination,
+}) => {
   const router = useRouter();
 
   const tabs: DepartmentTab[] = ["Users", "Designation"];
 
-  const [state, setState] = useState({
-    pagination: {
-      page: 1,
-      recordsPerPage: 10,
-    },
-    search: "",
-  });
+  const { mutate: deleteDesignation } = useDeleteDesignation();
 
   const userActions = [
     {
@@ -43,7 +71,8 @@ const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
           color="#FF811A"
         />
       ),
-      onClick: (row: any) => router.push(`/users/1`),
+      title: "View",
+      onClick: (row: any) => router.push(`/users/${row.id}`),
     },
   ];
 
@@ -57,6 +86,7 @@ const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
           color="#4CAF50"
         />
       ),
+      title: "View",
     },
     {
       label: (
@@ -67,6 +97,12 @@ const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
           color="#F44336"
         />
       ),
+      title: "Delete",
+      onClick: (row: any) => {
+        if (confirm(`Are you sure you want to delete "${row.name}"?`)) {
+          deleteDesignation(row.id);
+        }
+      },
     },
   ];
 
@@ -83,12 +119,14 @@ const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="relative whitespace-nowrap text-[14px] md:text-[16px] font-medium text-[#540F86] pb-3 transition-all duration-300 overflow-visible"
+                className={cn(
+                  "relative whitespace-nowrap text-[14px] md:text-[16px] font-medium text-[#540F86] pb-3 transition-all duration-300 overflow-visible",
+                  activeTab === tab && "font-semibold"
+                )}
               >
                 <span className="relative z-10 font-secondary font-[400]">
                   {tab}
                 </span>
-
                 {activeTab === tab && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[100%] h-[3px] bg-[#540F86] rounded-t-[10px] transition-all duration-300 z-0" />
                 )}
@@ -106,54 +144,49 @@ const DepartmentStatus = ({ activeTab, setActiveTab }: any) => {
       >
         <div key={activeTab} className="min-w-[600px]">
           {activeTab === "Users" ? (
-            <div>
+            <>
               <TableComponent
-                currentPage={state.pagination.page}
+                currentPage={pagination.page}
                 columns={USER_COLUMN}
-                data={info}
-                isLoading={false}
+                data={users}
+                isLoading={isLoading}
                 actions={userActions}
               />
               <div className="mt-4">
                 <Pagination
-                  currentPage={state.pagination.page}
-                  totalPages={4}
-                  onPageChange={(page: number) => {
-                    setState((prevState) => ({
-                      ...prevState,
-                      pagination: {
-                        ...prevState.pagination,
-                        page,
-                      },
-                    }));
-                  }}
+                  currentPage={pagination.page}
+                  totalPages={usersTotalPages}
+                  onPageChange={(page) =>
+                    setPagination({
+                      ...pagination,
+                      page,
+                    })
+                  }
                 />
               </div>
-            </div>
+            </>
           ) : (
-            <div>
+            <>
               <TableComponent
-                currentPage={state.pagination.page}
+                currentPage={pagination.page}
                 columns={DESIGNATION_COLUMN}
-                data={designationInfo}
-                isLoading={false}
+                data={designations}
+                isLoading={isLoading}
+                actions={designationActions}
               />
               <div className="mt-4">
                 <Pagination
-                  currentPage={state.pagination.page}
-                  totalPages={4}
-                  onPageChange={(page: number) => {
-                    setState((prevState) => ({
-                      ...prevState,
-                      pagination: {
-                        ...prevState.pagination,
-                        page,
-                      },
-                    }));
-                  }}
+                  currentPage={pagination.page}
+                  totalPages={designationsTotalPages}
+                  onPageChange={(page) =>
+                    setPagination({
+                      ...pagination,
+                      page,
+                    })
+                  }
                 />
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

@@ -75,6 +75,12 @@ type DepartmentStatusItem = {
   designation?: string;
 };
 
+type DesignationStatusItem = {
+  id: number;
+  name: string;
+  departmentId: string;
+};
+
 export const department: DepartmentStatusItem[] = [
   {
     id: 1,
@@ -97,10 +103,10 @@ export const department: DepartmentStatusItem[] = [
 ];
 
 export const USER_COLUMN = [
-  { key: "id", label: "Employee Id" },
-  { key: "name", label: "Employee Name" },
+  { key: "employeeId", label: "Employee Id" },
+  { key: "firstName", label: "Employee Name" },
   { key: "email", label: "Email" },
-  { key: "phone", label: "Phone" },
+  { key: "phoneNumber", label: "Phone" },
   // { key: "status", label: "Status", type: "status" },
 ];
 
@@ -111,26 +117,28 @@ export const DEPARTMENT_COLUMN = [
   { key: "contactPhone", label: "Phone" },
 ];
 
-export const DESIGNATION_COLUMN = [
-  { key: "designation", label: "Designation" },
-];
+export const DESIGNATION_COLUMN = [{ key: "name", label: "Designation" }];
 
-export const designationInfo = [
+export const designationInfo: DesignationStatusItem[] = [
   {
     id: 1,
-    designation: "HOD ",
+    name: "HOD ",
+    departmentId: "Dep01",
   },
   {
     id: 2,
-    designation: "Manager ",
+    name: "Manager ",
+    departmentId: "Dep01",
   },
   {
     id: 3,
-    designation: "General Manager ",
+    name: "General Manager ",
+    departmentId: "Dep01",
   },
   {
     id: 4,
-    designation: "Director ",
+    name: "Director ",
+    departmentId: "Dep01",
   },
 ];
 

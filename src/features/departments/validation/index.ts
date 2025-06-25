@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-import { countryCodesWithLength } from "../constant";
+import { countryCodesWithLength, department } from "../constant";
 
 export const departmentCreationValidationSchema = yup.object({
   name: yup
@@ -42,4 +42,12 @@ export const departmentCreationValidationSchema = yup.object({
       }
       return true;
     }),
+});
+
+export const designationCreationValidationSchema = yup.object({
+  name: yup
+    .string()
+    .required("Designation Name is required")
+    .max(50, "Designation Name must be at most 50 characters"),
+  departmentId: yup.string(),
 });
