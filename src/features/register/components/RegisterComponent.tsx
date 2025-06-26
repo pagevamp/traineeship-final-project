@@ -1,11 +1,11 @@
 "use client";
 
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/Heading";
 import { Stepper } from "@/components/ui/stepper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState, useCallback } from "react";
 import { steps, headings } from "../constant";
 import { useRouter } from "next/navigation";
 import Register1 from "./RegisterStep1";
@@ -16,198 +16,15 @@ import Register5 from "./RegisterStep5";
 import Register6 from "./RegisterStep6";
 import Register7 from "./RegisterStep7";
 import Link from "next/link";
-import { useFieldArray, useForm } from "react-hook-form";
-
-type FormValues = {
-  directorDetails: { name: string; email: string; phone: string }[];
-  financialDirectorDetails: { name: string; email: string; phone: string }[];
-};
-
-const RegisterComponent = () => {
-  const router = useRouter();
-  const [currStep, setCurrStep] = useState<number>(1);
-  const totalSteps = steps.length;
-
-  const stepperContainerRef = useRef<HTMLDivElement>(null);
-
-  const stepsInnerRef = useRef<HTMLDivElement>(null);
-
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(true);
-
-  const { register, control, handleSubmit } = useForm<FormValues>({
-    defaultValues: {
-      directorDetails: [{ name: "", email: "", phone: "" }],
-      financialDirectorDetails: [{ name: "", email: "", phone: "" }],
-    },
-  });
-
-  const {
-    fields: directorFields,
-    append: appendDirector,
-    remove: removeDirector,
-  } = useFieldArray({
-    control,
-    name: "directorDetails",
-  });
-
-  const {
-    fields: financeFields,
-    append: appendFinance,
-    remove: removeFinance,
-  } = useFieldArray({
-    control,
-    name: "financialDirectorDetails",
-  });
-
-  const onSubmit = (data: FormValues) => {};
-
-  const formProps = {
-    register,
-    control,
-    handleSubmit,
-    directorFields,
-    appendDirector,
-    removeDirector,
-    financeFields,
-    appendFinance,
-    removeFinance,
-  };
-
-  useEffect(() => {
-    const container = stepperContainerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      setShowLeftArrow(container.scrollLeft > 0);
-      setShowRightArrow(
-        container.scrollLeft + container.clientWidth < container.scrollWidth
-      );
-    };
-
-    handleScroll();
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const container = stepperContainerRef.current;
-    const inner = stepsInnerRef.current;
-
-    if (!container || !inner) return;
-
-    const stepElements = inner.children;
-    const currentStepElement = stepElements[currStep - 1] as HTMLElement;
-
-    if (currentStepElement) {
-      const containerRect = container.getBoundingClientRect();
-      const stepRect = currentStepElement.getBoundingClientRect();
-
-      const offset =
-        stepRect.left -
-        containerRect.left -
-        container.clientWidth / 2 +
-        stepRect.width / 2;
-
-      container.scrollBy({ left: offset, behavior: "smooth" });
-    }
-  }, [currStep]);
-
-  const nextStep = useCallback(() => {
-    if (currStep < totalSteps) {
-      setCurrStep((prev) => prev + 1);
-    } else {
-      router.push("/success");
-    }
-  }, [currStep, totalSteps, router]);
-
-  const prevStep = useCallback(() => {
-    setCurrStep((prev) => (prev > 1 ? prev - 1 : prev));
-  }, []);
-
-  const renderStep = () => {
-    const StepComponents = [
-      <RegisterStep1 key="step-1" />,
-      <RegisterStep2 key="step-2" />,
-      <RegisterStep3 key="step-3" {...formProps} />,
-      <RegisterStep4 key="step-4" />,
-      <RegisterStep5 key="step-5" />,
-      <RegisterStep6 key="step-6" />,
-      <RegisterStep7 key="step-7" />,
-    ];
-
-    return StepComponents[currStep - 1] || <RegisterStep1 />;
-  };
-
-  const currHeading = headings.find((h) => h.id === currStep);
-
-  return (
-    <section className="font-secondary max-w-[1130px] mx-auto h-full flex flex-col items-center pt-[34px] relative">
-      <Image
-        src="/arctern-logo.svg"
-        width={142}
-        height={81}
-        alt="Company Logo"
-        className="mb-[22px]"
-      />
-
-      <div className="w-full flex justify-between items-center px-4 mb-4">
-        {showLeftArrow ? (
-          <ScrollArrow
-            direction="left"
-            onClick={() =>
-              stepperContainerRef.current?.scrollBy({
-                left: -200,
-                behavior: "smooth",
-              })
-            }
-          />
-        ) : (
-          <div style={{ width: 34 }} />
-        )}
-
-        {showRightArrow ? (
-          <ScrollArrow
-            direction="right"
-            onClick={() =>
-              stepperContainerRef.current?.scrollBy({
-                left: 200,
-                behavior: "smooth",
-              })
-            }
-          />
-        ) : (
-          <div style={{ width: 34 }} />
-        )}
-      </div>
-
-      <div
-        ref={stepperContainerRef}
-        className="overflow-x-auto scrollbar-hide w-full"
-        style={{ scrollBehavior: "smooth" }}
-      >
-        <div className="flex gap-4 min-w-max" ref={stepsInnerRef}>
-          <Stepper steps={steps} currentStep={currStep} />
-        </div>
-      </div>
-
-      <Heading
-        title={currHeading?.title}
-        description={currHeading?.description}
-      />
-      {renderStep()}
-
-      <ChangeStep
-        nextStep={nextStep}
-        prevStep={prevStep}
-        currStep={currStep}
-        totalSteps={totalSteps}
-      />
-    </section>
-  );
-};
-
-export default RegisterComponent;
+import {
+  Resolver,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { customerRegisterValidationSchemas } from "../validation";
+import { UserPayload } from "../types";
 
 const ScrollArrow = ({
   direction,
@@ -267,59 +84,271 @@ const ChangeStep = ({
   );
 };
 
-const RegisterStep1 = () => {
+const RegisterComponent = () => {
+  const router = useRouter();
+  const [currStep, setCurrStep] = useState<number>(1);
+  const [activeStep, setActiveStep] = useState(1);
+  const totalSteps = steps.length;
+
+  const stepperContainerRef = useRef<HTMLDivElement>(null);
+
+  const stepsInnerRef = useRef<HTMLDivElement>(null);
+
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
+  const formOptions = {
+    defaultValues: {
+      directorDetails: [{ name: "", email: "", phone: "" }],
+      financialDirectorDetails: [{ name: "", email: "", phone: "" }],
+    },
+    resolver: yupResolver(
+      customerRegisterValidationSchemas[activeStep - 1]
+    ) as Resolver<UserPayload>,
+  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    control,
+    setValue,
+    getValues,
+    trigger,
+  } = useForm<UserPayload>(formOptions);
+
+  const {
+    fields: directorFields,
+    append: appendDirector,
+    remove: removeDirector,
+  } = useFieldArray({
+    control,
+    name: "directorDetails",
+  });
+
+  const {
+    fields: financeFields,
+    append: appendFinance,
+    remove: removeFinance,
+  } = useFieldArray({
+    control,
+    name: "financialDirectorDetails",
+  });
+
+  const onSubmit: SubmitHandler<UserPayload> = (data) => {};
+
+  const formProps = {
+    register,
+    watch,
+    setValue,
+    trigger,
+    errors,
+    handleSubmit,
+    control,
+    onSubmit,
+    directorFields,
+    appendDirector,
+    removeDirector,
+    financeFields,
+    appendFinance,
+    removeFinance,
+  };
+
+  useEffect(() => {
+    const container = stepperContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowLeftArrow(container.scrollLeft > 0);
+      setShowRightArrow(
+        container.scrollLeft + container.clientWidth < container.scrollWidth
+      );
+    };
+
+    handleScroll();
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const container = stepperContainerRef.current;
+    const inner = stepsInnerRef.current;
+
+    if (!container || !inner) return;
+
+    const stepElements = inner.children;
+    const currentStepElement = stepElements[currStep - 1] as HTMLElement;
+
+    if (currentStepElement) {
+      const containerRect = container.getBoundingClientRect();
+      const stepRect = currentStepElement.getBoundingClientRect();
+
+      const offset =
+        stepRect.left -
+        containerRect.left -
+        container.clientWidth / 2 +
+        stepRect.width / 2;
+
+      container.scrollBy({ left: offset, behavior: "smooth" });
+    }
+  }, [currStep]);
+
+  const nextStep = useCallback(() => {
+    if (activeStep < totalSteps) {
+      setActiveStep((prev) => prev + 1);
+    } else {
+      router.push("/success");
+    }
+  }, [activeStep, totalSteps, router]);
+
+  const prevStep = useCallback(() => {
+    setActiveStep((prev) => (prev > 1 ? prev - 1 : prev));
+  }, []);
+
+  const renderStep = () => {
+    switch (activeStep) {
+      case 1:
+        return <Register1 {...formProps} />;
+      case 2:
+        return <Register2 />;
+      case 3:
+        return <Register3 {...formProps} />;
+      case 4:
+        return <Register4 />;
+      case 5:
+        return <Register5 />;
+      case 6:
+        return <Register6 />;
+      case 7:
+        return <Register7 />;
+      default:
+        return <Register1 {...formProps} />;
+    }
+  };
+
+  const currHeading = headings.find((h) => h.id === activeStep);
+
   return (
-    <>
-      <Register1 />
-    </>
+    <section className="font-secondary max-w-[1130px] mx-auto h-full flex flex-col items-center pt-[34px] relative">
+      <Image
+        src="/arctern-logo.svg"
+        width={142}
+        height={81}
+        alt="Company Logo"
+        className="mb-[22px]"
+      />
+
+      <div className="w-full flex justify-between items-center px-4 mb-4">
+        {showLeftArrow ? (
+          <ScrollArrow
+            direction="left"
+            onClick={() =>
+              stepperContainerRef.current?.scrollBy({
+                left: -200,
+                behavior: "smooth",
+              })
+            }
+          />
+        ) : (
+          <div style={{ width: 34 }} />
+        )}
+
+        {showRightArrow ? (
+          <ScrollArrow
+            direction="right"
+            onClick={() =>
+              stepperContainerRef.current?.scrollBy({
+                left: 200,
+                behavior: "smooth",
+              })
+            }
+          />
+        ) : (
+          <div style={{ width: 34 }} />
+        )}
+      </div>
+
+      <div
+        ref={stepperContainerRef}
+        className="overflow-x-auto scrollbar-hide w-full"
+        style={{ scrollBehavior: "smooth" }}
+      >
+        <div className="flex gap-4 min-w-max" ref={stepsInnerRef}>
+          <Stepper steps={steps} currentStep={activeStep} />
+        </div>
+      </div>
+
+      <Heading
+        title={currHeading?.title}
+        description={currHeading?.description}
+      />
+      {renderStep()}
+
+      <ChangeStep
+        nextStep={nextStep}
+        prevStep={prevStep}
+        currStep={activeStep}
+        totalSteps={totalSteps}
+      />
+    </section>
   );
 };
 
-const RegisterStep2 = () => {
-  return (
-    <>
-      <Register2 />
-    </>
-  );
-};
+export default RegisterComponent;
 
-const RegisterStep3 = (props: any) => {
-  return (
-    <>
-      <Register3 {...props} />
-    </>
-  );
-};
+// const RegisterStep1 = () => {
+//   return (
+//     <>
+//       <Register1 />
+//     </>
+//   );
+// };
 
-const RegisterStep4 = () => {
-  return (
-    <>
-      <Register4 />
-    </>
-  );
-};
+// const RegisterStep2 = () => {
+//   return (
+//     <>
+//       <Register2 />
+//     </>
+//   );
+// };
 
-const RegisterStep5 = () => {
-  const { control } = useForm();
-  return (
-    <>
-      <Register5 control={control} />
-    </>
-  );
-};
+// const RegisterStep3 = (props: any) => {
+//   return (
+//     <>
+//       <Register3 {...props} />
+//     </>
+//   );
+// };
 
-const RegisterStep6 = () => {
-  return (
-    <>
-      <Register6 />
-    </>
-  );
-};
+// const RegisterStep4 = () => {
+//   return (
+//     <>
+//       <Register4 />
+//     </>
+//   );
+// };
 
-const RegisterStep7 = () => {
-  return (
-    <>
-      <Register7 />
-    </>
-  );
-};
+// const RegisterStep5 = () => {
+//   const { control } = useForm();
+//   return (
+//     <>
+//       <Register5 control={control} />
+//     </>
+//   );
+// };
+
+// const RegisterStep6 = () => {
+//   return (
+//     <>
+//       <Register6 />
+//     </>
+//   );
+// };
+
+// const RegisterStep7 = () => {
+//   return (
+//     <>
+//       <Register7 />
+//     </>
+//   );
+// };

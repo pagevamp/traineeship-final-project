@@ -6,7 +6,7 @@ const Register6 = () => {
   return (
     <motion.div
       className="text-[16px] min-w-[320px] max-w-screen-2xl mx-auto px-4 flex flex-col gap-6 md:flex-col md:place-items-center md:gap-[21px] mt-2 mb-1"
-      initial={{ x: 50, opacity: 0.1 }}
+      initial={{ x: 10, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >

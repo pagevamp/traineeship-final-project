@@ -6,11 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Controller } from "react-hook-form";
 import { Selectbox } from "@/components/ui/select-box";
 
-const Register5 = ({ control }: { control: any }) => {
+const Register5 = () => {
   return (
     <motion.div
       className="text-[16px] w-full px-4 sm:px-6 md:px-8 mt-4"
-      initial={{ x: 50, opacity: 0.1 }}
+      initial={{ x: 10, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
@@ -115,25 +115,27 @@ const Register5 = ({ control }: { control: any }) => {
         </div> */}
 
         <div>
-          <Controller
+          {/* <Controller
             name="Currency"
             control={control}
-            render={({ field }) => (
-              <Selectbox
-                options={[
-                  { label: "USD", value: "USD" },
-                  { label: "EUR", value: "EUR" },
-                ]}
-                value={field.value || ""}
-                onChange={(selected) => field.onChange(selected.value)}
-                placeholder="Currency"
-                emptyText="No data found."
-                className="w-full bg-transparent h-12"
-                label="Currency"
-                optional={true}
-              />
-            )}
+            render={({ field }) => ( */}
+          <Selectbox
+            options={[
+              { label: "USD", value: "USD" },
+              { label: "EUR", value: "EUR" },
+            ]}
+            // value={field.value || ""}
+            // onChange={(selected) => field.onChange(selected.value)}
+            value={""}
+            onChange={() => {}}
+            placeholder="Currency"
+            emptyText="No data found."
+            className="w-full bg-transparent h-12"
+            label="Currency"
+            optional={true}
           />
+          {/* )}
+          /> */}
         </div>
         <div className="flex flex-col gap-2">
           <Input

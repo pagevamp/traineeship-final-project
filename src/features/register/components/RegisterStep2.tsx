@@ -15,7 +15,7 @@ const Register2 = () => {
   return (
     <motion.div
       className="text-[16px] w-full px-3 mt-[10px] flex justify-center"
-      initial={{ x: 50, opacity: 0.1 }}
+      initial={{ x: 10, opacity: 0.1 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
