@@ -1,12 +1,11 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { Label } from "@/components/ui/label";
-import { Controller } from "react-hook-form";
 import { Selectbox } from "@/components/ui/select-box";
+import { CustomerRegister5Props } from "../types";
 
-const Register5 = () => {
+const Register5 = (props: CustomerRegister5Props) => {
+  const { register, errors } = props;
   return (
     <motion.div
       className="text-[16px] w-full px-4 sm:px-6 md:px-8 mt-4"
@@ -15,7 +14,7 @@ const Register5 = () => {
       transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
     >
       <div className="flex flex-col mb-5 items-center justify-center">
-        <Input
+        {/* <Input
           className="py-2 px-4 placeholder:text-xs placeholder:text-[#9C9AA5] h-12"
           id="account-holder-name"
           name="account-holder-name"
@@ -23,6 +22,16 @@ const Register5 = () => {
           placeholder="Enter Reference from Bank"
           type="text"
           required={true}
+        /> */}
+        <Input
+          type="text"
+          name="bankDetails.0.referenceFromBank"
+          register={register}
+          placeholder="Enter Reference from Bank"
+          labelName="Reference from Bank"
+          required
+          className="w-[250px]"
+          error={errors?.bankDetails?.[0]?.referenceFromBank?.message}
         />
       </div>
 

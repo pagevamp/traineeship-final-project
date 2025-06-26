@@ -86,8 +86,7 @@ const ChangeStep = ({
 
 const RegisterComponent = () => {
   const router = useRouter();
-  const [currStep, setCurrStep] = useState<number>(1);
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(5);
   const totalSteps = steps.length;
 
   const stepperContainerRef = useRef<HTMLDivElement>(null);
@@ -101,6 +100,9 @@ const RegisterComponent = () => {
     defaultValues: {
       directorDetails: [{ name: "", email: "", phone: "" }],
       financialDirectorDetails: [{ name: "", email: "", phone: "" }],
+      tradeReferenceDetails: [
+        { referenceName: "", businessAssociation: "", phone: "", email: "" },
+      ],
     },
     resolver: yupResolver(
       customerRegisterValidationSchemas[activeStep - 1]
@@ -116,7 +118,7 @@ const RegisterComponent = () => {
     getValues,
     trigger,
   } = useForm<UserPayload>(formOptions);
-
+  const defaultValues = watch();
   const {
     fields: directorFields,
     append: appendDirector,
@@ -135,9 +137,18 @@ const RegisterComponent = () => {
     name: "financialDirectorDetails",
   });
 
+  const {
+    fields: tradeReferenceFields,
+    append: appendTradeReference,
+    remove: removeTradeReference,
+  } = useFieldArray({
+    control,
+    name: "tradeReferenceDetails",
+  });
+
   const onSubmit: SubmitHandler<UserPayload> = (data) => {};
 
-  const formProps = {
+  const baseFormProps = {
     register,
     watch,
     setValue,
@@ -146,12 +157,31 @@ const RegisterComponent = () => {
     handleSubmit,
     control,
     onSubmit,
+    defaultValues: watch(),
+  };
+  const register1FormProps = {
+    ...baseFormProps,
+  };
+  const register2FormProps = {
+    ...baseFormProps,
+  };
+  const register3FormProps = {
+    ...baseFormProps,
     directorFields,
     appendDirector,
     removeDirector,
     financeFields,
     appendFinance,
     removeFinance,
+  };
+  const register4FormProps = {
+    ...baseFormProps,
+    tradeReferenceFields,
+    appendTradeReference,
+    removeTradeReference,
+  };
+  const register5FormProps = {
+    ...baseFormProps,
   };
 
   useEffect(() => {
@@ -177,7 +207,7 @@ const RegisterComponent = () => {
     if (!container || !inner) return;
 
     const stepElements = inner.children;
-    const currentStepElement = stepElements[currStep - 1] as HTMLElement;
+    const currentStepElement = stepElements[activeStep - 1] as HTMLElement;
 
     if (currentStepElement) {
       const containerRect = container.getBoundingClientRect();
@@ -191,7 +221,7 @@ const RegisterComponent = () => {
 
       container.scrollBy({ left: offset, behavior: "smooth" });
     }
-  }, [currStep]);
+  }, [activeStep]);
 
   const nextStep = useCallback(() => {
     if (activeStep < totalSteps) {
@@ -204,25 +234,25 @@ const RegisterComponent = () => {
   const prevStep = useCallback(() => {
     setActiveStep((prev) => (prev > 1 ? prev - 1 : prev));
   }, []);
-
+  console.log(defaultValues, "dv");
   const renderStep = () => {
     switch (activeStep) {
       case 1:
-        return <Register1 {...formProps} />;
+        return <Register1 {...register1FormProps} />;
       case 2:
-        return <Register2 />;
+        return <Register2 {...register2FormProps} />;
       case 3:
-        return <Register3 {...formProps} />;
+        return <Register3 {...register3FormProps} />;
       case 4:
-        return <Register4 />;
+        return <Register4 {...register4FormProps} />;
       case 5:
-        return <Register5 />;
+        return <Register5 {...register5FormProps}/>;
       case 6:
         return <Register6 />;
       case 7:
         return <Register7 />;
       default:
-        return <Register1 {...formProps} />;
+        return <Register1 {...register1FormProps} />;
     }
   };
 
@@ -295,60 +325,3 @@ const RegisterComponent = () => {
 };
 
 export default RegisterComponent;
-
-// const RegisterStep1 = () => {
-//   return (
-//     <>
-//       <Register1 />
-//     </>
-//   );
-// };
-
-// const RegisterStep2 = () => {
-//   return (
-//     <>
-//       <Register2 />
-//     </>
-//   );
-// };
-
-// const RegisterStep3 = (props: any) => {
-//   return (
-//     <>
-//       <Register3 {...props} />
-//     </>
-//   );
-// };
-
-// const RegisterStep4 = () => {
-//   return (
-//     <>
-//       <Register4 />
-//     </>
-//   );
-// };
-
-// const RegisterStep5 = () => {
-//   const { control } = useForm();
-//   return (
-//     <>
-//       <Register5 control={control} />
-//     </>
-//   );
-// };
-
-// const RegisterStep6 = () => {
-//   return (
-//     <>
-//       <Register6 />
-//     </>
-//   );
-// };
-
-// const RegisterStep7 = () => {
-//   return (
-//     <>
-//       <Register7 />
-//     </>
-//   );
-// };

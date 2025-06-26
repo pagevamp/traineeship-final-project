@@ -7,7 +7,8 @@ import {
   UseFormTrigger,
   UseFormWatch,
 } from "react-hook-form";
-export interface CustomerRegisterProps {
+
+export interface CustomerRegisterBaseProps {
   register: UseFormRegister<UserPayload>;
   watch: UseFormWatch<UserPayload>;
   setValue: UseFormSetValue<UserPayload>;
@@ -18,7 +19,29 @@ export interface CustomerRegisterProps {
   ) => (e?: React.BaseSyntheticEvent) => Promise<void>;
   onSubmit: SubmitHandler<UserPayload>;
   control: Control<UserPayload>;
+  defaultValues: UserPayload;
 }
+
+export interface CustomerRegister1Props extends CustomerRegisterBaseProps {}
+
+export interface CustomerRegister2Props extends CustomerRegisterBaseProps {}
+
+export interface CustomerRegister3Props extends CustomerRegisterBaseProps {
+  directorFields: any;
+  appendDirector: any;
+  removeDirector: any;
+  financeFields: any;
+  appendFinance: any;
+  removeFinance: any;
+}
+
+export interface CustomerRegister4Props extends CustomerRegisterBaseProps {
+  tradeReferenceFields: any;
+  appendTradeReference: any;
+  removeTradeReference: any;
+}
+export interface CustomerRegister5Props extends CustomerRegisterBaseProps {}
+
 export interface UserPayload {
   user: {
     id: string;
@@ -29,7 +52,7 @@ export interface UserPayload {
   companyEmail: string;
   companyType: string;
   yearOfEstablishment: string;
-  employeeSize: number;
+  employeeSize: string;
   natureOfBusiness: string;
   shipmentType: string;
   typeOfTruck: string;
@@ -40,6 +63,19 @@ export interface UserPayload {
   bankDetails: BankDetail[];
   documents: Document[];
   userId: string;
+  shipmentFtl: shipmentFtl;
+  shipmentLtl: shipmentLtl;
+}
+
+interface shipmentLtl {
+  noOfShipmentsPerLane?: number;
+  weightPerShipmentPerLane?: number;
+}
+interface shipmentFtl {
+  noOfTrips?: number;
+  typeOfEquipments?: string;
+  serviceNeeded?: string;
+  equipmentCapacity?: string;
 }
 
 export interface Product {
