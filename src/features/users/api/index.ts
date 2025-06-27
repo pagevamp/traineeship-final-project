@@ -10,6 +10,7 @@ export const getAllDepartments = () => {
 export const createInternalUser = (body: any) => {
   return api.post("/users/create", body);
 };
+
 export const getAllInternalUsers = (params: userListParams = {}) => {
   const queryParams = new URLSearchParams();
 
