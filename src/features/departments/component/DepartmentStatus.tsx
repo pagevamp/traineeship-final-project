@@ -1,9 +1,9 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-import React from "react";
 import { DepartmentTab, USER_COLUMN, DESIGNATION_COLUMN } from "../constant";
 
 import TableComponent from "@/components/table";
@@ -11,12 +11,8 @@ import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import Pagination from "@/components/pagination";
 import { UserDetail } from "@/features/users/types";
-import {
-  useDeleteDesignation,
-  useUpdateDesignation,
-} from "./designation/hooks";
+import { useDeleteDesignation } from "./designation/hooks";
 import { useModalContext } from "@/providers/modal-context";
-import Form from "./designation/create/form";
 import Index from "../component/designation/create";
 
 type PaginationType = {
@@ -42,7 +38,7 @@ type Props = {
   refetch: () => void;
   pagination: PaginationType;
   setPagination: (pagination: PaginationType) => void;
-  search: string;
+  // search: string;
   setSearch: (search: string) => void;
   sortParams: SortParams;
   setSortParams: (sortParams: SortParams) => void;
@@ -70,8 +66,9 @@ const DepartmentStatus: React.FC<Props> = ({
     closeModal();
     openModal({
       component: Index,
-      props: { id: row.id, isEdit: true },
-      className: "h-fit bg-white w-[60%] sm:max-w-[50%] rounded-[39px]",
+      props: { data: row },
+      className:
+        "lg:h-fit bg-white max-w-[90%] lg:max-w-[40%] rounded-[39px] h-[240px]",
     });
   };
 
@@ -103,7 +100,7 @@ const DepartmentStatus: React.FC<Props> = ({
         />
       ),
       title: "Edit",
-      onClick: handleEditClick,
+      onClick: (row: any) => handleEditClick(row),
     },
     {
       label: (

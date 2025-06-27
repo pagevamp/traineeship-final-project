@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import TableComponent from "@/components/table";
@@ -12,12 +12,13 @@ type DepartmentInfoProps = {
   departments: any[];
   isLoading: boolean;
   isEdit: boolean;
+  currentPage?: any;
 };
 
 const DepartmentInfo = ({
   departments,
   isLoading,
-  isEdit,
+  currentPage,
 }: DepartmentInfoProps) => {
   const { openModal } = useModalContext();
   const router = useRouter();
@@ -29,7 +30,8 @@ const DepartmentInfo = ({
     openModal({
       component: Index,
       props: { id: row.id, isEdit: true },
-      className: "h-fit bg-white lg:w-[90%] max-w-[50%] rounded-[39px]",
+      className:
+        "lg:h-fit bg-white max-w-[90%] lg:max-w-max rounded-[39px] h-[310px] sm:h-[360px]",
     });
   };
 
@@ -44,7 +46,6 @@ const DepartmentInfo = ({
         />
       ),
       title: "View",
-
       onClick: (row: any) => router.push(`/departments/${row.id}`),
     },
     {
@@ -56,9 +57,7 @@ const DepartmentInfo = ({
           color="#FF811A"
         />
       ),
-
       title: "Edit",
-
       onClick: handleEditClick,
     },
 
@@ -79,20 +78,12 @@ const DepartmentInfo = ({
       },
     },
   ];
-  const [state, setState] = useState({
-    pagination: {
-      page: 1,
-      recordsPerPage: 10,
-    },
-    search: "",
-  });
 
-  console.log("isEdit and id are");
   return (
     <div className="flex flex-col gap-[15px]">
       <div>
         <TableComponent
-          currentPage={1}
+          currentPage={currentPage.page}
           columns={DEPARTMENT_COLUMN}
           data={departments}
           isLoading={isLoading}

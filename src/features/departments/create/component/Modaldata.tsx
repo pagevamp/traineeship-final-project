@@ -22,12 +22,12 @@ const ModalData = (props: DepartmentInformationProps) => {
     register,
   };
   return (
-    <div className="relative p-12">
+    <div className="relative p-8">
       <span className="font-primary text-[20px] text-[#111D35] block">
         {isEdit ? "Update Department" : "Create Department"}
       </span>
 
-      <div className="grid  grid-cols-1 lg:grid-cols-2  gap-[26px] mt-[28px]">
+      <div className="grid md:grid-cols-2  gap-[26px] mt-[28px]">
         <div className="flex flex-col flex-1">
           <Input
             type="text"
@@ -35,7 +35,6 @@ const ModalData = (props: DepartmentInformationProps) => {
             labelName="Department Name"
             register={register}
             placeholder="Enter Department Name"
-            className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px] bg-white"
             required
             error={errors?.name?.message}
           />
@@ -47,14 +46,13 @@ const ModalData = (props: DepartmentInformationProps) => {
             labelName="Contact Person"
             register={register}
             placeholder="Enter Contact Person Name"
-            className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px] bg-white"
             required
             error={errors?.contactPerson?.message}
           />
         </div>
       </div>
 
-      <div className="grid  grid-cols-1 lg:grid-cols-2 gap-[26px] mt-[20px] ">
+      <div className="grid md:grid-cols-2 gap-[26px] mt-[20px] ">
         <div className="flex flex-col flex-1">
           <Input
             type="email"
@@ -62,7 +60,6 @@ const ModalData = (props: DepartmentInformationProps) => {
             register={register}
             labelName="Email"
             placeholder="Enter Email"
-            className="w-full h-[40px] px-3 col-span-1 rounded border border-[#ccc] text-[14px] bg-white"
             required
             error={errors?.contactEmail?.message}
           />
@@ -72,7 +69,6 @@ const ModalData = (props: DepartmentInformationProps) => {
           error={errors?.contactPhone?.message}
           name="contactPhone"
           {...phoneNumberProps}
-          className="w-full h-[40px]  px-3 col-span-1  rounded border border-[#ccc] text-[14px] bg-white"
         />
       </div>
     </div>

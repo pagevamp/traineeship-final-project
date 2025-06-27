@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import SearchBar from "@/components/ui/searchbar";
-import Image from "next/image";
+import React, { useEffect, useMemo, useState } from "react";
 import DepartmentInfo from "./DepartmentInfo";
 import { PlusCircleIcon } from "lucide-react";
 import { useModalContext } from "@/providers/modal-context";
@@ -10,6 +8,8 @@ import { motion } from "framer-motion";
 import Pagination from "@/components/pagination";
 import { useGetAllDepartments } from "../hooks";
 import Index from "../create";
+import SearchComponent from "@/components/SearchComponent/SearchComponent";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const DepartmentComponent = () => {
   const { openModal } = useModalContext();
@@ -18,6 +18,7 @@ const DepartmentComponent = () => {
       page: 1,
       recordsPerPage: 10,
     },
+    count: 0,
     search: "",
     filter: {
       sortParams: {
@@ -26,11 +27,13 @@ const DepartmentComponent = () => {
       },
     },
   });
+  const [count, setCount] = useState<number>(0);
 
   const handleCreateClick = () => {
     openModal({
       component: Index,
-      className: "h-fit bg-white lg:min-w-max max-w-[50%] rounded-[39px]",
+      className:
+        "lg:h-fit bg-white max-w-[90%] lg:max-w-max rounded-[39px] h-[310px] sm:h-[360px]",
     });
   };
 
@@ -45,6 +48,14 @@ const DepartmentComponent = () => {
     [data, isError]
   );
 
+  // memoizing count
+  useEffect(() => {
+    const total = data?.data?.data?.total;
+    if (!isNaN(total) && total !== undefined) {
+      setCount(Number(total));
+    }
+  }, [data?.data?.data?.total]);
+
   return (
     <>
       <div>
@@ -54,14 +65,24 @@ const DepartmentComponent = () => {
           transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
         >
           <div className="w-full flex flex-row items-center gap-[10px] mb-4">
-            <SearchBar
-              placeholder="Search for Department"
-              className="w-[97%] gap-[7px]"
-              firstCircleContent={
-                <Image src="/Menu.svg" alt="Menu" width={20} height={20} />
-              }
-              secondCircleContent={""}
+            <SearchComponent
+              state={state}
+              setState={setState}
+              placeholder="Search for department"
+              className="w-[80%]"
             />
+            <div>
+              <div
+                className={`bg-white hover:bg-primary-light gradient-border w-10 h-10 m-auto flex items-center justify-center rounded-full  cursor-pointer`}
+              >
+                <Icon
+                  icon="ion:filter-outline"
+                  width="22"
+                  height="22"
+                  className="text-primary"
+                />
+              </div>
+            </div>
             <div className="bg-gradient-to-r from-[#E06518] to-[#E3802A] p-[1px] rounded-[37px] w-fit h-fit">
               <button
                 onClick={handleCreateClick}
@@ -83,6 +104,7 @@ const DepartmentComponent = () => {
           departments={DepartmentData}
           isLoading={isLoading}
           isEdit
+          currentPage={state.pagination}
         />
       </motion.div>
 
@@ -90,9 +112,9 @@ const DepartmentComponent = () => {
         <Pagination
           currentPage={state.pagination.page}
           totalPages={
-            Math.ceil(
-              data?.data?.data?.total / state.pagination.recordsPerPage
-            ) || 1
+            count / state?.pagination.recordsPerPage > 0
+              ? Math.ceil(count / state?.pagination.recordsPerPage)
+              : Math.floor(count / state?.pagination.recordsPerPage) + 1
           }
           onPageChange={(page: number) => {
             setState((prevState) => ({

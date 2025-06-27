@@ -1,13 +1,8 @@
 import { api } from "@/lib/axios";
 import { departmentListParams } from "../types";
-import { Department } from "@/features/users/types";
 
 export const createDepartment = (body: any) => {
   return api.post("/departments", body);
-};
-
-export const getDepartments = () => {
-  return api.get("/departments");
 };
 
 export const getAllDepartments = (params: departmentListParams = {}) => {
@@ -32,7 +27,7 @@ export const getAllDepartments = (params: departmentListParams = {}) => {
   }
 
   const queryString = queryParams.toString();
-  const url = `/departments${queryString ? `?${queryString}` : ""}`;
+  const url = `/departments/list${queryString ? `?${queryString}` : ""}`;
 
   return api.get(url);
 };
@@ -55,10 +50,9 @@ export const getAllUsers = (
   departmentId: string,
   params: departmentListParams = {}
 ) => {
-  if (!departmentId) {
-    throw new Error("departmentId is required to fetch designations");
-  }
-  console.log(departmentId, "para");
+  // if (!departmentId) {
+  //   throw new Error("departmentId is required to fetch designations");
+  // }
 
   const queryParams = new URLSearchParams();
 
@@ -66,7 +60,7 @@ export const getAllUsers = (
     queryParams.append("search", params.search.trim());
   }
   if (departmentId?.trim()) {
-    queryParams.append("departmentId", departmentId.trim());
+    queryParams.append("departmentId", departmentId?.trim());
   }
   if (params.limit) {
     queryParams.append("limit", params.limit.toString());

@@ -1,13 +1,13 @@
 import * as yup from "yup";
+import { countryCodesWithLength } from "../constant";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-import { countryCodesWithLength, department } from "../constant";
 
 export const departmentCreationValidationSchema = yup.object({
   name: yup
     .string()
     .required("Department Name is required")
-    .max(50, "Department Name must be at most 50 characters"),
+    .max(100, "Department Name must be at most 100 characters"),
   contactPerson: yup
     .string()
     .required("Contact Person Name is required")
@@ -36,7 +36,7 @@ export const departmentCreationValidationSchema = yup.object({
         value.length !== expectedLength
       ) {
         return this.createError({
-          path: "phoneNumber",
+          path: "contactPhone",
           message: `Contact Number must be ${expectedLength} digits long.`,
         });
       }
@@ -48,6 +48,6 @@ export const designationCreationValidationSchema = yup.object({
   name: yup
     .string()
     .required("Designation Name is required")
-    .max(50, "Designation Name must be at most 50 characters"),
+    .max(100, "Designation Name must be at most 100 characters"),
   departmentId: yup.string(),
 });

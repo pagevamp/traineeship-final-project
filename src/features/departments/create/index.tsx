@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import Child from "@/features/departments/create/form";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,12 +11,11 @@ import {
   useUpdateDepartment,
 } from "../hooks";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/useModal";
 import { useConfirmationDialog } from "@/providers/ConfirmationDialogProvider";
-import { useEffect } from "react";
 import { departmentFormField } from "../constant";
 import { getNestedValue } from "@/features/users/constant";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IndexProps {
   id?: string;
@@ -23,10 +23,9 @@ interface IndexProps {
 
 const Index = ({ id }: IndexProps) => {
   const departmentId = id ?? "";
-  const isEdit = Boolean(departmentId);
+  const queryClient = useQueryClient();
 
   const { closeModal } = useModal();
-  const router = useRouter();
   const { showConfirmation } = useConfirmationDialog();
 
   const {
@@ -36,7 +35,6 @@ const Index = ({ id }: IndexProps) => {
     trigger,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<CreateDepartmentPayload>({
     defaultValues: {
@@ -48,13 +46,9 @@ const Index = ({ id }: IndexProps) => {
   });
   const defaultValues = watch();
 
-  const {
-    data: getDepartments,
-    isLoading,
-    isError,
-  } = useGetDepartmentById(departmentId ?? undefined);
-
-  const getDepartmentDetail = getDepartments?.data?.data;
+  const { data: getDepartments } = useGetDepartmentById(
+    departmentId ?? undefined
+  );
 
   useEffect(() => {
     if (id) {
@@ -68,11 +62,12 @@ const Index = ({ id }: IndexProps) => {
   const { mutateAsync: createDepartment, isPending } = useCreateDepartment({
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
-      closeModal();
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["departmentList"],
+      });
       toast.success("Department Successfully Created!!");
-      router.push("/departments");
       closeModal();
     },
   });
@@ -83,8 +78,10 @@ const Index = ({ id }: IndexProps) => {
         toast.error(error?.response?.data?.message || "Something went wrong!");
       },
       onSuccess: (data) => {
-        router.push("/departments");
-        toast.success("department Updated Successfully!!");
+        queryClient.invalidateQueries({
+          queryKey: ["departmentList"],
+        });
+        toast.success("Department Updated Successfully!!");
         closeModal();
       },
     });
@@ -108,7 +105,6 @@ const Index = ({ id }: IndexProps) => {
       await createDepartment(reqBody);
     } catch (error) {
     } finally {
-      closeModal();
     }
   };
 
@@ -123,7 +119,7 @@ const Index = ({ id }: IndexProps) => {
   const handleUpdateModal = (formData: CreateDepartmentPayload) => {
     showConfirmation({
       title: "Update Department?",
-      description: "Are you sure you want to update the Department details?",
+      description: "Are you sure you want to update the department details?",
       confirmText: "Yes",
       confirmClassName:
         "font-secondary bg-gradient-to-r from-[#E06518] to-[#E3802A] hover:from-[#E06518] hover:to-[#E06518] transition-all duration-300",
@@ -148,7 +144,6 @@ const Index = ({ id }: IndexProps) => {
     isPending,
     isEdit: Boolean(id),
   };
-
 
   return <Child {...createDepartmentProps} />;
 };

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import DepartmentInfoCard from "./DepartmentInfoCard";
 import DepartmentStatus from "./DepartmentStatus";
 import { motion } from "framer-motion";
@@ -17,6 +16,7 @@ import {
   useGetDepartmentById,
 } from "../hooks";
 import { useParams } from "next/navigation";
+import DepartmentSearchComponent from "@/components/SearchComponent/DepartmentSearch";
 
 interface Pagination {
   page: number;
@@ -45,7 +45,8 @@ const DepartmentId: React.FC = () => {
       page: 1,
       recordsPerPage: 10,
     },
-    search: "",
+    userSearch: "",
+    departmentSearch: "",
     filter: {
       sortParams: {
         sortParam: "createdAt",
@@ -60,13 +61,9 @@ const DepartmentId: React.FC = () => {
   const [activeTab, setActiveTab] = useState<DepartmentTab>("Users");
   const [designations, setDesignations] = useState<Designation[]>([]);
 
-  const {
-    data: departmentsData,
-    isLoading,
-    isError,
-  } = useGetAllDepartments({
+  const { data: departmentsData, isError } = useGetAllDepartments({
     pagination: state.pagination,
-    search: state.search,
+    search: state.departmentSearch,
     filters: state.filter,
   });
 
@@ -91,10 +88,10 @@ const DepartmentId: React.FC = () => {
   const offset = (page - 1) * recordsPerPage;
 
   const { data: usersData } = useGetAllUsers({
-    id: selectedDepartment?.id || "",
+    id: selectedDepartment?.id,
     limit,
     offset,
-    search: state.search,
+    search: state.userSearch,
     sortBy: state.filter.sortParams.sortParam,
     order: state.filter.sortParams.sortOrder,
   });
@@ -109,7 +106,7 @@ const DepartmentId: React.FC = () => {
     isLoading: isDesignationsLoading,
     isError: isDesignationsError,
     refetch,
-  } = useGetDepartmentById(selectedDepartment?.id || "");
+  } = useGetDepartmentById(selectedDepartment?.id);
 
   useEffect(() => {
     if (!isDesignationsError && designationsData?.data?.data?.designations) {
@@ -117,7 +114,7 @@ const DepartmentId: React.FC = () => {
     }
   }, [designationsData, isDesignationsError]);
 
-  const handleAddDesignation = (newDesignation: Designation) => {
+  const handleAddDesignation: any = (newDesignation: Designation) => {
     setDesignations((prev) => {
       const exists = prev.some((item) => item.id === newDesignation.id);
       if (exists) return prev;
@@ -133,7 +130,8 @@ const DepartmentId: React.FC = () => {
           onAddDesignation={handleAddDesignation}
         />
       ),
-      className: "h-fit bg-white max-w-[98%] sm:max-w-[40%] rounded-[39px]",
+      className:
+        "lg:h-fit bg-white max-w-[90%] lg:max-w-[40%] rounded-[39px] h-[240px]",
     });
   };
 
@@ -144,7 +142,6 @@ const DepartmentId: React.FC = () => {
   const usersTotalPages = Math.ceil(usersTotal / recordsPerPageCount) || 1;
   const designationsTotalPages =
     Math.ceil(designationsTotal / recordsPerPageCount) || 1;
-
   return (
     <>
       <motion.div
@@ -164,13 +161,16 @@ const DepartmentId: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       >
-        <SearchComponent
+        <DepartmentSearchComponent
           state={state}
           setState={setState}
           placeholder={
             activeTab === "Designation"
               ? "Search for designation"
               : "Search for user"
+          }
+          searchKey={
+            activeTab === "Designation" ? "departmentsSearch" : "userSearch"
           }
           className={cn("w-[80%]", activeTab === "Designation" && "w-[35%]")}
         />
@@ -218,7 +218,7 @@ const DepartmentId: React.FC = () => {
           setPagination={(pagination: Pagination) =>
             setState((prev) => ({ ...prev, pagination }))
           }
-          search={state.search}
+          // search={state.search}
           setSearch={(search: string) =>
             setState((prev) => ({ ...prev, search }))
           }

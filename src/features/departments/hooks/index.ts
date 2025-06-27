@@ -7,14 +7,9 @@ import {
   updateDepartmentDetailById,
 } from "../api";
 import { Obj } from "@/types";
-import { CreateDepartmentPayload, departmentListParams } from "../types";
-import {
-  createDesignation,
-  deleteDesignation,
-  getAllDesignations,
-} from "../component/designation/api";
+import { departmentListParams } from "../types";
 import { getDepartmentDetailById } from "../api";
-import { Department } from "@/features/users/types";
+import { toast } from "sonner";
 
 const useCreateDepartment = (options: {
   onError?: (error: any, variables: any, context: any) => void;
@@ -37,7 +32,7 @@ export const useGetDepartmentById = (id: string) => {
 
 const useGetAllDepartments = (params: any) => {
   return useQuery({
-    queryKey: ["allDepartments", params],
+    queryKey: ["departmentList", params],
     queryFn: () =>
       getAllDepartments({
         limit: params.pagination.recordsPerPage,
@@ -56,10 +51,11 @@ const useDeleteDepartment = () => {
   return useMutation({
     mutationFn: async (id: string) => deleteDepartment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allDepartments"] });
+      queryClient.invalidateQueries({ queryKey: ["departmentList"] });
+      toast.success("Department Successfully Deleted!!");
     },
-    onError: (error) => {
-      console.error("Error deleting department:", error);
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
     },
   });
 };
@@ -75,8 +71,6 @@ const useUpdateDepartment = (options: {
   });
 };
 
-
-
 type UseGetAllUsersProps = {
   id: string;
 } & departmentListParams;
@@ -85,17 +79,13 @@ const useGetAllUsers = ({ id, ...params }: UseGetAllUsersProps) => {
   return useQuery({
     queryKey: ["users", id, JSON.stringify(params)],
     queryFn: () => getAllUsers(id, params),
-    enabled: !!id,
   });
 };
-
-
 
 export {
   useCreateDepartment,
   useGetAllDepartments,
   useDeleteDepartment,
-  
   useGetAllUsers,
   useUpdateDepartment,
 };

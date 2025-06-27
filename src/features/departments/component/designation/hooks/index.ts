@@ -7,6 +7,7 @@ import {
 } from "../api";
 import { departmentListParams } from "@/features/departments/types";
 import { Obj } from "@/types";
+import { toast } from "sonner";
 
 // FOR designation
 interface CreateDesignationBody {
@@ -42,11 +43,11 @@ const useDeleteDesignation = () => {
   return useMutation({
     mutationFn: async (id: string) => deleteDesignation(id),
     onSuccess: (id) => {
-      queryClient.invalidateQueries({ queryKey: ["designations"] });
-      queryClient.invalidateQueries({ queryKey: ["departmentDetail", id] });
+      toast.success("Designation Deleted Successfully!!");
+      queryClient.invalidateQueries({ queryKey: ["departmentDetail"] });
     },
-    onError: (error) => {
-      console.error("Error deleting designation:", error);
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Something went wrong!!");
     },
   });
 };

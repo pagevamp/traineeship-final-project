@@ -27,18 +27,11 @@ const Index: React.FC<DesignationInformationProps> = ({
               name="name"
               register={register}
               id="name"
+              required
               labelName="Designation Name"
               placeholder="Enter Designation Name"
-              className="w-full h-[40px] px-3 rounded border border-[#ccc] text-[14px] bg-white"
               error={errors.name?.message}
-              aria-invalid={!!errors.name}
-              aria-describedby="name-error"
             />
-            {errors.name && (
-              <span id="name-error" className="text-red-600 text-sm mt-1">
-                {errors.name.message}
-              </span>
-            )}
           </div>
         </div>
 

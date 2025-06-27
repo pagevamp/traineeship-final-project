@@ -23,11 +23,9 @@ type Props = {
   onAddDesignation?: (newDesignation: any) => void;
 };
 
-const Index: React.FC<Props> = ({ onAddDesignation }) => {
+const Index: React.FC<Props> = (props: any) => {
   const params = useParams();
-  const departmentId = Array.isArray(params?.id) ? params.id[0] : params?.id;
-  const router = useRouter();
-  const isEdit = Boolean(departmentId);
+  const departmentId = params?.id as string;
 
   const { closeModal } = useModal();
   const queryClient = useQueryClient();
@@ -40,8 +38,7 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
     trigger,
     control,
     handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<CreateDesignationPayload>({
     resolver: yupResolver(
       designationCreationValidationSchema
@@ -50,28 +47,21 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
 
   const defaultValues = watch();
 
-  const {
-    data: existing,
-    isLoading: isFetching,
-    isError,
-  } = useGetAllDesignations({ id: departmentId ?? "" });
+  const { data: existing } = useGetAllDesignations({ id: departmentId });
 
   useEffect(() => {
-    if (existing?.data?.data) {
-      const d = existing.data.data;
-      reset({ name: d.name, departmentId: d.departmentId });
+    if (props?.data) {
+      setValue("name", props?.data?.name);
     }
-  }, [existing, reset]);
+  }, [props?.data, setValue]);
 
   const { mutateAsync: saveDesignation } = useCreateDesignation({
     onError: (err) =>
       toast.error(err?.response?.data?.message || "Something went wrong!"),
     onSuccess: (res) => {
       toast.success("Designation saved!");
-      queryClient.invalidateQueries({
-        queryKey: ["designations", departmentId],
-      });
-      onAddDesignation?.(res.data.data);
+      queryClient.invalidateQueries({ queryKey: ["departmentDetail"] });
+      // onAddDesignation?.(res.data.data);
       closeModal();
     },
   });
@@ -82,14 +72,14 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
         toast.error(error?.response?.data?.message || "Something went wrong!");
       },
       onSuccess: (data) => {
-        router.push("/departments");
-        toast.success("department Updated Successfully!!");
+        queryClient.invalidateQueries({ queryKey: ["departmentDetail"] });
+        toast.success("Designation Updated Successfully!!");
         closeModal();
       },
     });
 
   const buildRequestBody = (formData: CreateDesignationPayload) => {
-    const { name, departmentId } = formData;
+    const { name } = formData;
 
     return {
       name: name?.trim(),
@@ -117,14 +107,14 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
     try {
       if (!departmentId) return;
       const reqBody = buildRequestBody(formData);
-      await handleUpdate({ departmentId, body: reqBody });
+      await handleUpdate({ id: props?.data?.id, body: reqBody });
     } catch (error) {}
   };
 
   const handleUpdateModal = (formData: CreateDesignationPayload) => {
     showConfirmation({
-      title: "Update Department?",
-      description: "Are you sure you want to update the Department details?",
+      title: "Update Designation?",
+      description: "Are you sure you want to update the designation?",
       confirmText: "Yes",
       confirmClassName:
         "font-secondary bg-gradient-to-r from-[#E06518] to-[#E3802A] hover:from-[#E06518] hover:to-[#E06518] transition-all duration-300",
@@ -145,11 +135,11 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
     handleSubmit,
     onSubmit,
     onUpdate,
-    isEdit: Boolean(departmentId),
+    isEdit: Boolean(props?.data?.id),
   };
 
   return (
-    <div className="relative w-full">
+    <>
       <button
         type="button"
         onClick={closeModal}
@@ -158,15 +148,16 @@ const Index: React.FC<Props> = ({ onAddDesignation }) => {
       >
         <Icon icon="ic:baseline-close" width="24" height="24" />
       </button>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        <Child {...createDesignationProps} />
-      </motion.div>
-    </div>
+      <div className="relative w-full max-h-[90vh] overflow-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <Child {...createDesignationProps} />
+        </motion.div>
+      </div>
+    </>
   );
 };
 
