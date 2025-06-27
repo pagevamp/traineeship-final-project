@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner";
 import { useModal } from "@/hooks/useModal";
 import { useConfirmationDialog } from "@/providers/ConfirmationDialogProvider";
-import { department, departmentFormField } from "../constant";
+import { departmentFormField } from "../constant";
 import { getNestedValue } from "@/features/users/constant";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -39,24 +39,30 @@ const Index = ({ id }: IndexProps) => {
     formState: { errors },
   } = useForm<CreateDepartmentPayload>({
     defaultValues: {
-      countryCode: "91",
+      countryCode: "91", // default for create
     },
     resolver: yupResolver(
       departmentCreationValidationSchema
     ) as Resolver<CreateDepartmentPayload>,
   });
-  const defaultValues = watch();
 
+  const defaultValues = watch();
   const { data: getDepartments } = useGetDepartmentById(
     departmentId ?? undefined
   );
 
   useEffect(() => {
-    if (id) {
+    if (id && getDepartments?.data?.data) {
+      const departmentData = getDepartments.data.data;
+
       departmentFormField.forEach((field) => {
-        const value = getNestedValue(getDepartments?.data?.data, field);
+        const value = getNestedValue(departmentData, field);
         setValue(field as any, value);
       });
+
+      if (departmentData.countryCode) {
+        setValue("countryCode", departmentData.countryCode.replace("+", ""));
+      }
     }
   }, [id, getDepartments, setValue]);
 
@@ -64,10 +70,8 @@ const Index = ({ id }: IndexProps) => {
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["departmentList"],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["departmentList"] });
       toast.success("Department Successfully Created!!");
       closeModal();
     },
@@ -78,10 +82,8 @@ const Index = ({ id }: IndexProps) => {
       onError: (error) => {
         toast.error(error?.response?.data?.message || "Something went wrong!");
       },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: ["departmentList"],
-        });
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["departmentList"] });
         toast.success("Department Updated Successfully!!");
         closeModal();
       },
@@ -92,7 +94,7 @@ const Index = ({ id }: IndexProps) => {
       onError: (error) => {
         toast.error(error?.response?.data?.message || "Something went wrong!");
       },
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["departmentList"] });
         toast.success("Designation Deleted Successfully!!");
         closeModal();
@@ -105,9 +107,9 @@ const Index = ({ id }: IndexProps) => {
 
     return {
       name: name?.trim(),
-      contactEmail: contactEmail,
-      contactPerson: contactPerson,
-      contactPhone: contactPhone,
+      contactEmail,
+      contactPerson,
+      contactPhone,
       countryCode: `+${countryCode}`,
     };
   };
@@ -116,9 +118,7 @@ const Index = ({ id }: IndexProps) => {
     try {
       const reqBody = buildRequestBody(formData);
       await createDepartment(reqBody);
-    } catch (error) {
-    } finally {
-    }
+    } catch (error) {}
   };
 
   const onUpdate = async (formData: CreateDepartmentPayload) => {

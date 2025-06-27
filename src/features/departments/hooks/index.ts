@@ -45,8 +45,6 @@ const useGetAllDepartments = (params: any) => {
   });
 };
 
-
-
 const useDeleteDepartment = (options: {
   onError?: (error: any, variables?: any, context?: any) => void;
   onSuccess?: (data: any) => void;
