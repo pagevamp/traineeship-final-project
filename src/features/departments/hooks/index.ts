@@ -1,0 +1,91 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createDepartment,
+  deleteDepartment,
+  getAllDepartments,
+  getAllUsers,
+  updateDepartmentDetailById,
+} from "../api";
+import { Obj } from "@/types";
+import { departmentListParams } from "../types";
+import { getDepartmentDetailById } from "../api";
+import { toast } from "sonner";
+
+const useCreateDepartment = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: Obj) => void;
+}) => {
+  return useMutation({
+    mutationFn: createDepartment,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+
+export const useGetDepartmentById = (id: string) => {
+  return useQuery({
+    queryKey: ["departmentDetail", id],
+    queryFn: () => getDepartmentDetailById(id!),
+    enabled: !!id,
+  });
+};
+
+const useGetAllDepartments = (params: any) => {
+  return useQuery({
+    queryKey: ["departmentList", params],
+    queryFn: () =>
+      getAllDepartments({
+        limit: params.pagination.recordsPerPage,
+        offset: (params.pagination.page - 1) * params.pagination.recordsPerPage,
+        search: params.search,
+        sortBy: params.filters.sortParams.sortParam,
+        order: params.filters.sortParams.sortOrder,
+        id: params.id,
+      }),
+  });
+};
+
+const useDeleteDepartment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => deleteDepartment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["departmentList"] });
+      toast.success("Department Successfully Deleted!!");
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+  });
+};
+
+const useUpdateDepartment = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: Obj) => void;
+}) => {
+  return useMutation({
+    mutationFn: ({ id, body }) => updateDepartmentDetailById(id, body),
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+
+type UseGetAllUsersProps = {
+  id: string;
+} & departmentListParams;
+
+const useGetAllUsers = ({ id, ...params }: UseGetAllUsersProps) => {
+  return useQuery({
+    queryKey: ["users", id, JSON.stringify(params)],
+    queryFn: () => getAllUsers(id, params),
+  });
+};
+
+export {
+  useCreateDepartment,
+  useGetAllDepartments,
+  useDeleteDepartment,
+  useGetAllUsers,
+  useUpdateDepartment,
+};
