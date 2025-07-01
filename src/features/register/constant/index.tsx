@@ -91,8 +91,8 @@ export const ServiceNeeded = [
     value: "ALL_INCLUSIVE",
   },
   {
-    label: "Only Freight with Origin Bayan ",
-    value: "ONLY_FREIGHT_WITH_ORIGIN_BAYAN'",
+    label: "Only Freight with Origin Bayan",
+    value: "ONLY_FREIGHT_WITH_ORIGIN_BAYAN",
   },
 ];
 export const TRUCK_TYPE = [
