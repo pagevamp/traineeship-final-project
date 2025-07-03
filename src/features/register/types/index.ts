@@ -73,7 +73,7 @@ export interface UserPayload {
   employeeSize?: string | null;
   natureOfBusiness: string;
   shipmentType: string;
-  destinationCountry: string;
+  destinationCountry: string[];
   directorDetails?: Director[];
   financialDirectorDetails?: Director[];
   tradeReferenceDetails?: TradeReference[];

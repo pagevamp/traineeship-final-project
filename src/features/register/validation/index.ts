@@ -379,9 +379,11 @@ export const customerRegisterValidationSchemas: any = [
     vehicleType: Yup.object({
       id: Yup.string().required("Vehicle type is required"),
     }),
-    destinationCountry: Yup.string().required(
-      "Destination Country is required"
-    ),
+    destinationCountry: Yup.array()
+      .of(Yup.string().required("Destination Country is required"))
+      .min(1, "Destination Country is required")
+      .required("Destination Country is required"),
+
     shipmentType: Yup.string()
       .oneOf(["LTL", "FTL", "BOTH"])
       .required("Shipment Type is required"),
