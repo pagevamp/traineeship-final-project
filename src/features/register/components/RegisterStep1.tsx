@@ -9,11 +9,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 const Register1 = (props: CustomerRegister1Props) => {
   const { register, control, setValue, trigger, errors } = props;
-  // const [selectedCompany, setSelectedCompany] = React.useState<string[]>([]);
 
-  // const handleRemoveFramework = (value: string) => {
-  //   setSelectedCompany((prev) => prev.filter((item) => item !== value));
-  // };
   return (
     <motion.div
       className="text-[16px] max-w-[500px] w-full px-4 sm:px-6 md:px-8 lg:px-0 justify-items flex flex-col gap-4"
@@ -81,22 +77,6 @@ const Register1 = (props: CustomerRegister1Props) => {
           }}
         />
       </div>
-
-      {/* <div>
-        <MultiSelect
-          options={companyType}
-          selected={selectedCompany}
-          onChange={setSelectedCompany}
-          placeholder="Select Company Type..."
-          searchPlaceholder="Search..."
-          label="Company Type"
-        />
-        <SelectedBadges
-          selected={selectedCompany}
-          options={companyType}
-          onRemove={handleRemoveFramework}
-        />
-      </div> */}
 
       <div>
         <Input

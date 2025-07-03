@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Controller } from "react-hook-form";
 import { Selectbox } from "@/components/ui/select-box";
 import {
+  companyType,
   DESTINATION_COUNTRY,
   getNatureOfBusinessOptions,
   ServiceNeeded,
@@ -12,6 +13,8 @@ import {
   TypeOfEquipment,
 } from "../constant";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { SelectedBadges } from "@/components/selected-badge/SelectedBadges";
 
 const Register2 = (props: CustomerRegister2Props) => {
   const {
@@ -24,7 +27,18 @@ const Register2 = (props: CustomerRegister2Props) => {
     getVehicleType,
     isVehicleTypeLoading,
   } = props;
+  const [selectedCountry, setSelectedCountry] = React.useState<string[]>(
+    defaultValues?.destinationCountry ?? []
+  );
 
+  const handleRemoveFramework = (value: string) => {
+    setSelectedCountry((prev) => {
+      const updated = prev.filter((item) => item !== value);
+      setValue("destinationCountry", updated);
+      trigger("destinationCountry");
+      return updated;
+    });
+  };
   const vehicleType = useMemo(
     () => getVehicleType?.data?.data?.items,
     [getVehicleType?.data?.data?.items]
@@ -95,10 +109,10 @@ const Register2 = (props: CustomerRegister2Props) => {
                       setValue("vehicleType.id", value?.value);
                       trigger("vehicleType.id");
                     }}
-                    placeholder="Select Type Of Truck"
+                    placeholder="Select Vehicle Type"
                     emptyText="No data found."
                     className="w-full bg-transparent h-12 font-secondary text-sm font-[300]"
-                    label="Type Of Truck"
+                    label="Vehicle Type"
                     error={error?.message}
                   />
                   {error && (
@@ -125,21 +139,23 @@ const Register2 = (props: CustomerRegister2Props) => {
             render={({ field, fieldState: { error } }: any) => {
               return (
                 <div>
-                  <Selectbox
-                    options={DESTINATION_COUNTRY?.map((destination: any) => ({
-                      label: destination?.label,
-                      value: destination?.value,
-                    }))}
-                    value={field?.value}
-                    onChange={(value) => {
-                      setValue("destinationCountry", value?.value);
+                  <MultiSelect
+                    options={DESTINATION_COUNTRY}
+                    selected={selectedCountry}
+                    onChange={(selectedValues: string[]) => {
+                      setSelectedCountry(selectedValues);
+                      setValue("destinationCountry", selectedValues);
                       trigger("destinationCountry");
                     }}
                     placeholder="Select Destination Country"
-                    emptyText="No data found."
-                    className="w-full bg-transparent h-12 font-secondary text-sm font-[300]"
+                    searchPlaceholder="Search..."
                     label="Destination Country"
                     error={error?.message}
+                  />
+                  <SelectedBadges
+                    selected={selectedCountry}
+                    options={companyType}
+                    onRemove={handleRemoveFramework}
                   />
                   {error && (
                     <p className="mt-1 text-xs text-destructive font-secondary font-[300] flex items-center gap-1">
