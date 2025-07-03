@@ -63,12 +63,7 @@ export function MultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       {label && (
-        <label
-          className={cn(
-            "text-[14px] font-primary text-[#26203B]",
-            error && "text-destructive"
-          )}
-        >
+        <label className={cn("text-[14px] font-primary text-[#26203B]")}>
           {label}
           {!optional && <span className="text-red-600">*</span>}
         </label>
@@ -79,7 +74,7 @@ export function MultiSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between text-left font-normal min-h-10",
+            "w-full justify-between text-left font-normal min-h-12 mt-1",
             className,
             error && "border-destructive !shadow-error"
           )}

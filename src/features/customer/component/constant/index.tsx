@@ -121,40 +121,49 @@ export const financeDetails = [
 
 export const headerDetails = [
   {
-    img: "/pencil.svg",
+    icon: "icon-park-outline:edit-name",
     label: "Company Name",
     key: "companyName",
   },
   {
-    img: "/system_security_update.svg",
+    icon: "clarity:employee-line",
     label: "Employee Size",
     key: "employeeSize",
   },
   {
-    img: "/share_location.svg",
+    icon: "hugeicons:office",
     label: "Company Type",
     key: "companyType",
   },
   {
-    img: "/transgender.svg",
+    icon: "la:business-time",
     label: "Nature of Business",
     key: "natureOfBusiness",
   },
   {
-    img: "/share_location.svg",
+    icon: "fluent-mdl2:calendar-year",
     label: "Estd. Year",
     key: "yearOfEstablishment",
   },
-
   {
-    img: "/document_scanner.svg",
-    label: "Shipment Type",
-    key: "shipmentType",
-  },
-  {
-    img: "/pencil.svg",
+    icon: "ic:outline-email",
     label: "Email ID",
     key: "companyEmail",
+  },
+  {
+    icon: "tdesign:vehicle",
+    label: "Vehicle Type",
+    key: "vehicleType",
+  },
+  {
+    icon: "gis:search-country",
+    label: "Destination Country",
+    key: "destinationCountry",
+  },
+  {
+    icon: "streamline-ultimate:shipment",
+    label: "Shipment Type",
+    key: "shipmentType",
   },
   // {
   //   img: "/system_security_update.svg",

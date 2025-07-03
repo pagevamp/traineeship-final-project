@@ -188,10 +188,11 @@ const Register6 = (props: CustomerRegister6Props) => {
   });
 
   // Helper function to get the correct form field name for a document ID
-  const getFormFieldName = useCallback((documentId: string): string => {
-    const fieldMapping: { [key: string]: string } = {};
-    return fieldMapping[documentId] || documentId;
-  }, []);
+  // const getFormFieldName = useCallback((documentId: string): string => {
+  //   const fieldMapping: { [key: string]: string } = {};
+  //   return fieldMapping[documentId] || documentId;
+  // }, []);
+  const getFormFieldName = useCallback((documentId: string) => documentId, []);
 
   // Helper function to get file from form data
   const getFileFromForm = useCallback(
@@ -224,7 +225,6 @@ const Register6 = (props: CustomerRegister6Props) => {
     (documentId: string, event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       const formFieldName = getFormFieldName(documentId);
-
       if (file) {
         // Validate file type
         const allowedTypes = [".pdf", ".png", ".jpg", ".jpeg"];
