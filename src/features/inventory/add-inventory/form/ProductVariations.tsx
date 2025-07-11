@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,6 +21,8 @@ import ViewSerialNumberTable from "./ViewSerialNumberTable";
 import SerialNumberAddPopup from "./ManualInput";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Controller } from "react-hook-form";
+import { useConfirmationDialog } from "@/providers/ConfirmationDialogProvider";
+import AlreadySavedSerialNumbersModal from "./AlreadySavedSerialNumbersModal";
 
 export default function ProductVariations(props: any) {
   const {
@@ -37,9 +39,17 @@ export default function ProductVariations(props: any) {
     isEdit,
     deletedSerials,
     setDeletedSerials,
+    setToBeDeletedSerial,
+    setToBeDeletedVariation,
+    alreadySavedSerialNumbers,
+    setAlreadySavedSerialNumbers,
+    setModalShownForSavedSKU,
+    modalShownForSavedSKU,
   } = props;
 
   const defaultValues = watch();
+
+  const { showConfirmation } = useConfirmationDialog();
 
   const { openModal } = useModal();
 
@@ -264,6 +274,8 @@ export default function ProductVariations(props: any) {
         existingSerialNumbers: existingSerialNumbers,
         listIndex: index,
         handleCloseFilter: handleCloseFilter,
+        setToBeDeletedSerial,
+        editData,
       },
       className: "max-w-[844px] rounded-2xl",
     });
@@ -306,6 +318,95 @@ export default function ProductVariations(props: any) {
     }
   };
 
+  function reindexedList() {
+    // Reindex the lists object
+    const reindexedLists: any = {};
+    Object.keys(lists).forEach((key: any, idx: any) => {
+      reindexedLists[idx] = lists[key];
+    });
+    setLists(reindexedLists);
+  }
+
+  const removeVariationHandler = (id: any, index: any, exists: any) => {
+    showConfirmation({
+      title: "Delete Variation",
+      description: "Are you sure you want to delete this variation?",
+      confirmText: "Yes",
+      confirmClassName: "bg-destructive hover:bg-destructive hover:opacity-80",
+      cancelText: "Cancel",
+      isDisabled: false,
+      onConfirm: () => {
+        if (exists) {
+          setToBeDeletedVariation((prev: any) => [...prev, id]);
+        }
+        props?.varitationRemove(index);
+        delete lists?.[index];
+        reindexedList();
+      },
+    });
+  };
+
+  // handle duplicate serial numbers
+
+  const handleRemoveDuplicateSerialNumbers = (index: number, sn: any) => {
+    setLists((prevData) => {
+      const newData = { ...prevData };
+      newData[index] = newData[index]?.filter((item: any) => item !== sn);
+      setValue(
+        `productVariations.${index}.inStock`,
+        newData[index]?.length ?? 0
+      );
+
+      return newData;
+    });
+    setExpirationDates((prevData: any) => {
+      const newData = { ...prevData };
+      const snIndex = lists[index]?.indexOf(sn);
+
+      if (snIndex !== -1) {
+        newData[index] = [...newData[index]]; // Create a copy to avoid mutating the original array
+        newData[index].splice(snIndex, 1); // Remove the expiration date at that index
+      }
+      return newData;
+    });
+    setAllSerialNumbers(allSerialNumbers?.filter((item: any) => item !== sn));
+  };
+
+  const handleDuplicateSerialNumbers = (data: any) => {
+    for (const item of data) {
+      handleRemoveDuplicateSerialNumbers(item.index, item.serial);
+    }
+  };
+
+  console.log(alreadySavedSerialNumbers, "alreadySavedSerialNumbers");
+
+  useEffect(() => {
+    if (
+      alreadySavedSerialNumbers &&
+      alreadySavedSerialNumbers.length > 0 &&
+      !modalShownForSavedSKU
+    ) {
+      setModalShownForSavedSKU(true);
+      openModal({
+        component: AlreadySavedSerialNumbersModal,
+        props: {
+          data: alreadySavedSerialNumbers,
+          defaultValues: watch(),
+          handleDuplicateSerialNumbers,
+          setModalShownForSavedSKU,
+          setAlreadySavedSerialNumbers,
+        },
+        className: "max-w-[600px] rounded-2xl",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    alreadySavedSerialNumbers,
+    modalShownForSavedSKU,
+    openModal,
+    setModalShownForSavedSKU,
+    watch,
+  ]);
   return (
     <div className="w-full pt-4">
       <h2 className="text-base font-secondary font-semibold mb-2">
@@ -880,7 +981,13 @@ export default function ProductVariations(props: any) {
                               variant="ghost"
                               size="sm"
                               onClick={() => {
-                                varitationRemove(index);
+                                const exists = !!Item.variationId;
+
+                                removeVariationHandler(
+                                  Item.variationId,
+                                  index,
+                                  exists
+                                );
                               }}
                               disabled={variations.length === 1}
                               className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"

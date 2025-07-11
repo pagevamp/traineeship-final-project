@@ -6,17 +6,61 @@ import SearchComponent from "@/components/SearchComponent/SearchComponent";
 import LoadingCard from "./loading";
 import { sampleProducts } from "./constant";
 import ProductCard from "./product-card";
+import { useProfileInformation } from "../dashboard/hooks/useProfileInformation";
+import { useGetAllInventoryList } from "../inventory/hooks";
+import { INVENTORY_STATUS } from "../inventory/constant";
 
 const Index = () => {
   const router = useRouter();
+
+  // get profile information
+  const {
+    data: profileInformationData,
+    isLoading: isLoadingProfileInformation,
+  } = useProfileInformation();
+
   // managing states
   const [state, setState] = useState({
     pagination: {
       page: 1,
       recordsPerPage: 10,
     },
+    filter: {
+      sortParams: {
+        sortParam: "createdAt",
+        sortOrder: "DESC",
+      },
+    },
     search: "",
   });
+
+  const {
+    data: productList,
+    isLoading: isProductListLoading,
+    isError: isProductListError,
+  } = useGetAllInventoryList({
+    pagination: state.pagination,
+    filters: state.filter,
+    searchParam: state.search,
+    createdById: profileInformationData?.data?.data?.user?.id,
+    status: INVENTORY_STATUS.PUBLISHED,
+  });
+
+  // memoizing  count
+  const [count, setCount] = useState<number>(0);
+
+  useEffect(() => {
+    const total = productList?.data?.data?.total;
+    if (!isNaN(total) && total !== undefined) {
+      setCount(Number(total));
+    }
+  }, [productList?.data?.data?.total]);
+
+  const productData = useMemo(() => {
+    return productList?.data?.data?.items;
+  }, [productList]);
+
+  console.log(productData, "productData");
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
@@ -24,13 +68,10 @@ const Index = () => {
   const products = useMemo(() => sampleProducts, []);
 
   useEffect(() => {
-    // Simulate initial loading
-    const timer = setTimeout(() => {
+    if (!isProductListLoading && !isProductListError) {
       setIsInitialLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [isProductListLoading, isProductListError]);
 
   if (isInitialLoading) {
     return (
@@ -71,9 +112,15 @@ const Index = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {products.map((product, index) => (
-          <ProductCard key={product.id} product={product} index={index} />
-        ))}
+        {productData?.length > 0 &&
+          productData?.map((product: any, index: any) => (
+            <ProductCard key={product.id} product={product} index={index} />
+          ))}
+        {productData?.length === 0 && (
+          <div className="col-span-full text-center py-8">
+            <p className="text-gray-500">No products found</p>
+          </div>
+        )}
       </div>
     </div>
   );

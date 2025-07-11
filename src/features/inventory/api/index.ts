@@ -26,6 +26,10 @@ export const getAllInventoryList = (params: any) => {
     queryParams.append("createdById", params.createdById.toString());
   }
 
+  if (params.status) {
+    queryParams.append("status", params.status.toString());
+  }
+
   const queryString = queryParams.toString();
   const url = `/products/all${queryString ? `?${queryString}` : ""}`;
 
@@ -46,4 +50,24 @@ export const createInventory = (body: any) => {
 
 export const updateInventory = (body: any) => {
   return api.put(`/products/${body.id}`, body);
+};
+
+export const deleteInventory = (params: any) => {
+  return api.delete(`/products/archive/${params.id}`);
+};
+
+export const deleteInventoryVariation = (params: any) => {
+  return api.delete(`/products/archive-variation/${params.id}`);
+};
+
+export const deleteInventorySerial = (body: any) => {
+  return api.delete(`/products/archive-serialnumber`, { data: body });
+};
+
+export const deleteInventoryAttachment = (body: any) => {
+  return api.delete(`/products/delete/product-image`, { data: body });
+};
+
+export const checkSerialNumber = (body: any) => {
+  return api.post(`/products/check/serial-number`, body);
 };

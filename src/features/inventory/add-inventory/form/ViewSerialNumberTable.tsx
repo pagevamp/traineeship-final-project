@@ -23,6 +23,8 @@ export default function ViewSerialNumberTable(props: any) {
     allSerialNumbers,
     inventoryVariationId,
     size,
+    setToBeDeletedSerial,
+    editData,
   } = props;
 
   const { showConfirmation } = useConfirmationDialog();
@@ -47,7 +49,7 @@ export default function ViewSerialNumberTable(props: any) {
       confirmText: "Yes",
       confirmClassName: "bg-destructive hover:bg-destructive hover:opacity-80",
       cancelText: "Cancel",
-      isDisabled: deleting,
+      isDisabled: false,
       onConfirm: () => {
         deleteLocalSerialNumber(index, serialNumber);
       },
@@ -62,13 +64,18 @@ export default function ViewSerialNumberTable(props: any) {
     // if existing, then localdelete and apicall delete
 
     if (existingSerialNumbers?.flat().includes(serialNumber)) {
-      // api call delete
-      setDeleting(true);
       try {
-        const response = "";
-        // console.log(response)
-        setDeleting(false);
-        toast.success("Successfully deleted the serial number");
+        //push to array for delete after saving
+
+        const idOfSerialForDelete = editData?.productVariations
+          ?.find((item: any) => item.id === inventoryVariationId)
+          ?.stockKeepingUnit?.find(
+            (item: any) => item.sku === serialNumber
+          )?.id;
+
+        if (idOfSerialForDelete) {
+          setToBeDeletedSerial((prev: any) => [...prev, idOfSerialForDelete]);
+        }
         setLocalSerial((prevData: any) => {
           return [...prevData.filter((item: string) => item !== serialNumber)];
         });
@@ -79,8 +86,6 @@ export default function ViewSerialNumberTable(props: any) {
         });
         handleCloseFilter(listIndex, serialNumber);
       } catch (err) {
-        // console.log('error deleting')
-        setDeleting(false);
         toast.error(
           "Failed to delete the serial number. Please try again later."
         );
@@ -251,6 +256,13 @@ export default function ViewSerialNumberTable(props: any) {
                   </tr>
                 );
               }
+            )}
+            {(filteredSerial?.length === 0 || localSerial?.length === 0) && (
+              <tr className="border-2 border-black">
+                <td colSpan={4} className="text-center py-4">
+                  No serial numbers found
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

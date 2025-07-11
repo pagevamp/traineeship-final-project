@@ -177,7 +177,7 @@ const TableComponent: React.FC<Props> = ({
                         <PopoverTrigger asChild>
                           <MoreVertical className="text-muted-foreground cursor-pointer" />
                         </PopoverTrigger>
-                        <PopoverContent>
+                        <PopoverContent side="left">
                           <div className="w-40 p-2 bg-white outline-none border shadow-md rounded-md flex flex-col items-center">
                             {actions.map((action, index) => (
                               <div

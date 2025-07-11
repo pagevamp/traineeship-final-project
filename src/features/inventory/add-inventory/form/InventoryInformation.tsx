@@ -30,6 +30,7 @@ const InventoryInformation = (props: any) => {
     customerId,
     isEdit,
     editData,
+    setToBeDeletedAttachment,
   } = props;
 
   // get unit of measure
@@ -88,8 +89,6 @@ const InventoryInformation = (props: any) => {
     }
   };
 
-  console.log(imageList, "imageList");
-
   const ImageArray: any = [];
 
   if (imageList && imageList?.length !== 0) {
@@ -101,12 +100,9 @@ const InventoryInformation = (props: any) => {
   const handleAttachmentFile = (e: any, name: string) => {
     const filesToAdd = Array.from(e.target.files || []);
 
-    console.log(filesToAdd, "filesToAdd");
-
     setImageList((prevState: any) => {
       const currentFiles = prevState ?? []; // Default to empty array if undefined
 
-      console.log(currentFiles, "currentFiles");
       if (filesToAdd.length === 0) {
         // No new files selected
         setValue(name, currentFiles, { shouldValidate: true });
@@ -131,19 +127,14 @@ const InventoryInformation = (props: any) => {
 
   const removeattachmentFile = (index: number, name: string) => {
     setImageList((prevState: any) => {
-      const updatedFiles = [...prevState[name]];
+      const updatedFiles = [...prevState];
       updatedFiles.splice(index, 1);
 
       setValue(name, updatedFiles, { shouldValidate: true });
 
-      return {
-        ...prevState,
-        [name]: updatedFiles,
-      };
+      return updatedFiles;
     });
   };
-
-  //
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -550,10 +541,10 @@ const InventoryInformation = (props: any) => {
             <div className="w-auto lg:w-full grid grid-cols-3 items-center gap-3 flex-wrap mt-4">
               {ImageArray &&
                 ImageArray.length !== 0 &&
-                ImageArray?.map((image: any, index: any) => {
+                ImageArray?.map((image: any, imgIdx: any) => {
                   return (
                     <div
-                      key={index}
+                      key={imgIdx}
                       className="w-full aspect-square border border-dashed border-[#848484] rounded-xl flex justify-center items-center relative"
                     >
                       {image &&
@@ -562,7 +553,7 @@ const InventoryInformation = (props: any) => {
                         <div className="w-full aspect-square relative overflow-hidden">
                           <Image
                             src={image?.documentUrl}
-                            alt={`cover image ${index + 1}`}
+                            alt={`cover image ${imgIdx + 1}`}
                             fill
                             className="object-cover object-center rounded-xl"
                           />
@@ -573,7 +564,7 @@ const InventoryInformation = (props: any) => {
                           <div className="w-full aspect-square relative overflow-hidden">
                             <Image
                               src={URL.createObjectURL(image)}
-                              alt={`cover image ${index + 1}`}
+                              alt={`cover image ${imgIdx + 1}`}
                               fill
                               className="object-cover object-center rounded-xl"
                             />
@@ -583,9 +574,15 @@ const InventoryInformation = (props: any) => {
                       <div
                         className="absolute -top-2 bg-white z-10 -right-[6px] rounded-full items-center flex justify-center cursor-pointer"
                         onClick={() => {
-                          isFile(image)
-                            ? removeattachmentFile(index, "coverImageList")
-                            : null;
+                          if (isFile(image)) {
+                            removeattachmentFile(imgIdx, "coverImageList");
+                          } else if (!isFile(image) && image?.id) {
+                            setToBeDeletedAttachment((prev: any) => [
+                              ...prev,
+                              image?.id,
+                            ]);
+                            removeattachmentFile(imgIdx, "coverImageList");
+                          }
                         }}
                       >
                         <Icon

@@ -16,6 +16,11 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { toast } from "sonner";
 import {
   useAddInventory,
+  useArchiveInventory,
+  useCheckSerialNumber,
+  useDeleteInventoryAttachment,
+  useDeleteInventorySerial,
+  useDeleteInventoryVariation,
   useGetInventoryById,
   useUpdateInventory,
 } from "../hooks";
@@ -34,6 +39,17 @@ const Index = ({ id }: { id?: string }) => {
   const [isEdit, setIsEdit] = useState(true);
 
   const [editData, setEditData] = useState<any>(null);
+
+  const [toBeDeletedSerial, setToBeDeletedSerial] = useState<any>([]);
+
+  const [toBeDeletedVariation, setToBeDeletedVariation] = useState<any>([]);
+
+  const [toBeDeletedAttachment, setToBeDeletedAttachment] = useState<any>([]);
+
+  const [alreadySavedSerialNumbers, setAlreadySavedSerialNumbers] =
+    useState<any>(null);
+
+  const [modalShownForSavedSKU, setModalShownForSavedSKU] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -88,7 +104,13 @@ const Index = ({ id }: { id?: string }) => {
       setValue("salesFlyer", inventoryDetailsData?.salesFlyer);
       setValue("longDescription", inventoryDetailsData?.longDescription);
       setValue("shortDescription", inventoryDetailsData?.shortDescription);
-      setValue("productVariations", inventoryDetailsData?.productVariations);
+      setValue(
+        "productVariations",
+        inventoryDetailsData?.productVariations?.map((item: any) => ({
+          ...item,
+          variationId: item.id,
+        }))
+      );
       setValue("coverImageList", inventoryDetailsData?.coverImageList);
       setValue("status", inventoryDetailsData?.status);
 
@@ -97,23 +119,6 @@ const Index = ({ id }: { id?: string }) => {
       }
     }
   }, [inventoryDetailsData, setValue, isEdit]);
-
-  const handleConfirmation = (type: string) => {
-    showConfirmation({
-      title:
-        type === INVENTORY_STATUS.PUBLISHED
-          ? "Publish Confirmation"
-          : "Save as Draft Confirmation",
-      description: `Are you sure you want to ${
-        type === INVENTORY_STATUS.PUBLISHED ? "publish" : "Save as Draft"
-      } this product?`,
-      confirmText: "Yes",
-      confirmClassName: "bg-primary hover:bg-primary hover:opacity-80",
-      cancelText: "Cancel",
-      isDisabled: false,
-      onConfirm: () => onSubmit(type),
-    });
-  };
 
   const { mutateAsync: handleAddInventory, isPending: isAddPending } =
     useAddInventory({
@@ -152,8 +157,35 @@ const Index = ({ id }: { id?: string }) => {
     }
   );
 
-  console.log(errors, "errors");
-  console.log(watch(), "watch");
+  // delete variation
+  const { mutateAsync: deleteVariation, isPending: isDeleteVariationPending } =
+    useDeleteInventoryVariation({
+      onError: (error, variables, context) => {
+        toast.error(error?.response?.data?.message || "Something went wrong");
+      },
+      onSuccess: (data) => {},
+    });
+
+  // delete serial
+  const { mutateAsync: deleteSerial, isPending: isDeleteSerialPending } =
+    useDeleteInventorySerial({
+      onError: (error, variables, context) => {
+        toast.error(error?.response?.data?.message || "Something went wrong");
+      },
+      onSuccess: (data) => {},
+    });
+
+  // delete attachment
+  const {
+    mutateAsync: deleteAttachment,
+    isPending: isDeleteAttachmentPending,
+  } = useDeleteInventoryAttachment({
+    onError: (error, variables, context) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+    onSuccess: (data) => {},
+  });
+
 
   const onSubmit = async (status: string) => {
     const formValues = watch();
@@ -208,11 +240,8 @@ const Index = ({ id }: { id?: string }) => {
 
     let Files: any = [];
 
-    if (
-      requestObject?.coverImageList &&
-      requestObject?.coverImageList.length > 0
-    ) {
-      for (const att of requestObject?.coverImageList) {
+    if (imageList && imageList?.length > 0) {
+      for (const att of imageList) {
         if (att instanceof File) {
           let documentFormData = new FormData();
           documentFormData.append("file", att);
@@ -229,14 +258,17 @@ const Index = ({ id }: { id?: string }) => {
         }
       }
 
-      requestObject.coverImageList = Files.map((response: any, index: any) => ({
-        document: response?.result?.data?.data?.filePath,
-        documentType: response?.documentType,
-      }));
-    } else if (
-      requestObject?.coverImageList &&
-      requestObject?.coverImageList.length === 0
-    ) {
+      if (Files.length > 0) {
+        requestObject.coverImageList = Files.map(
+          (response: any, index: any) => ({
+            document: response?.result?.data?.data?.filePath,
+            documentType: response?.documentType,
+          })
+        );
+      } else {
+        delete requestObject.coverImageList;
+      }
+    } else {
       delete requestObject.coverImageList;
     }
 
@@ -256,12 +288,7 @@ const Index = ({ id }: { id?: string }) => {
 
       const updatedData = requestObject?.productVariations?.map(
         (variation: any, index: any) => {
-          console.log(
-            editData?.productVariations?.find(
-              (iV: any) => iV.id == variation.id
-            ),
-            "editData?.productVariations"
-          );
+         
           const existingSerialNumbers =
             editData?.productVariations
               ?.find((iV: any) => iV.id == variation.id)
@@ -287,11 +314,145 @@ const Index = ({ id }: { id?: string }) => {
       );
       requestObject.productVariations = updatedData;
 
+      // delete serial
+      if (toBeDeletedSerial.length > 0) {
+        try {
+          await deleteSerial({
+            serialNumbers: toBeDeletedSerial,
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // delete variation
+      if (toBeDeletedVariation.length > 0) {
+        for (const variationId of toBeDeletedVariation) {
+          try {
+            await deleteVariation({ id: variationId });
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      // delete attachment
+      if (toBeDeletedAttachment.length > 0) {
+        try {
+          await deleteAttachment({
+            imageId: toBeDeletedAttachment,
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       await handleUpdateInventory(requestObject);
       return;
     }
 
     await handleAddInventory(requestObject);
+  };
+
+  // delete
+  const { mutateAsync: archiveInventory, isPending: isArchivePending } =
+    useArchiveInventory({
+      onError: (error, variables, context) => {
+        toast.error(error?.response?.data?.message || "Something went wrong");
+      },
+      onSuccess: (data) => {
+        toast.success("Product Archived Successfully.");
+        router.push(`/inventory`);
+      },
+    });
+
+  const onDelete = async (id: string) => {
+    try {
+      await archiveInventory({ id });
+    } catch (e) {}
+  };
+
+  // delete confirmation
+  const handleDelete = (row: any) => {
+    showConfirmation({
+      title: "Archive Confirmation",
+      description: "Are you sure you want to archive this product?",
+      confirmText: "Yes",
+      confirmClassName: "bg-destructive hover:bg-destructive hover:opacity-80",
+      cancelText: "Cancel",
+      isDisabled: isArchivePending,
+      onConfirm: () => {
+        onDelete(row?.id);
+      },
+    });
+  };
+
+  // check serial numbers
+  const {
+    mutateAsync: checkSerialNumber,
+    isPending: isCheckSerialNumberPending,
+  } = useCheckSerialNumber({
+    onError: (error, variables, context) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+    onSuccess: (data) => {
+      return data;
+    },
+  });
+
+  const handleCheckSerialNumber = async (type: string) => {
+    setModalShownForSavedSKU(false);
+    const formValues = watch();
+    const ClonedFormObject = _.cloneDeep(formValues);
+
+    const existingSerialNumbersOfCurrentProduct =
+      editData?.productVariations
+        ?.flatMap((iV: any) =>
+          iV?.stockKeepingUnit?.map((item: any) => item?.sku)
+        )
+        ?.filter((item: any) => !deletedSerials.includes(item)) || [];
+
+    const allSerialNumbers = ClonedFormObject?.productVariations
+      ?.flatMap((item: any) =>
+        item?.stockKeepingUnit?.map((serial: any) => serial?.sku)
+      )
+      ?.filter(
+        (item: any) => !existingSerialNumbersOfCurrentProduct.includes(item)
+      );
+
+    const uniqueSerialNumbers = Array.from(new Set(allSerialNumbers));
+
+    try {
+      const existingSerialNumbers = await checkSerialNumber({
+        serialNumbers: uniqueSerialNumbers,
+      });
+      if (existingSerialNumbers?.data?.data?.length === 0) {
+        onSubmit(type);
+        return;
+      } else {
+        setAlreadySavedSerialNumbers(existingSerialNumbers?.data?.data);
+        return;
+      }
+    } catch (error) {}
+  };
+
+  const handleConfirmation = (type: string) => {
+    showConfirmation({
+      title:
+        type === INVENTORY_STATUS.PUBLISHED
+          ? "Publish Confirmation"
+          : "Save as Draft Confirmation",
+      description: `Are you sure you want to ${
+        type === INVENTORY_STATUS.PUBLISHED ? "publish" : "Save as Draft"
+      } this product?`,
+      confirmText: "Yes",
+      confirmClassName: "bg-primary hover:bg-primary hover:opacity-80",
+      cancelText: "Cancel",
+      isDisabled: false,
+      onConfirm: () => {
+        handleCheckSerialNumber(type);
+      },
+    });
   };
 
   const inventoryProps = {
@@ -306,6 +467,9 @@ const Index = ({ id }: { id?: string }) => {
     customerId: profileInformationData?.data?.data?.user?.id,
     isEdit,
     editData,
+    setToBeDeletedAttachment,
+    setToBeDeletedSerial,
+    setToBeDeletedVariation,
   };
 
   const productVariationsProps = {
@@ -315,6 +479,10 @@ const Index = ({ id }: { id?: string }) => {
     varitationRemove,
     deletedSerials,
     setDeletedSerials,
+    alreadySavedSerialNumbers,
+    setAlreadySavedSerialNumbers,
+    setModalShownForSavedSKU,
+    modalShownForSavedSKU,
   };
 
   if (isEdit && (isInventoryDetailsLoading || !editData || !editData?.id))
@@ -334,7 +502,13 @@ const Index = ({ id }: { id?: string }) => {
       transition={{ duration: 0.2, delay: 0.1, ease: "easeOut" }}
       className=""
     >
-      {(isFileUploading || isAddPending || isUpdatePending) && (
+      {(isFileUploading ||
+        isAddPending ||
+        isUpdatePending ||
+        isArchivePending ||
+        isDeleteVariationPending ||
+        isDeleteSerialPending ||
+        isDeleteAttachmentPending) && (
         <div className="absolute inset-0 w-screen h-screen bg-black/50 z-[1000]">
           <div className="flex items-center justify-center h-full">
             <AnimatedLoader variant={"truck"} size="sm" />
@@ -358,6 +532,15 @@ const Index = ({ id }: { id?: string }) => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-4">
+            {editData?.id && (
+              <Button
+                variant="default"
+                className="w-fit px-10 rounded-full bg-red-600 hover:opacity-80 hover:bg-red-600"
+                onClick={() => handleDelete(editData)}
+              >
+                Delete
+              </Button>
+            )}
             <Button
               variant="outline"
               className="w-fit px-6 rounded-full border-none"

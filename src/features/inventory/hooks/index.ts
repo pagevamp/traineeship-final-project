@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  checkSerialNumber,
   createInventory,
+  deleteInventory,
+  deleteInventoryAttachment,
+  deleteInventorySerial,
+  deleteInventoryVariation,
   getAllInventoryList,
   getAllUnitOfMeasure,
   getInventoryById,
@@ -18,6 +23,7 @@ const useGetAllInventoryList = (params: any) => {
         limit: params.pagination.recordsPerPage,
         offset: (params.pagination.page - 1) * params.pagination.recordsPerPage,
         createdById: params.createdById,
+        status: params.status,
       }),
     enabled: !!params?.createdById,
   });
@@ -63,10 +69,67 @@ const useUpdateInventory = (options: {
   });
 };
 
+const useArchiveInventory = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: deleteInventory,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+const useDeleteInventoryVariation = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: deleteInventoryVariation,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+const useDeleteInventorySerial = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: deleteInventorySerial,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+
+const useDeleteInventoryAttachment = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: deleteInventoryAttachment,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
+
+const useCheckSerialNumber = (options: {
+  onError?: (error: any, variables: any, context: any) => void;
+  onSuccess?: (data: any) => void;
+}) => {
+  return useMutation({
+    mutationFn: checkSerialNumber,
+    onError: options.onError,
+    onSuccess: options.onSuccess,
+  });
+};
 export {
   useGetAllUnitOfMeasure,
   useAddInventory,
   useUpdateInventory,
   useGetInventoryById,
   useGetAllInventoryList,
+  useArchiveInventory,
+  useDeleteInventoryVariation,
+  useDeleteInventorySerial,
+  useDeleteInventoryAttachment,
+  useCheckSerialNumber,
 };
