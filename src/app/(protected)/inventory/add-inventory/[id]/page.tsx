@@ -1,15 +1,18 @@
 import React from "react";
-import InventoryDetails from "@/features/inventory/components/InventoryDetails";
+import AddInventoryComponent from "@/features/inventory/add-inventory";
 
 export async function generateMetadata() {
   return {
-    title: "Inventory Detail | Arctern Express",
+    title: "Edit Inventory | Arctern Express",
   };
 }
 const Index = ({ params }: { params: { id: string } }) => {
+  const { id } = params;
+
+
   return (
     <div>
-      <InventoryDetails id={params.id} />
+      <AddInventoryComponent id={id} />
     </div>
   );
 };
