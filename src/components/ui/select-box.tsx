@@ -140,7 +140,7 @@ export function Selectbox({
                       value === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  <span className="font-secondary text-sm font-[300]">
+                  <span className="font-secondary text-sm break-all font-[300]">
                     {option.label}
                   </span>
                 </CommandItem>

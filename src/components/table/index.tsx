@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { get } from "lodash";
+import { capitalize, get } from "lodash";
 import { PageLoader } from "../loaders/page-loader";
 import { NoDataFound } from "@/components/Nodatafound/NoDataFound";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ type Column = {
   type?: string;
 };
 
-type Action = {
+export type Action = {
   label: React.JSX.Element;
   onClick?: (row: any) => void;
   disabled?: boolean;
@@ -37,11 +37,12 @@ type Action = {
 type Props = {
   columns: Column[];
   data: any[];
-  isLoading: boolean;
-  currentPage: number;
+  isLoading?: boolean;
+  currentPage?: number;
   actions?: Action[];
   className?: string;
   showSN?: boolean;
+  showHeader?: boolean;
 };
 
 const TableComponent: React.FC<Props> = ({
@@ -51,11 +52,36 @@ const TableComponent: React.FC<Props> = ({
   isLoading,
   currentPage,
   className,
+  showHeader = true,
   showSN = true,
 }) => {
   const getData = (row: any, key: string, type?: string) => {
     if (type == "status") {
       return <div className="">Pending</div>;
+    }
+    if (type === "fullName") {
+      const firstName = get(row, "firstName");
+      const lastName = get(row, "lastName");
+      const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
+      return <div className="truncate max-w-40">{fullName || "N/A"}</div>;
+    }
+    if (type === "importerFullName") {
+      const firstName = get(row, "user.firstName");
+      const lastName = get(row, "user.lastName");
+      const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
+      return <div className="truncate max-w-40">{fullName || "N/A"}</div>;
+    }
+    if (type === "NetTerms") {
+      const netTerms = get(row, "netTerm.days");
+      const netTermDays = `${netTerms ?? ""} Days`.trim();
+      return <div className="truncate max-w-40">{netTermDays || "N/A"}</div>;
+    }
+    if (type === "companyType") {
+      const cType = get(row, "companyType");
+      const type = `${capitalize(cType?.split("_")?.join(" ")) ?? ""}`;
+      return (
+        <div className="truncate max-w-40 capitalize">{type || "N/A"}</div>
+      );
     }
     return get(row, key) || "N/A";
   };
@@ -68,29 +94,30 @@ const TableComponent: React.FC<Props> = ({
     >
       <div className="w-full overflow-x-auto ">
         <Table className="min-w-full rounded-lg">
-          <TableHeader>
-            <TableRow className="">
-              {/* Fixed SN Column */}
-              {showSN && (
-                <TableHead className="px-4 py-4 text-left w-12 text-[#0B0704] font-medium text-sm font-primary">
-                  SN
-                </TableHead>
-              )}
-              {columns.map((col) => (
-                <TableHead
-                  key={col.key}
-                  className="px-4 py-2 whitespace-nowrap text-left text-sm font-primary text-[#0B0704] font-medium"
-                >
-                  {col.label}
-                </TableHead>
-              ))}
-              {actions && (
-                <TableHead className="px-4 py-2 text-center text-[#0B0704] font-medium text-sm">
-                  Actions
-                </TableHead>
-              )}
-            </TableRow>
-          </TableHeader>
+          {showHeader && (
+            <TableHeader>
+              <TableRow className="">
+                {showSN && (
+                  <TableHead className="px-4 py-4 text-left w-12 text-[#0B0704] font-medium text-sm font-primary">
+                    SN
+                  </TableHead>
+                )}
+                {columns.map((col) => (
+                  <TableHead
+                    key={col.key}
+                    className="px-4 py-2 whitespace-nowrap text-left text-sm font-primary text-[#0B0704] font-medium"
+                  >
+                    {col.label}
+                  </TableHead>
+                ))}
+                {actions && (
+                  <TableHead className="px-4 py-2 text-center text-[#0B0704] font-medium text-sm">
+                    Actions
+                  </TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+          )}
           <TableBody>
             {isLoading && (
               <TableRow className="hover:!bg-transparent">
