@@ -53,4 +53,7 @@ export class EnvConfig {
 
   @IsString()
   EMAIL_DOMAIN_ADDRESS: string;
+
+  @IsString()
+  NODE_ENV: string;
 }

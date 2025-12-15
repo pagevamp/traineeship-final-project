@@ -1,12 +1,11 @@
 services:
   #dev service
-  app-dev:
-    container_name: ride-sharing-dev
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+  app:
+    container_name: ride-sharing
+    build: 
+      dockerfile: Dockerfile
     env_file:
-      - .env.development
+      - .env
     ports:
       - '3001:3000'
     volumes:
@@ -14,28 +13,11 @@ services:
       # - /app/node_modules
     depends_on:
       - db
-    profiles:
-      - dev
-
-  #production service
-  app-prod:
-    container_name: ride-sharing-prod
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    env_file:
-      - .env.production
-    ports:
-      - '8080:3000'
-    depends_on:
-      - db
-    profiles:
-      - prod
 
   # database services:
   db:
     image: postgres:18-alpine
-    container_name: ride-sharing--db
+    container_name: ride-sharing-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -53,7 +35,6 @@ services:
 
     ports:
       - '6380:6379'
-
 
 volumes:
   db-data:

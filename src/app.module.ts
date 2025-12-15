@@ -25,7 +25,6 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV || 'production'}`],
       validate: (env) => {
         const envConfig = plainToInstance(EnvConfig, env, {
           enableImplicitConversion: true,
