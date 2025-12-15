@@ -7,8 +7,9 @@ import { plainToInstance } from 'class-transformer';
 import { EnvConfig } from './config/env.validation';
 import { validateSync } from 'class-validator';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { BullModule } from '@nestjs/bullmq';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -60,6 +61,6 @@ import { BullModule } from '@nestjs/bullmq';
     }),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
