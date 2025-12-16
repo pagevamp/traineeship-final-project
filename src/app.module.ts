@@ -9,6 +9,8 @@ import { validateSync } from 'class-validator';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthGuardModule } from './auth-guard/auth-guard.module';
+import { ClerkClientProvider } from './providers/clerk.provider';
 
 @Module({
   imports: [
@@ -46,8 +48,12 @@ import { APP_GUARD } from '@nestjs/core';
         return envConfig;
       },
     }),
+    AuthGuardModule,
   ],
   controllers: [AppController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    ClerkClientProvider,
+  ],
 })
 export class AppModule {}
