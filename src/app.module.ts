@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CoreModule } from './core/core.module';
+// import { CoreModule } from './core/core.module';
+import { CoreModule } from '@/core/core.module';
 import dataSource from './data-source';
 import { plainToInstance } from 'class-transformer';
-import { EnvConfig } from './config/env.validation';
+import { EnvConfig } from '@/config/env.validation';
 import { validateSync } from 'class-validator';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
