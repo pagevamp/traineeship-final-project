@@ -38,15 +38,16 @@ export class AuthGuardService implements CanActivate {
         secretKey: this.configService.get('CLERK_SECRET_KEY'),
       });
 
-      if ('errors' in tokenResult) {
-        throw new UnauthorizedException('Invalid session');
-      }
-
       const user = await this.clerkClient.users.getUser(tokenResult.sub!);
       request.user = user;
       return true;
     } catch (err) {
-      throw new UnauthorizedException('Invalid or expired token');
+      if (err instanceof Error) {
+        throw new UnauthorizedException(
+          `Invalid or expired token: ${err.message}`,
+        );
+      }
+      throw new UnauthorizedException('Invalid token');
     }
   }
 }

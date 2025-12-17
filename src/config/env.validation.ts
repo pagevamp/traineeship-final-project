@@ -58,7 +58,7 @@ export class EnvConfig {
   NODE_ENV: string;
 
   @IsString()
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
+  CLERK_PUBLISHABLE_KEY: string;
 
   @IsString()
   CLERK_SECRET_KEY: string;
