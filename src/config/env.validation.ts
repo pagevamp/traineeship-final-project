@@ -49,9 +49,6 @@ export class EnvConfig {
   EMAIL_PASS: string;
 
   @IsString()
-  EMAIL_CONFIRMATION_URL: string;
-
-  @IsString()
   EMAIL_DOMAIN_ADDRESS: string;
 
   @IsString()
