@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -55,7 +56,35 @@ export class RideRequestService {
       );
     }
 
-    await this.rideRequestRepository.update(request_id, updateRideRequestData);
+    const { departureStart, departureEnd, ...updatedPayload } =
+      updateRideRequestData;
+
+    const currentRange = existingRideRequest.departureTime;
+    const start = departureStart || new Date(currentRange[0]);
+    const end = departureEnd || new Date(currentRange[1]);
+
+    if (start >= end) {
+      throw new BadRequestException('Start time must be before end time');
+    }
+
+    const departureRange = `[${start.toISOString()}, ${end.toISOString()}]`;
+
+    const result = await this.rideRequestRepository
+      .createQueryBuilder()
+      .update(RideRequest)
+      .set({
+        ...updatedPayload,
+        departureTime: departureRange,
+      })
+      .where('id = :id', { id: request_id })
+      .andWhere('isAccepted = false')
+      .execute();
+
+    if (result.affected === 0) {
+      throw new ConflictException(
+        'Could not update ride request, the ride may have already been accepted or cancelled.',
+      );
+    }
     return { message: 'Ride request has been updated successfully' };
   }
 }
