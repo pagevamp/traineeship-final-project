@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -57,5 +58,20 @@ export class TripController {
   async cancelTrip(@Param('id') id: string) {
     await this.tripService.cancelTrip(id);
     return { message: 'Trip deleted successfully' };
+  }
+
+  @UseGuards(AuthGuardService)
+  @HttpCode(HttpStatus.OK)
+  @Get('/')
+  async getPendingTrips(@Req() request: RequestWithUser) {
+    const driverId = request.user?.id;
+    if (!driverId) {
+      throw new NotFoundException('Trips for User not found');
+    }
+    const trips = await this.tripService.getPendingTrips(driverId);
+    return {
+      message: 'Pending trips',
+      data: { trips },
+    };
   }
 }

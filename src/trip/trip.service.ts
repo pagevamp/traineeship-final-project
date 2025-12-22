@@ -46,4 +46,14 @@ export class TripService {
 
     await this.tripRepository.softDelete(id);
   }
+
+  async getPendingTrips(driverId: string) {
+    const trip = await this.tripRepository.find({
+      where: { status: TripStatus.NOT_STARTED, driverId },
+    });
+    if (!trip) {
+      throw new NotFoundException(`No Pending Trips`);
+    }
+    return trip;
+  }
 }
