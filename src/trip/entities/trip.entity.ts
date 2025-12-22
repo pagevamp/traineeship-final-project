@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { TripStatus, VehicleType } from '../dto/create_trips.dto';
 
 @Entity({ name: 'trips' })
 export class Trip {
@@ -19,7 +20,7 @@ export class Trip {
   readonly requestId: string;
 
   @Column({ type: 'varchar', length: 255 })
-  readonly status: string;
+  readonly status: TripStatus;
 
   @Column({ type: 'varchar', length: 255, name: 'contact_number' })
   readonly contactNumber: string;
@@ -30,7 +31,7 @@ export class Trip {
     nullable: true,
     name: 'vehicle_type',
   })
-  readonly vehicleType: string;
+  readonly vehicleType: VehicleType;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   readonly createdAt: Date;
