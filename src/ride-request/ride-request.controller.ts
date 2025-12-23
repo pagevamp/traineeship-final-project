@@ -35,7 +35,7 @@ export class RideRequestController {
   }
 
   @UseGuards(AuthGuardService)
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async updateRideRequest(
     @Body() body: UpdateRideRequestData,
@@ -48,7 +48,7 @@ export class RideRequestController {
   }
 
   @UseGuards(AuthGuardService)
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async deleteRideRequest(
     @Param('id', ParseUUIDPipe) id: string,
@@ -60,7 +60,7 @@ export class RideRequestController {
   }
 
   @UseGuards(AuthGuardService)
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Get('my-rides')
   async getAllRidesByUserId(@Req() request: RequestWithUser) {
     const userId = request.decodedData.id;
@@ -69,7 +69,7 @@ export class RideRequestController {
   }
 
   @UseGuards(AuthGuardService)
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   async getRideById(
     @Req() request: RequestWithUser,
@@ -81,7 +81,7 @@ export class RideRequestController {
   }
 
   @UseGuards(AuthGuardService)
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Get()
   async getAllRides() {
     return await this.rideRequestService.getAll();
