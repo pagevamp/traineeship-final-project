@@ -12,7 +12,7 @@ export enum VehicleType {
   FOUR_WHEELER = 'Four Wheeler',
 }
 
-export class CreateTripData {
+export class CreateTripDto {
   @IsNotEmpty()
   @IsUUID()
   @MaxLength(255)

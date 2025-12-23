@@ -13,10 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TripService } from './trip.service';
-import { CreateTripData } from './dto/create_trips.dto';
+import { CreateTripDto } from './dto/create-trips.dto';
 import { AuthGuardService } from '@/auth-guard/auth-guard.service';
 import type { RequestWithUser } from '@/types/RequestWithUser';
-import { UpdateTripData } from './dto/update_trips.dto';
+import { UpdateTripData } from './dto/update-trips.dto';
 
 @Controller('trips')
 export class TripController {
@@ -26,15 +26,14 @@ export class TripController {
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
   async createTrip(
-    @Body() createTripDto: CreateTripData,
+    @Body() createTripDto: CreateTripDto,
     @Req() request: RequestWithUser,
   ) {
     const userId = request.user?.id;
     if (!userId) {
       throw new NotFoundException('User not found');
     }
-    const contactNumber = request.user?.publicMetadata?.contactNumber as string;
-    return await this.tripService.create(userId, contactNumber, createTripDto);
+    return await this.tripService.create(userId, createTripDto);
   }
 
   @UseGuards(AuthGuardService)
@@ -71,6 +70,21 @@ export class TripController {
     const trips = await this.tripService.getPendingTrips(driverId);
     return {
       message: 'Pending trips',
+      data: { trips },
+    };
+  }
+
+  @UseGuards(AuthGuardService)
+  @HttpCode(HttpStatus.OK)
+  @Get('/')
+  async getAllTripsById(@Req() request: RequestWithUser) {
+    const driverId = request.user?.id;
+    if (!driverId) {
+      throw new NotFoundException('Trips for User not found');
+    }
+    const trips = await this.tripService.getAllTripsById(driverId);
+    return {
+      message: 'User related trips',
       data: { trips },
     };
   }

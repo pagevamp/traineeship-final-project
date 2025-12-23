@@ -13,9 +13,11 @@ import { AuthGuardModule } from './auth-guard/auth-guard.module';
 import { RideRequestModule } from './ride-request/ride-request.module';
 import { TripModule } from './trip/trip.module';
 import { ClerkClientProvider } from './providers/clerk.provider';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot(dataSource.options),
     CoreModule,
     ThrottlerModule.forRoot({

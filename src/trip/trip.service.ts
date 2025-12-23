@@ -1,59 +1,157 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from './entities/trip.entity';
-import { CreateTripData, TripStatus } from './dto/create_trips.dto';
-import { UpdateTripData } from './dto/update_trips.dto';
+import { CreateTripDto, TripStatus } from './dto/create-trips.dto';
+import { UpdateTripData } from './dto/update-trips.dto';
+import type { ClerkClient } from '@clerk/backend';
+import { getStringMetadata } from '@/utils/clerk.utils';
+import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver.dto';
+import { RideAcceptedEvent } from '@/event/ride-accepted-event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+// import { getDateRangeFloor } from '@/utils/date-range';
 
 @Injectable()
 export class TripService {
   constructor(
+    private eventEmitter: EventEmitter2,
+    @Inject('ClerkClient')
+    private readonly clerkClient: ClerkClient,
     @InjectRepository(Trip)
     private readonly tripRepository: Repository<Trip>,
   ) {}
 
-  async create(
-    userId: string,
-    contactNumber: string,
-    createTripData: CreateTripData,
-  ): Promise<Trip> {
+  // to create a new trip when a user accepts a ride request
+  async create(userId: string, createTripDto: CreateTripDto): Promise<Trip> {
     const trip = this.tripRepository.create({
       driverId: userId,
-      contactNumber: contactNumber,
-      requestId: createTripData.requestId,
+      requestId: createTripDto.requestId,
       status: TripStatus.NOT_STARTED,
-      vehicleType: createTripData.vehicleType,
+      vehicleType: createTripDto.vehicleType,
     });
+
+    const event = new RideAcceptedEvent(trip.requestId, trip.ride.acceptedAt);
+    this.eventEmitter.emit('ride.updated', event);
 
     return await this.tripRepository.save(trip);
   }
 
+  // to update the ride status from the drivers end
+  // only for the rides they have accepted
   async update(id: string, updateTripData: UpdateTripData): Promise<Trip> {
     const trip = await this.tripRepository.findOneBy({ id });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
     }
 
+    // if (getDateRangeFloor(trip.ride.departureTime) > new Date()) {
+    //   throw new NotFoundException(`Trip cannot be updated now`);
+    // }
+
     Object.assign(trip, updateTripData);
     return await this.tripRepository.save(trip);
   }
 
+  // to cancel the accepted trip from the drivers end
+  // only for the rides they have accepted
   async cancelTrip(id: string) {
     const trip = await this.tripRepository.findOneBy({ id });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
     }
 
+    // if (getDateRangeFloor(trip.ride.departureTime) > new Date()) {
+    //   throw new NotFoundException(`Trip cannot be updated now`);
+    // }
+
     await this.tripRepository.softDelete(id);
   }
 
-  async getPendingTrips(driverId: string) {
-    const trip = await this.tripRepository.find({
+  // to get all the pending trips for a particular user
+  async getPendingTrips(
+    driverId: string,
+  ): Promise<{ message: string; trips: GetTripsByDriverResponseDto[] }> {
+    const trips = await this.tripRepository.find({
       where: { status: TripStatus.NOT_STARTED, driverId },
     });
-    if (!trip) {
+    if (trips.length === 0) {
       throw new NotFoundException(`No Pending Trips`);
     }
-    return trip;
+    const driver = await this.clerkClient.users.getUser(driverId);
+    const mappedTrips = trips.map((trip) => ({
+      ...trip,
+      driver: {
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        profileImage: driver.imageUrl,
+        phoneNumber: getStringMetadata(driver, 'contactNumber'),
+        primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+      },
+    }));
+
+    return {
+      message: 'Driver Details fetched successfully',
+      trips: mappedTrips,
+    };
+  }
+
+  // to get all the trips for a particular user
+  // to be able to view the trips history of the user
+  async getAllTripsById(
+    driverId: string,
+  ): Promise<{ message: string; trips: GetTripsByDriverResponseDto[] }> {
+    const trips = await this.tripRepository.find({
+      where: { driverId },
+    });
+    if (trips.length === 0) {
+      throw new NotFoundException(`No Trips Found`);
+    }
+
+    const driver = await this.clerkClient.users.getUser(driverId);
+    const mappedTrips = trips.map((trip) => ({
+      ...trip,
+      driver: {
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        profileImage: driver.imageUrl,
+        phoneNumber: getStringMetadata(driver, 'contactNumber'),
+        primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+      },
+    }));
+    return {
+      message: 'Driver Details fetched successfully',
+      trips: mappedTrips,
+    };
+  }
+
+  // to get all the trips details of the driver that accepts the ride
+  async getAcceptedTripById(
+    driverId: string,
+    requestId: string,
+  ): Promise<{ message: string; trips: any }> {
+    const trips = await this.tripRepository.findOneBy({
+      driverId,
+      requestId,
+    });
+    if (!trips) {
+      throw new NotFoundException(`No Trips Found`);
+    }
+
+    const driver = await this.clerkClient.users.getUser(driverId);
+    const tripDetails = {
+      trips,
+      driver: {
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        profileImage: driver.imageUrl,
+        phoneNumber: getStringMetadata(driver, 'contactNumber'),
+        primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+      },
+    };
+    return {
+      message: 'Driver Details fetched successfully',
+      trips: tripDetails,
+    };
   }
 }
