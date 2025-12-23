@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from './entities/trip.entity';
@@ -9,7 +14,6 @@ import { getStringMetadata } from '@/utils/clerk.utils';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver.dto';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-
 // import { getDateRangeFloor } from '@/utils/date-range';
 
 @Injectable()
@@ -39,10 +43,18 @@ export class TripService {
 
   // to update the ride status from the drivers end
   // only for the rides they have accepted
-  async update(id: string, updateTripData: UpdateTripData): Promise<Trip> {
+  async update(
+    id: string,
+    userId: string,
+    updateTripData: UpdateTripData,
+  ): Promise<Trip> {
     const trip = await this.tripRepository.findOneBy({ id });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
+    }
+
+    if (userId !== trip.driverId) {
+      throw new ConflictException(`Can only update your trips`);
     }
 
     // if (getDateRangeFloor(trip.ride.departureTime) > new Date()) {
@@ -55,12 +67,17 @@ export class TripService {
 
   // to cancel the accepted trip from the drivers end
   // only for the rides they have accepted
-  async cancelTrip(id: string) {
-    const trip = await this.tripRepository.findOneBy({ id });
+  async cancelTrip(id: string, userId: string) {
+    const trip = await this.tripRepository.findOneBy({
+      id: id,
+      driverId: userId,
+    });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
     }
-
+    if (userId !== trip.driverId) {
+      throw new ConflictException(`Can only delete your trips`);
+    }
     // if (getDateRangeFloor(trip.ride.departureTime) > new Date()) {
     //   throw new NotFoundException(`Trip cannot be updated now`);
     // }

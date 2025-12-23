@@ -48,27 +48,27 @@ export class TripController {
     if (!userId) {
       throw new NotFoundException('User not found');
     }
-    return await this.tripService.update(userId, updateTripDto);
+    return await this.tripService.update(id, userId, updateTripDto);
   }
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async cancelTrip(@Param('id') id: string) {
-    await this.tripService.cancelTrip(id);
+  async cancelTrip(@Param('id') id: string, @Req() request: RequestWithUser) {
+    const userId = request.decodedData.id;
+    await this.tripService.cancelTrip(id, userId);
     return { message: 'Trip deleted successfully' };
   }
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
-  @Get('/')
+  @Get('/pending')
   async getPendingTrips(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
-
-    if (!driverId) {
-      throw new NotFoundException('Trips for User not found');
-    }
     const trips = await this.tripService.getPendingTrips(driverId);
+    if (!trips) {
+      throw new NotFoundException('No pending trips');
+    }
     return {
       message: 'Pending trips',
       data: { trips },
@@ -80,10 +80,10 @@ export class TripController {
   @Get('/')
   async getAllTripsById(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
-    if (!driverId) {
+    const trips = await this.tripService.getAllTripsById(driverId);
+    if (!trips) {
       throw new NotFoundException('Trips for User not found');
     }
-    const trips = await this.tripService.getAllTripsById(driverId);
     return {
       message: 'User related trips',
       data: { trips },
