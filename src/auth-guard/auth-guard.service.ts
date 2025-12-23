@@ -41,10 +41,11 @@ export class AuthGuardService implements CanActivate {
 
       if (!user) throw new UnauthorizedException('User does not exist');
 
-      request.decodedData = user;
-      if (!request.decodedData) {
+      if (!user) {
         throw new UnauthorizedException('user not found');
       }
+
+      request.decodedData = user;
 
       return true;
     } catch (err) {

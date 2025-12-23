@@ -18,7 +18,7 @@ import { CreateRideRequestData } from './dto/create-ride-request-data';
 import type { RequestWithUser } from '@/types/RequestWithUser';
 import { UpdateRideRequestData } from './dto/update-ride-request-data';
 
-@Controller('ride-request')
+@Controller('ride-requests')
 export class RideRequestController {
   constructor(private readonly rideRequestService: RideRequestService) {}
 
