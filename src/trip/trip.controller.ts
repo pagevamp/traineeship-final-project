@@ -56,6 +56,9 @@ export class TripController {
   @Delete(':id')
   async cancelTrip(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.decodedData.id;
+    if (!userId) {
+      throw new NotFoundException('User not found');
+    }
     await this.tripService.cancelTrip(id, userId);
     return { message: 'Trip deleted successfully' };
   }
