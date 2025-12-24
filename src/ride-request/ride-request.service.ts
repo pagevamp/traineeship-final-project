@@ -29,12 +29,12 @@ export class RideRequestService {
   @OnEvent('ride.updated')
   async updateAcceptedAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
-    const acceptedTime = event.acceptedAt;
+    const acceptedTime = event.acceptedAt?.getTime();
 
     const ride = await this.rideRequestRepository.findOneBy({ id: requestId });
 
     if (!acceptedTime) {
-      throw new ConflictException('No accepted at date/time');
+      throw new ConflictException('No acceptedAt date/time');
     }
 
     if (!ride) {
@@ -51,7 +51,7 @@ export class RideRequestService {
 
     await this.rideRequestRepository.update(
       { id: requestId },
-      { acceptedAt: new Date(acceptedTime) },
+      { acceptedAt: acceptedTime },
     );
   }
 
