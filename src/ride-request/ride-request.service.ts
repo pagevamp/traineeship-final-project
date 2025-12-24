@@ -33,6 +33,10 @@ export class RideRequestService {
 
     const ride = await this.rideRequestRepository.findOneBy({ id: requestId });
 
+    if (!acceptedTime) {
+      throw new ConflictException('No accepted at date/time');
+    }
+
     if (!ride) {
       throw new NotFoundException('No such ride request');
     }
@@ -47,7 +51,7 @@ export class RideRequestService {
 
     await this.rideRequestRepository.update(
       { id: requestId },
-      { acceptedAt: acceptedTime },
+      { acceptedAt: new Date(acceptedTime) },
     );
   }
 
