@@ -12,7 +12,7 @@ import type { ClerkClient } from '@clerk/backend';
 import { getPassengersForTrips, getStringMetadata } from '@/utils/clerk.utils';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getDateRangeFloor } from '@/utils/date-range';
+import { getDateRangeCeiling } from '@/utils/date-range';
 import { RideRequest } from '@/ride-request/ride-request.entity';
 import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
@@ -54,6 +54,10 @@ export class TripService {
       throw new ConflictException('Cannot accept own ride-request');
     }
 
+    if (getDateRangeCeiling(ride.departureTime) < new Date()) {
+      throw new ForbiddenException(`Trip cannot be accepted now`);
+    }
+
     const trip = this.tripRepository.create({
       driverId: userId,
       ride,
@@ -87,11 +91,6 @@ export class TripService {
       throw new ForbiddenException(`Can only update your own trips`);
     }
 
-    //to check is ride has expired
-    if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
-      throw new ForbiddenException(`Trip cannot be updated now`);
-    }
-
     Object.assign(trip, updateTripData);
     return await this.tripRepository.save(trip);
   }
@@ -110,7 +109,7 @@ export class TripService {
       throw new ForbiddenException(`Can only delete your trips`);
     }
     //to check is ride has expired
-    if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
+    if (getDateRangeCeiling(trip.ride.departureTime) < new Date()) {
       throw new ForbiddenException(`Trip cannot be deleted now`);
     }
 
