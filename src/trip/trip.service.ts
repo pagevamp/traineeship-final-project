@@ -16,6 +16,7 @@ import { RideRequest } from '@/ride-request/ride-request.entity';
 import { CreateTripDto, TripStatus } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
+// import { RideCancelledEvent } from '@/event/ride-canceled-event';
 
 @Injectable()
 export class TripService {
@@ -69,7 +70,7 @@ export class TripService {
 
     //event triggered when a user accepts a ride
     const event = new RideAcceptedEvent(ride.id, new Date());
-    this.eventEmitter.emit('ride.updated', event);
+    this.eventEmitter.emit('ride.updated', { type: 'ride.deleted', event });
 
     return await this.tripRepository.save(trip);
   }
@@ -120,6 +121,13 @@ export class TripService {
       throw new ConflictException(`Trip cannot be deleted now`);
     }
 
+    //event triggered when a user accepts a ride
+    this.eventEmitter.emit('ride.deleted', {
+      type: 'ride.deleted',
+      requestId: trip.ride.id,
+      acceptedAt: null,
+    });
+    this.eventEmitter.emit('ride.deleted', { type: 'ride.deleted', event });
     await this.tripRepository.softDelete(id);
   }
 

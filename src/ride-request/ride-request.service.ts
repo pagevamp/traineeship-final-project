@@ -14,8 +14,11 @@ import { UpdateRideRequestData } from './dto/update-ride-request-data';
 import { GetRideResponseData } from './dto/get-ride-response-data';
 import { getStringMetadata } from '@/utils/clerk.utils';
 import { OnEvent } from '@nestjs/event-emitter';
-import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { getDateRangeFloor } from '@/utils/date-range';
+
+type RideEvent =
+  | { type: 'ride.updated'; requestId: string; acceptedAt: Date }
+  | { type: 'ride.deleted'; requestId: string };
 
 @Injectable()
 export class RideRequestService {
@@ -26,16 +29,11 @@ export class RideRequestService {
     private readonly rideRequestRepository: Repository<RideRequest>,
   ) {}
 
-  @OnEvent('ride.updated')
-  async updateAcceptedAt(event: RideAcceptedEvent) {
-    const requestId = event.requestId;
-    const acceptedTime = event.acceptedAt;
-
-    const ride = await this.rideRequestRepository.findOneBy({ id: requestId });
-
-    if (!acceptedTime) {
-      throw new ConflictException('No acceptedAt date/time');
-    }
+  @OnEvent(['ride.updated', 'ride.deleted'])
+  async updateAcceptedAt(event: RideEvent) {
+    const ride = await this.rideRequestRepository.findOneBy({
+      id: event.requestId,
+    });
 
     if (!ride) {
       throw new NotFoundException('No such ride request');
@@ -49,10 +47,19 @@ export class RideRequestService {
       throw new ConflictException('Ride cannot be updated now');
     }
 
-    await this.rideRequestRepository.update(
-      { id: requestId },
-      { acceptedAt: acceptedTime },
-    );
+    if (event.type === 'ride.updated') {
+      await this.rideRequestRepository.update(
+        { id: event.requestId },
+        { acceptedAt: event.acceptedAt },
+      );
+    }
+
+    if (event.type === 'ride.deleted') {
+      await this.rideRequestRepository.update(
+        { id: event.requestId },
+        { acceptedAt: null },
+      );
+    }
   }
 
   async create(
