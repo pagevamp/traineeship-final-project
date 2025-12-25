@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Type } from 'class-transformer';
 import { Trip } from '../entities/trip.entity';
 import {

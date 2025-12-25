@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { ClerkClient, User } from '@clerk/backend';
 import type { Trip } from '@/trip/entities/trip.entity';
 import { PassengerData } from '@/ride-request/dto/get-ride-response-data';
