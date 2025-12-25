@@ -16,7 +16,7 @@ import { RideRequest } from '@/ride-request/ride-request.entity';
 import { CreateTripDto, TripStatus } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
-// import { RideCancelledEvent } from '@/event/ride-canceled-event';
+import { RideCancelledEvent } from '@/event/ride-canceled-event';
 
 @Injectable()
 export class TripService {
@@ -70,7 +70,7 @@ export class TripService {
 
     //event triggered when a user accepts a ride
     const event = new RideAcceptedEvent(ride.id, new Date());
-    this.eventEmitter.emit('ride.updated', { type: 'ride.deleted', event });
+    this.eventEmitter.emit('ride.accepted', event);
 
     return await this.tripRepository.save(trip);
   }
@@ -122,12 +122,8 @@ export class TripService {
     }
 
     //event triggered when a user accepts a ride
-    this.eventEmitter.emit('ride.deleted', {
-      type: 'ride.deleted',
-      requestId: trip.ride.id,
-      acceptedAt: null,
-    });
-    this.eventEmitter.emit('ride.deleted', { type: 'ride.deleted', event });
+    const event = new RideCancelledEvent(trip.ride.id, null);
+    this.eventEmitter.emit('ride.cancelled', { type: 'ride.cancelled', event });
     await this.tripRepository.softDelete(id);
   }
 
