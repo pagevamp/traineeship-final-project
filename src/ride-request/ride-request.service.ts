@@ -42,10 +42,6 @@ export class RideRequestService {
       throw new NotFoundException('No such ride request');
     }
 
-    if (!ride.departureTime || typeof ride.departureTime !== 'string') {
-      throw new ConflictException('Invalid departure time');
-    }
-
     if (getDateRangeFloor(ride.departureTime) < new Date()) {
       throw new ConflictException('Ride cannot be updated now');
     }
