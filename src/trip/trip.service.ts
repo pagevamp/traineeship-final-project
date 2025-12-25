@@ -122,8 +122,8 @@ export class TripService {
     }
 
     //event triggered when a user accepts a ride
-    const event = new RideCancelledEvent(trip.ride.id, null);
-    this.eventEmitter.emit('ride.cancelled', { type: 'ride.cancelled', event });
+    const event = new RideCancelledEvent(trip.ride.id);
+    this.eventEmitter.emit('ride.cancelled', event);
     await this.tripRepository.softDelete(id);
   }
 

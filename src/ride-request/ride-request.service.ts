@@ -26,6 +26,7 @@ export class RideRequestService {
     private readonly rideRequestRepository: Repository<RideRequest>,
   ) {}
 
+  //event listener for when a user accepts a ride
   @OnEvent('ride.accepted')
   async updateAcceptedAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
@@ -55,16 +56,11 @@ export class RideRequestService {
     );
   }
 
+  //event listener for when a user cancels a ride
   @OnEvent('ride.cancelled')
   async updateCancelledAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
-    const acceptedTime = null;
-
     const ride = await this.rideRequestRepository.findOneBy({ id: requestId });
-
-    if (!acceptedTime) {
-      throw new ConflictException('No acceptedAt date/time');
-    }
 
     if (!ride) {
       throw new NotFoundException('No such ride request');
@@ -80,7 +76,7 @@ export class RideRequestService {
 
     await this.rideRequestRepository.update(
       { id: requestId },
-      { acceptedAt: acceptedTime },
+      { acceptedAt: null },
     );
   }
 
