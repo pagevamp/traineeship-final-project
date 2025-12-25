@@ -17,7 +17,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { getDateRangeFloor } from '@/utils/date-range';
 import { Trip } from '@/trip/entities/trip.entity';
-import { TripStatus } from '@/trip/dto/create-trips-data';
+import { TripStatus } from '@/types/trips';
 
 @Injectable()
 export class RideRequestService {
@@ -47,6 +47,7 @@ export class RideRequestService {
     }
   }
 
+  //event listener for when a user accepts a ride
   @OnEvent('ride.accepted')
   async updateAcceptedAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
@@ -60,10 +61,6 @@ export class RideRequestService {
 
     if (!ride) {
       throw new NotFoundException('No such ride request');
-    }
-
-    if (!ride.departureTime || typeof ride.departureTime !== 'string') {
-      throw new ConflictException('Invalid departure time');
     }
 
     if (getDateRangeFloor(ride.departureTime) < new Date()) {
