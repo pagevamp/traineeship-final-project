@@ -26,7 +26,7 @@ export class RideRequestService {
     private readonly rideRequestRepository: Repository<RideRequest>,
   ) {}
 
-  @OnEvent('ride.updated')
+  @OnEvent('ride.accepted')
   async updateAcceptedAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
     const acceptedTime = event.acceptedAt;
