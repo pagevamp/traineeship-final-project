@@ -26,6 +26,7 @@ export class RideRequestService {
     private readonly rideRequestRepository: Repository<RideRequest>,
   ) {}
 
+  //event listener for when a user accepts a ride
   @OnEvent('ride.accepted')
   async updateAcceptedAt(event: RideAcceptedEvent) {
     const requestId = event.requestId;
@@ -39,10 +40,6 @@ export class RideRequestService {
 
     if (!ride) {
       throw new NotFoundException('No such ride request');
-    }
-
-    if (!ride.departureTime || typeof ride.departureTime !== 'string') {
-      throw new ConflictException('Invalid departure time');
     }
 
     if (getDateRangeFloor(ride.departureTime) < new Date()) {
