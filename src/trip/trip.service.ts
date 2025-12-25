@@ -1,11 +1,12 @@
 import {
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Trip } from './entities/trip.entity';
 import type { ClerkClient } from '@clerk/backend';
 import { getPassengersForTrips, getStringMetadata } from '@/utils/clerk.utils';
@@ -13,9 +14,10 @@ import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getDateRangeFloor } from '@/utils/date-range';
 import { RideRequest } from '@/ride-request/ride-request.entity';
-import { CreateTripDto, TripStatus } from './dto/create-trips-data';
+import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
+import { TripStatus } from '@/types/trips';
 
 @Injectable()
 export class TripService {
@@ -32,15 +34,11 @@ export class TripService {
   // to create a new trip when a user accepts a ride request
   async create(userId: string, createTripDto: CreateTripDto): Promise<Trip> {
     const completedTrips = await this.tripRepository.find({
-      where: { driverId: userId, status: TripStatus.REACHED_DESTINATION },
-    });
-
-    const allTrips = await this.tripRepository.find({
-      where: { driverId: userId },
+      where: { driverId: userId, status: Not(TripStatus.REACHED_DESTINATION) },
     });
 
     // check if any incomplete trips left
-    if (allTrips.length > completedTrips.length) {
+    if (completedTrips.length > 0) {
       throw new ConflictException('Complete Pending Rides First');
     }
 
@@ -48,16 +46,12 @@ export class TripService {
       where: { id: createTripDto.requestId },
     });
 
-    if (ride?.passengerId === userId) {
-      throw new ConflictException('Cannot accept own ride-request');
-    }
-
     if (!ride) {
       throw new NotFoundException('Ride request not found');
     }
 
-    if (ride.acceptedAt === undefined) {
-      throw new ConflictException('acceptedAt field undefined');
+    if (ride?.passengerId === userId) {
+      throw new ConflictException('Cannot accept own ride-request');
     }
 
     const trip = this.tripRepository.create({
@@ -90,12 +84,12 @@ export class TripService {
     }
 
     if (userId !== trip.driverId) {
-      throw new ConflictException(`Can only update your own trips`);
+      throw new ForbiddenException(`Can only update your own trips`);
     }
 
     //to check is ride has expired
     if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
-      throw new ConflictException(`Trip cannot be updated now`);
+      throw new ForbiddenException(`Trip cannot be updated now`);
     }
 
     Object.assign(trip, updateTripData);
@@ -113,11 +107,11 @@ export class TripService {
       throw new NotFoundException(`Trip: ${id} not found`);
     }
     if (userId !== trip.driverId) {
-      throw new ConflictException(`Can only delete your trips`);
+      throw new ForbiddenException(`Can only delete your trips`);
     }
     //to check is ride has expired
     if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
-      throw new ConflictException(`Trip cannot be deleted now`);
+      throw new ForbiddenException(`Trip cannot be deleted now`);
     }
 
     await this.tripRepository.softDelete(id);
@@ -131,7 +125,7 @@ export class TripService {
       where: { status: TripStatus.NOT_STARTED, driverId },
       relations: ['ride'],
     });
-    if (trips.length === 0) {
+    if (!trips.length) {
       throw new NotFoundException(`No Pending Trips`);
     }
     const driver = await this.clerkClient.users.getUser(driverId);
@@ -173,7 +167,7 @@ export class TripService {
       where: { driverId },
       relations: ['ride'],
     });
-    if (trips.length === 0) {
+    if (!trips.length) {
       throw new NotFoundException(`No Trips Found`);
     }
 
@@ -215,7 +209,7 @@ export class TripService {
       where: { ride: { passengerId: id } },
     });
     if (!trip) {
-      throw new NotFoundException(`No Trips Found`);
+      throw new NotFoundException(`No Accepting Trip Found`);
     }
 
     const driver = await this.clerkClient.users.getUser(trip.driverId);

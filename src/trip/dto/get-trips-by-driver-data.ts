@@ -4,35 +4,10 @@ import {
   IsNotEmpty,
   IsObject,
   IsOptional,
-  IsPhoneNumber,
-  IsString,
-  IsUrl,
-  MaxLength,
   ValidateNested,
 } from 'class-validator';
 import { PassengerData } from '@/ride-request/dto/get-ride-response-data';
-
-export class Driver {
-  @IsString()
-  @MaxLength(255)
-  readonly firstName?: string | null;
-
-  @IsString()
-  @MaxLength(255)
-  readonly lastName?: string | null;
-
-  @IsPhoneNumber()
-  @MaxLength(255)
-  readonly phoneNumber?: string | null;
-
-  @IsUrl()
-  @MaxLength(255)
-  readonly profileImage?: string | null;
-
-  @IsString()
-  @MaxLength(255)
-  readonly primaryLocation?: string | null;
-}
+import { Driver } from '@/trip/dto/get-driver-data';
 
 export class GetTripsByDriverResponseDto extends Trip {
   @IsObject()

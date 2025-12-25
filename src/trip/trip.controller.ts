@@ -30,9 +30,6 @@ export class TripController {
     @Req() request: RequestWithUser,
   ) {
     const userId = request.decodedData.id;
-    if (!userId) {
-      throw new NotFoundException('User not found');
-    }
     return await this.tripService.create(userId, createTripDto);
   }
 
@@ -45,9 +42,6 @@ export class TripController {
     @Req() request: RequestWithUser,
   ) {
     const userId = request.decodedData.id;
-    if (!userId) {
-      throw new NotFoundException('User not found');
-    }
     return await this.tripService.update(id, userId, updateTripDto);
   }
 
@@ -56,9 +50,6 @@ export class TripController {
   @Delete(':id')
   async cancelTrip(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.decodedData.id;
-    if (!userId) {
-      throw new NotFoundException('User not found');
-    }
     await this.tripService.cancelTrip(id, userId);
     return { message: 'Trip deleted successfully' };
   }
@@ -69,9 +60,6 @@ export class TripController {
   async getPendingTrips(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
     const trips = await this.tripService.getPendingTrips(driverId);
-    if (!trips) {
-      throw new NotFoundException('No pending trips');
-    }
     return {
       message: 'Pending trips',
       data: { trips },
@@ -84,9 +72,6 @@ export class TripController {
   async getAllTripsById(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
     const trips = await this.tripService.getAllTripsById(driverId);
-    if (!trips) {
-      throw new NotFoundException('Trips for User not found');
-    }
     return {
       message: 'User related trips',
       data: { trips },
@@ -95,7 +80,7 @@ export class TripController {
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
-  @Get('/acceptor-trip')
+  @Get('/accepted')
   async getAcceptedTripById(@Req() request: RequestWithUser) {
     const passengerId = request.decodedData.id;
     const id = passengerId;
