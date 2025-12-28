@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RideRequest } from './ride-request.entity';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import type { ClerkClient } from '@clerk/backend';
 import { CreateRideRequestData } from './dto/create-ride-request-data';
 import { UpdateRideRequestData } from './dto/update-ride-request-data';
@@ -146,38 +146,13 @@ export class RideRequestService {
       throw new ConflictException('Accepted rides cannot be edited');
     }
 
-    const { departureStart, departureEnd, ...otherPayload } =
-      updateRideRequestData;
-
-    if (
-      (departureStart && !departureEnd) ||
-      (!departureStart && departureEnd)
-    ) {
-      throw new BadRequestException(
-        'Both departureStart and departureEnd must be provided together',
-      );
-    }
-
-    const updatedPayload = { ...otherPayload };
-    let departureTimeRange = existingRideRequest.departureTime;
-    if (departureStart && departureEnd) {
-      this.validateDepartureGap(
-        new Date(departureStart.toISOString()),
-        new Date(departureEnd.toISOString()),
-      );
-      departureTimeRange = `[${departureStart.toISOString()}, ${departureEnd.toISOString()}]`;
-    }
-
     const result = await this.rideRequestRepository.update(
       {
         id: request_id,
         passengerId: userId,
         acceptedAt: IsNull(),
       },
-      {
-        ...updatedPayload,
-        departureTime: departureTimeRange,
-      },
+      updateRideRequestData,
     );
 
     if (result.affected === 0) {
@@ -283,13 +258,12 @@ export class RideRequestService {
   }
 
   // to fetch all the pending ride request for riders/drivers
-  async getAll(): Promise<{
+  async getAll(userId: string): Promise<{
     message: string;
     rides: GetRideResponseData[];
   }> {
     const rides = await this.rideRequestRepository.find({
-      where: { acceptedAt: IsNull() },
-      withDeleted: true,
+      where: { acceptedAt: IsNull(), passengerId: Not(userId) },
     });
 
     const passengerIds = [...new Set(rides.map((ride) => ride.passengerId))];
@@ -351,5 +325,30 @@ export class RideRequestService {
     });
 
     return { message: 'Ride request has been deleted successfully' };
+  }
+
+  async getPendingByUserId(
+    userId: string,
+  ): Promise<{ message: string; rides: GetRideResponseData[] }> {
+    const rides = await this.rideRequestRepository.find({
+      where: { passengerId: userId, acceptedAt: IsNull() },
+    });
+
+    const user = await this.clerkClient.users.getUser(userId);
+
+    const formattedRides = rides.map((ride) => ({
+      ...ride,
+      passenger: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImage: user.imageUrl,
+        phoneNumber: getStringMetadata(user, 'contactNumber'),
+      },
+    }));
+
+    return {
+      message: 'Ride requests have been fetched successfully',
+      rides: formattedRides,
+    };
   }
 }
