@@ -10,7 +10,6 @@ import { RideRequest } from './ride-request.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import type { ClerkClient } from '@clerk/backend';
 import { CreateRideRequestData } from './dto/create-ride-request-data';
-import { UpdateRideRequestData } from './dto/update-ride-request-data';
 import { GetRideResponseData } from './dto/get-ride-response-data';
 import { getStringMetadata } from '@/utils/clerk.utils';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -118,49 +117,6 @@ export class RideRequestService {
     });
 
     return await this.rideRequestRepository.save(rideRequest);
-  }
-
-  async update(
-    userId: string,
-    request_id: string,
-    updateRideRequestData: UpdateRideRequestData,
-  ): Promise<{ message: string }> {
-    if (!request_id) {
-      throw new BadRequestException('Request id is required');
-    }
-
-    const existingRideRequest = await this.rideRequestRepository.findOne({
-      where: {
-        id: request_id,
-        passengerId: userId,
-      },
-    });
-
-    if (!existingRideRequest) {
-      throw new NotFoundException(
-        `Ride request with ID ${request_id} not found`,
-      );
-    }
-
-    if (existingRideRequest.acceptedAt) {
-      throw new ConflictException('Accepted rides cannot be edited');
-    }
-
-    const result = await this.rideRequestRepository.update(
-      {
-        id: request_id,
-        passengerId: userId,
-        acceptedAt: IsNull(),
-      },
-      updateRideRequestData,
-    );
-
-    if (result.affected === 0) {
-      throw new ConflictException(
-        'Could not update ride request, the ride may have already been accepted or cancelled.',
-      );
-    }
-    return { message: 'Ride request has been updated successfully' };
   }
 
   async delete(
