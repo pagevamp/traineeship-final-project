@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RideRequest } from './ride-request.entity';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import type { ClerkClient } from '@clerk/backend';
 import { CreateRideRequestData } from './dto/create-ride-request-data';
 import { UpdateRideRequestData } from './dto/update-ride-request-data';
@@ -16,6 +16,8 @@ import { getStringMetadata } from '@/utils/clerk.utils';
 import { OnEvent } from '@nestjs/event-emitter';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { getDateRangeFloor } from '@/utils/date-range';
+import { Trip } from '@/trip/entities/trip.entity';
+import { TripStatus } from '@/types/trips';
 
 @Injectable()
 export class RideRequestService {
@@ -24,7 +26,26 @@ export class RideRequestService {
     private readonly clerkClient: ClerkClient,
     @InjectRepository(RideRequest)
     private readonly rideRequestRepository: Repository<RideRequest>,
+    @InjectRepository(Trip)
+    private readonly tripRepository: Repository<Trip>,
   ) {}
+
+  private validateDepartureGap(start: Date, end: Date): void {
+    const diffMs = end.getTime() - start.getTime();
+    const diffMinutes = diffMs / (1000 * 60);
+
+    if (diffMinutes <= 0) {
+      throw new ConflictException(
+        'Departure end time must be after departure start time',
+      );
+    }
+
+    if (diffMinutes > 60) {
+      throw new ConflictException(
+        'Departure time gap cannot be more than 1 hour',
+      );
+    }
+  }
 
   //event listener for when a user accepts a ride
   @OnEvent('ride.accepted')
@@ -56,6 +77,36 @@ export class RideRequestService {
     userId: string,
     createRideRequestData: CreateRideRequestData,
   ): Promise<RideRequest> {
+    const pendingRequest = await this.rideRequestRepository.findOne({
+      where: {
+        passengerId: userId,
+        acceptedAt: IsNull(),
+      },
+    });
+
+    if (pendingRequest) {
+      throw new ConflictException(
+        'Please cancel your previous ride request before requesting a new ride',
+      );
+    }
+
+    const activeRide = await this.tripRepository.findOne({
+      where: {
+        ride: { passengerId: userId },
+      },
+      relations: ['ride'],
+    });
+
+    if (activeRide && activeRide?.status !== TripStatus.REACHED_DESTINATION)
+      throw new ConflictException(
+        'Please complete your pending rides or cancel it to request a new ride',
+      );
+
+    this.validateDepartureGap(
+      new Date(createRideRequestData.departureStart.toISOString()),
+      new Date(createRideRequestData.departureEnd.toISOString()),
+    );
+
     const departureRange = `[${createRideRequestData.departureStart.toISOString()}, ${createRideRequestData.departureEnd.toISOString()}]`;
     const rideRequest = this.rideRequestRepository.create({
       passengerId: userId,
@@ -95,37 +146,13 @@ export class RideRequestService {
       throw new ConflictException('Accepted rides cannot be edited');
     }
 
-    const { departureStart, departureEnd, ...otherPayload } =
-      updateRideRequestData;
-
-    if (
-      (departureStart && !departureEnd) ||
-      (!departureStart && departureEnd)
-    ) {
-      throw new BadRequestException(
-        'Both departureStart and departureEnd must be provided together',
-      );
-    }
-
-    const updatedPayload = { ...otherPayload };
-    let departureTimeRange = existingRideRequest.departureTime;
-    if (departureStart && departureEnd) {
-      if (departureStart > departureEnd) {
-        throw new BadRequestException('Start time must be before end time');
-      }
-      departureTimeRange = `[${departureStart.toISOString()}, ${departureEnd.toISOString()}]`;
-    }
-
     const result = await this.rideRequestRepository.update(
       {
         id: request_id,
         passengerId: userId,
         acceptedAt: IsNull(),
       },
-      {
-        ...updatedPayload,
-        departureTime: departureTimeRange,
-      },
+      updateRideRequestData,
     );
 
     if (result.affected === 0) {
@@ -231,13 +258,12 @@ export class RideRequestService {
   }
 
   // to fetch all the pending ride request for riders/drivers
-  async getAll(): Promise<{
+  async getAll(userId: string): Promise<{
     message: string;
     rides: GetRideResponseData[];
   }> {
     const rides = await this.rideRequestRepository.find({
-      where: { acceptedAt: IsNull() },
-      withDeleted: true,
+      where: { acceptedAt: IsNull(), passengerId: Not(userId) },
     });
 
     const passengerIds = [...new Set(rides.map((ride) => ride.passengerId))];
@@ -261,6 +287,65 @@ export class RideRequestService {
         },
       };
     });
+    return {
+      message: 'Ride requests have been fetched successfully',
+      rides: formattedRides,
+    };
+  }
+
+  async getExpiredRideRequests() {
+    const now = new Date();
+
+    return (await this.rideRequestRepository.find()).filter(
+      (ride) => getDateRangeFloor(ride.departureTime) < now,
+    );
+  }
+
+  async deleteExpiredRequests(
+    request_id: string,
+  ): Promise<{ message: string }> {
+    if (!request_id) {
+      throw new BadRequestException('Request id is required');
+    }
+
+    const existingRideRequest = await this.rideRequestRepository.findOne({
+      where: {
+        id: request_id,
+      },
+    });
+
+    if (!existingRideRequest) {
+      throw new NotFoundException(
+        `Ride request with ID ${request_id} not found`,
+      );
+    }
+
+    await this.rideRequestRepository.softDelete({
+      id: request_id,
+    });
+
+    return { message: 'Ride request has been deleted successfully' };
+  }
+
+  async getPendingByUserId(
+    userId: string,
+  ): Promise<{ message: string; rides: GetRideResponseData[] }> {
+    const rides = await this.rideRequestRepository.find({
+      where: { passengerId: userId, acceptedAt: IsNull() },
+    });
+
+    const user = await this.clerkClient.users.getUser(userId);
+
+    const formattedRides = rides.map((ride) => ({
+      ...ride,
+      passenger: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImage: user.imageUrl,
+        phoneNumber: getStringMetadata(user, 'contactNumber'),
+      },
+    }));
+
     return {
       message: 'Ride requests have been fetched successfully',
       rides: formattedRides,

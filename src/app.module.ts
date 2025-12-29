@@ -14,17 +14,21 @@ import { RideRequestModule } from './ride-request/ride-request.module';
 import { TripModule } from './trip/trip.module';
 import { ClerkClientProvider } from './providers/clerk.provider';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot(dataSource.options),
     CoreModule,
+    CronModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {
           ttl: 60000,
-          limit: 10,
+          limit: 100,
         },
       ],
     }),

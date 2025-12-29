@@ -70,6 +70,15 @@ export class RideRequestController {
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
+  @Get('me/pending')
+  async getPendingRidesByUserId(@Req() request: RequestWithUser) {
+    const userId = request.decodedData.id;
+
+    return await this.rideRequestService.getPendingByUserId(userId);
+  }
+
+  @UseGuards(AuthGuardService)
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
   async getRideById(
     @Req() request: RequestWithUser,
@@ -83,7 +92,8 @@ export class RideRequestController {
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getAllRides() {
-    return await this.rideRequestService.getAll();
+  async getAllRides(@Req() request: RequestWithUser) {
+    const userId = request.decodedData.id;
+    return await this.rideRequestService.getAll(userId);
   }
 }

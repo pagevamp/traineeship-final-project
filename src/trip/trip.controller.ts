@@ -86,7 +86,7 @@ export class TripController {
     const trips = await this.tripService.getAcceptedTripById(id);
     return {
       message: 'User related trips',
-      data: { trips },
+      data: trips ? trips : null,
     };
   }
 }
