@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTripDto } from './create-trips-data';
+import { TripStatus } from '@/types/trips';
+import { IsEnum, IsNotEmpty, MaxLength } from 'class-validator';
 
-export class UpdateTripDto extends PartialType(CreateTripDto) {}
+export class UpdateTripDto {
+  @IsNotEmpty()
+  @IsEnum(TripStatus)
+  @MaxLength(255)
+  readonly status: TripStatus;
+}

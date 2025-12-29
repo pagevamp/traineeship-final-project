@@ -83,7 +83,6 @@ export class TripService {
   ): Promise<Trip> {
     const trip = await this.tripRepository.findOne({
       where: { id },
-      relations: ['ride'],
     });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
