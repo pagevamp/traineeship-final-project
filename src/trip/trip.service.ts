@@ -18,6 +18,7 @@ import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
 import { TripStatus } from '@/types/trips';
+import { RideCancelledEvent } from '@/event/ride-cancelled-event';
 
 @Injectable()
 export class TripService {
@@ -54,6 +55,7 @@ export class TripService {
       throw new ConflictException('Cannot accept own ride-request');
     }
 
+    //to check is ride-request has expired with time-range upper limit
     if (getDateRangeCeiling(ride.departureTime) < new Date()) {
       throw new ForbiddenException(`Trip cannot be accepted now`);
     }
@@ -81,7 +83,6 @@ export class TripService {
   ): Promise<Trip> {
     const trip = await this.tripRepository.findOne({
       where: { id },
-      relations: ['ride'],
     });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
@@ -113,6 +114,9 @@ export class TripService {
       throw new ForbiddenException(`Trip cannot be deleted now`);
     }
 
+    //event triggered when a user accepts a ride
+    const event = new RideCancelledEvent(trip.ride.id);
+    this.eventEmitter.emit('ride.cancelled', event);
     await this.tripRepository.softDelete(id);
   }
 
