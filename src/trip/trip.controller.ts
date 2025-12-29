@@ -90,7 +90,7 @@ export class TripController {
     }
     return {
       message: 'User related trips',
-      data: { trips },
+      data: trips ? trips : null,
     };
   }
 }
