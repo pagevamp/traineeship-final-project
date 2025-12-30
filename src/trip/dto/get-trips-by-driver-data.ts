@@ -8,8 +8,9 @@ import {
 } from 'class-validator';
 import { PassengerData } from '@/ride-request/dto/get-ride-response-data';
 import { Driver } from '@/trip/dto/get-driver-data';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class GetTripsByDriverResponseDto extends Trip {
+export class GetTripsByDriverResponseDto extends PartialType(Trip) {
   @IsObject()
   @IsNotEmpty()
   @ValidateNested()

@@ -56,7 +56,7 @@ export class TripController {
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
-  @Get('/pending')
+  @Get('/me/pending')
   async getPendingTrips(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
     const trips = await this.tripService.getPendingTrips(driverId);
@@ -68,7 +68,7 @@ export class TripController {
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
-  @Get('/')
+  @Get('/me')
   async getAllTripsById(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
     const trips = await this.tripService.getAllTripsById(driverId);

@@ -77,7 +77,6 @@ export class TripService {
   ): Promise<Trip> {
     const trip = await this.tripRepository.findOne({
       where: { id },
-      relations: ['ride'],
     });
     if (!trip) {
       throw new NotFoundException(`Trip: ${id} not found`);
@@ -85,11 +84,6 @@ export class TripService {
 
     if (userId !== trip.driverId) {
       throw new ForbiddenException(`Can only update your own trips`);
-    }
-
-    //to check is ride has expired
-    if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
-      throw new ForbiddenException(`Trip cannot be updated now`);
     }
 
     Object.assign(trip, updateTripData);
@@ -122,7 +116,7 @@ export class TripService {
     driverId: string,
   ): Promise<{ trips: GetTripsByDriverResponseDto[] }> {
     const trips = await this.tripRepository.find({
-      where: { status: TripStatus.NOT_STARTED, driverId },
+      where: { status: Not(TripStatus.REACHED_DESTINATION), driverId },
       relations: ['ride'],
     });
     if (!trips.length) {
@@ -134,7 +128,7 @@ export class TripService {
     const passengerMap = await getPassengersForTrips(trips, this.clerkClient);
 
     //to attach each of the trips with the driver information
-    const mappedTrips = trips.map((trip) => {
+    const mappedTrips = trips.flatMap((trip) => {
       const passenger = passengerMap.get(trip.ride.passengerId);
 
       return {
@@ -143,11 +137,13 @@ export class TripService {
           firstName: driver.firstName,
           lastName: driver.lastName,
           phoneNumber: getStringMetadata(driver, 'contactNumber'),
+          primaryLocation: getStringMetadata(driver, 'primaryLocation'),
         },
         passenger: {
           firstName: passenger?.firstName,
           lastName: passenger?.lastName,
           phoneNumber: passenger?.phoneNumber,
+          primaryLocation: passenger?.primaryLocation,
           profileImage: passenger?.profileImage,
         },
       };
@@ -166,9 +162,11 @@ export class TripService {
     const trips = await this.tripRepository.find({
       where: { driverId },
       relations: ['ride'],
+      withDeleted: true,
     });
+
     if (!trips.length) {
-      throw new NotFoundException(`No Trips Found`);
+      throw new NotFoundException(`No Pending Trips`);
     }
 
     const driver = await this.clerkClient.users.getUser(driverId);
@@ -176,8 +174,8 @@ export class TripService {
     //to batch fetch all the passengers for the trips
     const passengerMap = await getPassengersForTrips(trips, this.clerkClient);
 
-    //to attach each of the trips with the driver and passenger information
-    const mappedTrips = trips.map((trip) => {
+    //to attach each of the trips with the driver information
+    const mappedTrips = trips.flatMap((trip) => {
       const passenger = passengerMap.get(trip.ride.passengerId);
 
       return {
@@ -185,7 +183,6 @@ export class TripService {
         driver: {
           firstName: driver.firstName,
           lastName: driver.lastName,
-          profileImage: driver.imageUrl,
           phoneNumber: getStringMetadata(driver, 'contactNumber'),
           primaryLocation: getStringMetadata(driver, 'primaryLocation'),
         },
@@ -193,10 +190,12 @@ export class TripService {
           firstName: passenger?.firstName,
           lastName: passenger?.lastName,
           phoneNumber: passenger?.phoneNumber,
+          primaryLocation: passenger?.primaryLocation,
           profileImage: passenger?.profileImage,
         },
       };
     });
+
     return {
       trips: mappedTrips,
     };
