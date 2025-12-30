@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -56,7 +55,7 @@ export class TripController {
 
   @UseGuards(AuthGuardService)
   @HttpCode(HttpStatus.OK)
-  @Get('/pending')
+  @Get('/me/pending')
   async getPendingTrips(@Req() request: RequestWithUser) {
     const driverId = request.decodedData.id;
     const trips = await this.tripService.getPendingTrips(driverId);
@@ -85,9 +84,6 @@ export class TripController {
     const passengerId = request.decodedData.id;
     const id = passengerId;
     const trips = await this.tripService.getAcceptedTripById(id);
-    if (!trips) {
-      throw new NotFoundException('Trips for User not found');
-    }
     return {
       message: 'User related trips',
       data: trips ? trips : null,
