@@ -15,11 +15,11 @@ export class GetTripsByDriverResponseDto extends PartialType(Trip) {
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Driver)
-  readonly driver: Driver;
+  readonly driver?: Driver | null;
 
   @IsObject()
   @IsOptional()
   @ValidateNested()
   @Type(() => PassengerData)
-  readonly passenger: PassengerData;
+  readonly passenger?: PassengerData | null;
 }
