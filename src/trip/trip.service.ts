@@ -119,7 +119,7 @@ export class TripService {
       where: { status: Not(TripStatus.REACHED_DESTINATION), driverId },
       relations: ['ride'],
     });
-    if (!trips.length) {
+    if (!trips) {
       throw new NotFoundException(`No Pending Trips`);
     }
     const driver = await this.clerkClient.users.getUser(driverId);
@@ -165,7 +165,7 @@ export class TripService {
       withDeleted: true,
     });
 
-    if (!trips.length) {
+    if (!trips) {
       throw new NotFoundException(`No Pending Trips`);
     }
 
