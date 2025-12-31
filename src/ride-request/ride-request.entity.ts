@@ -32,7 +32,7 @@ export class RideRequest {
   @Column({ type: 'tstzrange', name: 'departure_time' })
   readonly departureTime: string;
 
-  @Column({ name: 'accepted_at', type: 'timestamptz' })
+  @Column({ name: 'accepted_at', type: 'timestamptz', nullable: true })
   readonly acceptedAt?: Date | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

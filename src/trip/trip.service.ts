@@ -12,12 +12,13 @@ import type { ClerkClient } from '@clerk/backend';
 import { getPassengersForTrips, getStringMetadata } from '@/utils/clerk.utils';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getDateRangeFloor } from '@/utils/date-range';
+import { getDateRangeCeiling } from '@/utils/date-range';
 import { RideRequest } from '@/ride-request/ride-request.entity';
 import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
 import { TripStatus } from '@/types/trips';
+import { RideCancelledEvent } from '@/event/ride-cancelled-event';
 
 @Injectable()
 export class TripService {
@@ -104,10 +105,13 @@ export class TripService {
       throw new ForbiddenException(`Can only delete your trips`);
     }
     //to check is ride has expired
-    if (getDateRangeFloor(trip.ride.departureTime) < new Date()) {
+    if (getDateRangeCeiling(trip.ride.departureTime) < new Date()) {
       throw new ForbiddenException(`Trip cannot be deleted now`);
     }
 
+    //event triggered when a user accepts a ride
+    const event = new RideCancelledEvent(trip.ride.id);
+    this.eventEmitter.emit('ride.cancelled', event);
     await this.tripRepository.softDelete(id);
   }
 
@@ -119,7 +123,7 @@ export class TripService {
       where: { status: Not(TripStatus.REACHED_DESTINATION), driverId },
       relations: ['ride'],
     });
-    if (!trips.length) {
+    if (!trips) {
       throw new NotFoundException(`No Pending Trips`);
     }
     const driver = await this.clerkClient.users.getUser(driverId);
@@ -173,7 +177,7 @@ export class TripService {
       withDeleted: true,
     });
 
-    if (!trips.length) {
+    if (!trips) {
       throw new NotFoundException(`No Pending Trips`);
     }
 

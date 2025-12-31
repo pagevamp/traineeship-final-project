@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -17,6 +18,8 @@ import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { getDateRangeFloor } from '@/utils/date-range';
 import { Trip } from '@/trip/entities/trip.entity';
 import { TripStatus } from '@/types/trips';
+import { getDateRangeCeiling } from '@/utils/date-range';
+import { RideCancelledEvent } from '@/event/ride-cancelled-event';
 
 @Injectable()
 export class RideRequestService {
@@ -69,6 +72,30 @@ export class RideRequestService {
     await this.rideRequestRepository.update(
       { id: requestId },
       { acceptedAt: acceptedTime },
+    );
+  }
+
+  //event listener for when a user cancels a ride
+  @OnEvent('ride.cancelled')
+  async updateCancelledAt(event: RideCancelledEvent) {
+    const requestId = event.requestId;
+    const ride = await this.rideRequestRepository.findOneBy({ id: requestId });
+
+    if (!ride) {
+      throw new NotFoundException('No such ride request');
+    }
+
+    if (!ride.departureTime || typeof ride.departureTime !== 'string') {
+      throw new ConflictException('Invalid departure time');
+    }
+
+    if (getDateRangeCeiling(ride.departureTime) < new Date()) {
+      throw new ForbiddenException('Ride cannot be cancelled now');
+    }
+
+    await this.rideRequestRepository.update(
+      { id: requestId },
+      { acceptedAt: null },
     );
   }
 
