@@ -217,7 +217,6 @@ export class RideRequestService {
   ): Promise<{ message: string; rides: GetRideResponseData[] }> {
     const rides = await this.rideRequestRepository.find({
       where: { passengerId: userId },
-      withDeleted: true,
     });
 
     const user = await this.clerkClient.users.getUser(userId);
@@ -228,6 +227,7 @@ export class RideRequestService {
           passengerId: userId,
         },
       },
+      withDeleted: true,
       relations: ['ride'],
     });
 
@@ -331,7 +331,7 @@ export class RideRequestService {
       );
     }
 
-    await this.rideRequestRepository.softDelete({
+    await this.rideRequestRepository.delete({
       id: request_id,
     });
 
