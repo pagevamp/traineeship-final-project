@@ -228,28 +228,29 @@ export class TripService {
   // to get all the trips details of the driver that accepts the ride
   // the ride requester can get this when their ride is accepted
   async getAcceptedTripById(id: string) {
-    const trip = await this.tripRepository.findOne({
+    const trips = await this.tripRepository.find({
       where: {
         ride: { passengerId: id },
         status: Not(TripStatus.REACHED_DESTINATION),
       },
       relations: ['ride'],
     });
-    if (!trip) {
-      throw new NotFoundException(`No Accepting Trip Found`);
-    }
 
-    const driver = await this.clerkClient.users.getUser(trip.driverId);
+    return Promise.all(
+      trips.map(async (trip) => {
+        const driver = await this.clerkClient.users.getUser(trip.driverId);
 
-    return {
-      ...trip,
-      driver: {
-        firstName: driver.firstName,
-        lastName: driver.lastName,
-        profileImage: driver.imageUrl,
-        phoneNumber: getStringMetadata(driver, 'contactNumber'),
-        primaryLocation: getStringMetadata(driver, 'primaryLocation'),
-      },
-    };
+        return {
+          ...trip,
+          driver: {
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            profileImage: driver.imageUrl,
+            phoneNumber: getStringMetadata(driver, 'contactNumber'),
+            primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+          },
+        };
+      }),
+    );
   }
 }
