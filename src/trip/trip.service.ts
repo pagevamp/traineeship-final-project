@@ -12,7 +12,7 @@ import type { ClerkClient } from '@clerk/backend';
 import { getPassengersForTrips, getStringMetadata } from '@/utils/clerk.utils';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getDateRangeCeiling } from '@/utils/date-range';
+import { getDateRangeCeiling, getDateRangeFloor } from '@/utils/date-range';
 import { RideRequest } from '@/ride-request/ride-request.entity';
 import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
@@ -34,27 +34,45 @@ export class TripService {
 
   // to create a new trip when a user accepts a ride request
   async create(userId: string, createTripDto: CreateTripDto): Promise<Trip> {
-    const completedTrips = await this.tripRepository.find({
-      where: { driverId: userId, status: Not(TripStatus.REACHED_DESTINATION) },
-    });
-
-    // check if any incomplete trips left
-    if (completedTrips.length > 0) {
-      throw new ConflictException('Complete Pending Rides First');
-    }
-
     const ride = await this.rideRequestRepository.findOne({
       where: { id: createTripDto.requestId },
     });
 
-    if (!ride) {
-      throw new NotFoundException('Ride request not found');
-    }
-
-    if (ride?.passengerId === userId) {
+    if (!ride) throw new NotFoundException('Ride request not found');
+    if (ride.passengerId === userId)
       throw new ConflictException('Cannot accept own ride-request');
-    }
 
+    const newStartTime = getDateRangeFloor(ride.departureTime);
+    const newEndTime = getDateRangeCeiling(ride.departureTime);
+
+    if (newEndTime < new Date())
+      throw new ForbiddenException('Ride cannot be accepted now');
+
+    // Check for overlapping trips for this user
+    // fetch all trips involving this user (as driver or passenger)
+    const overlappingTrip = await this.tripRepository
+      .createQueryBuilder('trip')
+      .leftJoinAndSelect('trip.ride', 'ride')
+      .where('trip.driverId = :userId OR ride.passengerId = :userId', {
+        userId,
+      })
+      .getMany();
+
+    for (const trip of overlappingTrip) {
+      const existingStart = getDateRangeFloor(trip.ride.departureTime);
+      const existingEnd = getDateRangeCeiling(trip.ride.departureTime);
+
+      // check for 10-minute overlap
+      const overlap =
+        newStartTime.getTime() < existingEnd.getTime() &&
+        newEndTime.getTime() > existingStart.getTime();
+
+      if (overlap) {
+        throw new ConflictException(
+          'Cannot accept trip: overlaps with an existing ride by at least 10 minutes',
+        );
+      }
+    }
     const trip = this.tripRepository.create({
       driverId: userId,
       ride,
@@ -64,9 +82,11 @@ export class TripService {
 
     const savedTrip = await this.tripRepository.save(trip);
 
-    // event triggered after saving
-    const event = new RideAcceptedEvent(ride.id, new Date());
-    this.eventEmitter.emit('ride.accepted', event);
+    // emit event AFTER saving
+    this.eventEmitter.emit(
+      'ride.accepted',
+      new RideAcceptedEvent(ride.id, new Date()),
+    );
 
     return savedTrip;
   }
