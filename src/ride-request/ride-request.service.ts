@@ -212,7 +212,6 @@ export class RideRequestService {
     };
   }
 
-  //to get all the ride or individual user
   async getAllByUserId(
     userId: string,
   ): Promise<{ message: string; rides: GetRideResponseData[] }> {
@@ -223,15 +222,45 @@ export class RideRequestService {
 
     const user = await this.clerkClient.users.getUser(userId);
 
-    const formattedRides = rides.map((ride) => ({
-      ...ride,
-      passenger: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        profileImage: user.imageUrl,
-        phoneNumber: getStringMetadata(user, 'contactNumber'),
+    const trips = await this.tripRepository.find({
+      where: {
+        ride: {
+          passengerId: userId,
+        },
       },
-    }));
+      relations: ['ride'],
+    });
+
+    const tripByRideId = new Map(trips.map((t) => [t.requestId, t]));
+
+    const driverIds = [...new Set(trips.map((t) => t.driverId))];
+    const drivers = await Promise.all(
+      driverIds.map((id) => this.clerkClient.users.getUser(id)),
+    );
+    const driverById = new Map(drivers.map((d) => [d.id, d]));
+
+    const formattedRides = rides.map((ride) => {
+      const trip = tripByRideId.get(ride.id);
+      const driver = trip ? driverById.get(trip.driverId) : null;
+
+      return {
+        ...ride,
+        passenger: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImage: user.imageUrl,
+          phoneNumber: getStringMetadata(user, 'contactNumber'),
+        },
+        driver: driver
+          ? {
+              firstName: driver.firstName,
+              lastName: driver.lastName,
+              profileImage: driver.imageUrl,
+              phoneNumber: getStringMetadata(driver, 'contactNumber'),
+            }
+          : null,
+      };
+    });
 
     return {
       message: 'Ride requests have been fetched successfully',
