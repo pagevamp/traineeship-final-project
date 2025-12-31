@@ -6,7 +6,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { RideRequest } from '../ride-request.entity';
+import { RideRequest } from '../entities/ride-request.entity';
 export class PassengerData {
   @IsString()
   @IsOptional()

@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RideRequest } from './ride-request.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import type { ClerkClient } from '@clerk/backend';
 import { CreateRideRequestData } from './dto/create-ride-request-data';
@@ -20,6 +19,7 @@ import { Trip } from '@/trip/entities/trip.entity';
 import { TripStatus } from '@/types/trips';
 import { getDateRangeCeiling } from '@/utils/date-range';
 import { RideCancelledEvent } from '@/event/ride-cancelled-event';
+import { RideRequest } from './entities/ride-request.entity';
 
 @Injectable()
 export class RideRequestService {
@@ -153,25 +153,24 @@ export class RideRequestService {
     if (!request_id) {
       throw new BadRequestException('Request id is required');
     }
-
     const existingRideRequest = await this.rideRequestRepository.findOne({
       where: {
         id: request_id,
         passengerId: userId,
       },
     });
-
     if (!existingRideRequest) {
       throw new NotFoundException(
         `Ride request with ID ${request_id} not found`,
       );
     }
-
     await this.rideRequestRepository.softDelete({
       id: request_id,
       passengerId: userId,
     });
-
+    await this.tripRepository.softDelete({
+      requestId: request_id,
+    });
     return { message: 'Ride request has been cancelled successfully' };
   }
 

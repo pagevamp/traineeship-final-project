@@ -8,8 +8,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { RideRequest } from '@/ride-request/ride-request.entity';
 import { TripStatus, VehicleType } from '@/types/trips';
+import { RideRequest } from '@/ride-request/entities/ride-request.entity';
 
 @Entity({ name: 'trips' })
 export class Trip {
@@ -18,6 +18,9 @@ export class Trip {
 
   @Column({ type: 'varchar', name: 'driver_id' })
   readonly driverId: string;
+
+  @Column({ name: 'request_id', type: 'uuid' })
+  readonly requestId: string;
 
   @Column({ type: 'enum', enum: TripStatus })
   readonly status: TripStatus;
