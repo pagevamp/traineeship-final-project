@@ -62,11 +62,13 @@ export class TripService {
       vehicleType: createTripDto.vehicleType,
     });
 
-    //event triggered when a user accepts a ride
+    const savedTrip = await this.tripRepository.save(trip);
+
+    // event triggered after saving
     const event = new RideAcceptedEvent(ride.id, new Date());
     this.eventEmitter.emit('ride.accepted', event);
 
-    return await this.tripRepository.save(trip);
+    return savedTrip;
   }
 
   // to update the ride status from the drivers end
