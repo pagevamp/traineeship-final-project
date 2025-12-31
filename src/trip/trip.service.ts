@@ -109,6 +109,7 @@ export class TripService {
     }
 
     await this.tripRepository.softDelete(id);
+    await this.rideRequestRepository.softDelete({ id: trip.requestId });
   }
 
   // to get all the pending trips for a particular user

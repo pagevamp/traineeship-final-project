@@ -145,6 +145,10 @@ export class RideRequestService {
       passengerId: userId,
     });
 
+    await this.tripRepository.softDelete({
+      requestId: request_id,
+    });
+
     return { message: 'Ride request has been cancelled successfully' };
   }
 

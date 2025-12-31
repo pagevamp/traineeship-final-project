@@ -49,6 +49,9 @@ export class Trip {
   })
   readonly deletedAt?: Date | null;
 
+  @Column({ name: 'request_id', type: 'uuid' })
+  readonly requestId: string;
+
   @ManyToOne(() => RideRequest, (ride) => ride.trips, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'request_id', referencedColumnName: 'id' })
   readonly ride: RideRequest;
