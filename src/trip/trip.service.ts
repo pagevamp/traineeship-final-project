@@ -128,26 +128,34 @@ export class TripService {
     const passengerMap = await getPassengersForTrips(trips, this.clerkClient);
 
     //to attach each of the trips with the driver information
-    const mappedTrips = trips.flatMap((trip) => {
-      const passenger = passengerMap.get(trip.ride.passengerId);
+    const mappedTrips = await Promise.all(
+      trips.map(async (trip) => {
+        const passenger = passengerMap.get(trip.ride.passengerId);
+        const passengerInfo = await this.clerkClient.users.getUser(
+          trip.ride.passengerId,
+        );
 
-      return {
-        ...trip,
-        driver: {
-          firstName: driver.firstName,
-          lastName: driver.lastName,
-          phoneNumber: getStringMetadata(driver, 'contactNumber'),
-          primaryLocation: getStringMetadata(driver, 'primaryLocation'),
-        },
-        passenger: {
-          firstName: passenger?.firstName,
-          lastName: passenger?.lastName,
-          phoneNumber: passenger?.phoneNumber,
-          primaryLocation: passenger?.primaryLocation,
-          profileImage: passenger?.profileImage,
-        },
-      };
-    });
+        return {
+          ...trip,
+          driver: {
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            phoneNumber: getStringMetadata(driver, 'contactNumber'),
+            primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+          },
+          passenger: {
+            firstName: passenger?.firstName,
+            lastName: passenger?.lastName,
+            phoneNumber: getStringMetadata(passengerInfo, 'contactNumber'),
+            primaryLocation: getStringMetadata(
+              passengerInfo,
+              'primaryLocation',
+            ),
+            profileImage: passengerInfo?.imageUrl,
+          },
+        };
+      }),
+    );
 
     return {
       trips: mappedTrips,
@@ -175,26 +183,35 @@ export class TripService {
     const passengerMap = await getPassengersForTrips(trips, this.clerkClient);
 
     //to attach each of the trips with the driver information
-    const mappedTrips = trips.flatMap((trip) => {
-      const passenger = passengerMap.get(trip.ride.passengerId);
+    const mappedTrips = await Promise.all(
+      trips.map(async (trip) => {
+        const passenger = passengerMap.get(trip.ride.passengerId);
+        const passengerInfo = await this.clerkClient.users.getUser(
+          trip.ride.passengerId,
+        );
 
-      return {
-        ...trip,
-        driver: {
-          firstName: driver.firstName,
-          lastName: driver.lastName,
-          phoneNumber: getStringMetadata(driver, 'contactNumber'),
-          primaryLocation: getStringMetadata(driver, 'primaryLocation'),
-        },
-        passenger: {
-          firstName: passenger?.firstName,
-          lastName: passenger?.lastName,
-          phoneNumber: passenger?.phoneNumber,
-          primaryLocation: passenger?.primaryLocation,
-          profileImage: passenger?.profileImage,
-        },
-      };
-    });
+        return {
+          ...trip,
+          driver: {
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            phoneNumber: getStringMetadata(driver, 'contactNumber'),
+            primaryLocation: getStringMetadata(driver, 'primaryLocation'),
+            profileImage: driver?.imageUrl,
+          },
+          passenger: {
+            firstName: passenger?.firstName,
+            lastName: passenger?.lastName,
+            phoneNumber: getStringMetadata(passengerInfo, 'contactNumber'),
+            primaryLocation: getStringMetadata(
+              passengerInfo,
+              'primaryLocation',
+            ),
+            profileImage: passengerInfo?.imageUrl,
+          },
+        };
+      }),
+    );
 
     return {
       trips: mappedTrips,
