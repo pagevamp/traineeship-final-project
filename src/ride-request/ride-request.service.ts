@@ -128,6 +128,25 @@ export class RideRequestService {
         'Please complete your pending rides or cancel it to request a new ride',
       );
 
+    const newStart = createRideRequestData.departureStart;
+    const newEnd = createRideRequestData.departureEnd;
+    const newRange = `[${newStart.toISOString()}, ${newEnd.toISOString()}]`;
+    const clashingDriverTrip = await this.tripRepository
+      .createQueryBuilder('trip')
+      .innerJoinAndSelect('trip.ride', 'ride')
+      .where('trip.driverId = :userId', { userId })
+      .andWhere('trip.status NOT IN (:...excluded)', {
+        excluded: [TripStatus.REACHED_DESTINATION],
+      })
+      .andWhere('ride.departure_time && :range::tstzrange', { range: newRange })
+      .getOne();
+
+    if (clashingDriverTrip) {
+      throw new ConflictException(
+        `You are already driving a passenger during this time. You cannot request a ride for yourself.`,
+      );
+    }
+
     this.validateDepartureGap(
       new Date(createRideRequestData.departureStart.toISOString()),
       new Date(createRideRequestData.departureEnd.toISOString()),
