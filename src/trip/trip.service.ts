@@ -12,7 +12,11 @@ import type { ClerkClient } from '@clerk/backend';
 import { getPassengersForTrips, getStringMetadata } from '@/utils/clerk.utils';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getDateRangeCeiling } from '@/utils/date-range';
+import {
+  getDateRangeCeiling,
+  getDateRangeFloor,
+  validateDepartureGap,
+} from '@/utils/date-range';
 import { CreateTripDto } from './dto/create-trips-data';
 import { UpdateTripDto } from './dto/update-trips-data';
 import { GetTripsByDriverResponseDto } from './dto/get-trips-by-driver-data';
@@ -54,6 +58,35 @@ export class TripService {
     if (ride?.passengerId === userId) {
       throw new ConflictException('Cannot accept own ride-request');
     }
+
+    // starting time for new accepting request
+    const newStart = getDateRangeFloor(ride.departureTime);
+    // end time for new accepting request
+    const newEnd = getDateRangeCeiling(ride.departureTime);
+    //complete time range for the new accepting request
+    const newRange = `[${newStart.toISOString()}, ${newEnd.toISOString()}]`;
+
+    // query the databse to check the user has their own ride-request at that time
+    const passengerRideConflict = await this.rideRequestRepository
+      .createQueryBuilder('ride')
+      .andWhere('ride.deleted_at IS NULL')
+      .where('ride.passengerId = :userId', { userId })
+      .andWhere('ride.departure_time && :range::tstzrange', {
+        range: newRange,
+      })
+      .getOne();
+
+    if (passengerRideConflict) {
+      throw new ConflictException(
+        'You have requested a ride for yourself during this time. You cannot accept a trip for a passenger.',
+      );
+    }
+
+    // validation message for when the user tried to accept a trip when they already have a ride-request at the time-range
+    validateDepartureGap(
+      new Date(newStart.toISOString()),
+      new Date(newEnd.toISOString()),
+    );
 
     const trip = this.tripRepository.create({
       driverId: userId,

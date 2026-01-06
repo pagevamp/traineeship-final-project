@@ -14,7 +14,7 @@ import { GetRideResponseData } from './dto/get-ride-response-data';
 import { getStringMetadata } from '@/utils/clerk.utils';
 import { OnEvent } from '@nestjs/event-emitter';
 import { RideAcceptedEvent } from '@/event/ride-accepted-event';
-import { getDateRangeFloor } from '@/utils/date-range';
+import { getDateRangeFloor, validateDepartureGap } from '@/utils/date-range';
 import { Trip } from '@/trip/entities/trip.entity';
 import { TripStatus } from '@/types/trips';
 import { getDateRangeCeiling } from '@/utils/date-range';
@@ -31,23 +31,6 @@ export class RideRequestService {
     @InjectRepository(Trip)
     private readonly tripRepository: Repository<Trip>,
   ) {}
-
-  private validateDepartureGap(start: Date, end: Date): void {
-    const diffMs = end.getTime() - start.getTime();
-    const diffMinutes = diffMs / (1000 * 60);
-
-    if (diffMinutes <= 0) {
-      throw new ConflictException(
-        'Departure end time must be after departure start time',
-      );
-    }
-
-    if (diffMinutes > 60) {
-      throw new ConflictException(
-        'Departure time gap cannot be more than 1 hour',
-      );
-    }
-  }
 
   //event listener for when a user accepts a ride
   @OnEvent('ride.accepted')
@@ -147,7 +130,7 @@ export class RideRequestService {
       );
     }
 
-    this.validateDepartureGap(
+    validateDepartureGap(
       new Date(createRideRequestData.departureStart.toISOString()),
       new Date(createRideRequestData.departureEnd.toISOString()),
     );
